@@ -1,13 +1,13 @@
 import { UserRemove, UserState } from '@proto/Mumble';
 import EventEmitter from 'events';
 import { filter, map, tap } from 'rxjs';
-import { MumbleClient } from './mumble-client';
+import { Client } from './client';
 import { User } from './user';
 
 export class UserManager extends EventEmitter {
   private _users = new Map<number, User>();
 
-  constructor(public readonly client: MumbleClient) {
+  constructor(public readonly client: Client) {
     super();
     this.client.connected.subscribe(socket => {
       this._users.clear();

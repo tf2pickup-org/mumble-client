@@ -44,7 +44,7 @@ const defaultOptions: Partial<MumbleClientOptions> = {
   pingInterval: 5000,
 };
 
-export class MumbleClient extends EventEmitter {
+export class Client extends EventEmitter {
   private readonly _connected = new Subject<MumbleSocket>();
   channels: ChannelManager = new ChannelManager(this);
   users: UserManager = new UserManager(this);

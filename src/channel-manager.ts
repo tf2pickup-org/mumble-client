@@ -2,12 +2,12 @@ import { ChannelRemove, ChannelState } from '@proto/Mumble';
 import EventEmitter from 'events';
 import { filter, map, tap } from 'rxjs';
 import { Channel } from './channel';
-import { MumbleClient } from './mumble-client';
+import { Client } from './client';
 
 export class ChannelManager extends EventEmitter {
   private _channels = new Map<number, Channel>();
 
-  constructor(public readonly client: MumbleClient) {
+  constructor(public readonly client: Client) {
     super();
     this.client.connected.subscribe(socket => {
       this._channels.clear();

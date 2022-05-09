@@ -1,6 +1,6 @@
 import { filter, map, takeWhile } from 'rxjs';
 import { UserState } from '@proto/Mumble';
-import { MumbleClient } from './mumble-client';
+import { Client } from './client';
 import { isEmpty, remove } from 'lodash';
 
 export class User {
@@ -10,7 +10,7 @@ export class User {
   selfMute: boolean;
   selfDeaf: boolean;
 
-  constructor(private readonly client: MumbleClient, userState: UserState) {
+  constructor(private readonly client: Client, userState: UserState) {
     this.session = userState.session;
     this.name = userState.name;
     this.channelId = userState.channelId;
