@@ -3,6 +3,7 @@ import { MumbleSocket } from './mumble-socket';
 import {
   exhaustMap,
   filter,
+  interval,
   lastValueFrom,
   map,
   Observable,
@@ -10,7 +11,6 @@ import {
   Subject,
   take,
   tap,
-  timer,
 } from 'rxjs';
 import {
   Authenticate,
@@ -25,7 +25,7 @@ import {
 } from '@proto/Mumble';
 import { User } from './user';
 import { ConnectionOptions } from 'tls';
-import { isEmpty } from 'lodash';
+import { isEmpty, merge } from 'lodash';
 import { ChannelManager } from './channel-manager';
 import { Channel } from './channel';
 import { UserManager } from './user-manager';
@@ -36,7 +36,12 @@ interface MumbleClientOptions {
   port: number;
   username: string;
   tlsOptions?: ConnectionOptions;
+  pingInterval?: number;
 }
+
+const defaultOptions: Partial<MumbleClientOptions> = {
+  pingInterval: 5000,
+};
 
 export class MumbleClient extends EventEmitter {
   private readonly _connected = new Subject<MumbleSocket>();
@@ -45,10 +50,11 @@ export class MumbleClient extends EventEmitter {
   serverVersion?: Version;
   user?: User;
   socket?: MumbleSocket;
-  private readonly pingInterval = 5000;
+  readonly options: MumbleClientOptions;
 
-  constructor(private readonly options: MumbleClientOptions) {
+  constructor(options: MumbleClientOptions) {
     super();
+    this.options = merge({}, defaultOptions, options);
   }
 
   get connected(): Observable<MumbleSocket> {
@@ -250,7 +256,7 @@ export class MumbleClient extends EventEmitter {
   }
 
   private startPinger() {
-    timer(this.pingInterval, this.pingInterval)
+    interval(this.options.pingInterval)
       .pipe(exhaustMap(() => this.ping()))
       .subscribe();
   }
