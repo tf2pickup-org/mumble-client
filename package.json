@@ -1,14 +1,23 @@
 {
   "name": "simple-mumble-bot",
   "version": "0.0.1",
+  "description": "A simple bot for managing mumble servers",
   "license": "MIT",
-  "types": "dist/index.d.ts",
   "scripts": {
     "dev": "ts-node src/index.ts",
     "lint": "eslint \"src/**/*.ts\"",
     "build": "tsc",
     "compile-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=proto/ --ts_proto_opt=esModuleInterop=true --ts_proto_opt=exportCommonSymbols=false --ts_proto_opt=outputTypeRegistry=true Mumble.proto"
   },
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "contributors": [
+    "Michał Garapich <garrappachc@gmail.com>"
+  ],
+  "keywords": [
+    "mumble",
+    "bot"
+  ],
   "dependencies": {
     "lodash": "^4.17.21",
     "rxjs": "7.5.5",
