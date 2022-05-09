@@ -1,11 +1,13 @@
 import { ChannelState } from '@proto/Mumble';
 import { isEmpty } from 'lodash';
 import { MumbleClient } from './mumble-client';
+import { User } from './user';
 
 export class Channel {
   readonly id: number;
   name: string;
   parent: number;
+  users: User[] = [];
 
   constructor(
     public readonly client: MumbleClient,
