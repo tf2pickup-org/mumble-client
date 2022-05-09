@@ -30,6 +30,7 @@ import { ChannelManager } from './channel-manager';
 import { Channel } from './channel';
 import { UserManager } from './user-manager';
 import EventEmitter from 'events';
+import { encodeMumbleVersion } from './encode-mumble-version';
 
 interface MumbleClientOptions {
   host: string;
@@ -228,19 +229,15 @@ export class MumbleClient extends EventEmitter {
   }
 
   private async sendVersion(): Promise<void> {
-    const version = {
+    const version = encodeMumbleVersion({
       major: 1,
-      minor: 2,
-      patch: 16,
-      toUint8: () =>
-        ((version.major & 0xffff) << 16) |
-        ((version.minor & 0xff) << 8) |
-        (version.patch & 0xff),
-    };
+      minor: 4,
+      patch: 230,
+    });
     return await this.socket?.send(
       Version.fromPartial({
         release: 'simple mumble bot',
-        version: version.toUint8(),
+        version,
       }),
     );
   }
