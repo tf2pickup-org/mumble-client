@@ -34,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Generate proto files
+        run: yarn generate-proto
+
       - name: Run unit test
         run: yarn test:ci
 
@@ -57,6 +60,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --immutable
+
+      - name: Generate proto files
+        run: yarn generate-proto
 
       - name: Build
         run: yarn build
