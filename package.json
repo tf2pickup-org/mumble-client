@@ -7,7 +7,9 @@
     "dev": "ts-node src/index.ts",
     "lint": "eslint \"src/**/*.ts\"",
     "build": "tsc",
-    "compile-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=proto/ --ts_proto_opt=esModuleInterop=true --ts_proto_opt=exportCommonSymbols=false --ts_proto_opt=outputTypeRegistry=true Mumble.proto"
+    "compile-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=proto/ --ts_proto_opt=esModuleInterop=true --ts_proto_opt=exportCommonSymbols=false --ts_proto_opt=outputTypeRegistry=true Mumble.proto",
+    "test": "jest --watch",
+    "test:ci": "NODE_ENV=test jest --ci"
   },
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
+    "@types/jest": "27.5.0",
     "@types/lodash": "^4.14.182",
     "@types/node": "^17.0.31",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
@@ -32,7 +35,10 @@
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "jest": "28.1.0",
     "prettier": "^2.6.2",
+    "trace-unhandled": "2.0.1",
+    "ts-jest": "28.0.2",
     "ts-node": "^10.7.0",
     "tsconfig-paths": "^4.0.0",
     "typescript": "^4.6.4"

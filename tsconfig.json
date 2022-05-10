@@ -17,10 +17,12 @@
     "removeComments": true,
     "moduleResolution": "node",
     "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "@proto/*": ["proto/*"]
     }
   },
+  "types": ["jest"],
   "ts-node": {
     "transpileOnly": true,
     "files": true,
