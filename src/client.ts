@@ -6,9 +6,7 @@ import {
   interval,
   lastValueFrom,
   map,
-  Observable,
   race,
-  Subject,
   take,
   tap,
 } from 'rxjs';
@@ -37,7 +35,6 @@ const defaultOptions: Partial<ClientOptions> = {
 };
 
 export class Client extends EventEmitter {
-  private readonly _connected = new Subject<MumbleSocket>();
   channels: ChannelManager = new ChannelManager(this);
   users: UserManager = new UserManager(this);
   serverVersion?: Version;
@@ -50,10 +47,6 @@ export class Client extends EventEmitter {
     this.options = merge({}, defaultOptions, options);
   }
 
-  get connected(): Observable<MumbleSocket> {
-    return this._connected.asObservable();
-  }
-
   async connect(): Promise<this> {
     this.socket = new MumbleSocket(
       await tlsConnect(
@@ -62,7 +55,7 @@ export class Client extends EventEmitter {
         this.options.tlsOptions,
       ),
     );
-    this._connected.next(this.socket);
+    this.emit('socketConnected', this.socket);
 
     this.socket.packet
       .pipe(filter(packet => packet.$type === Version.$type))
@@ -80,6 +73,7 @@ export class Client extends EventEmitter {
           this.user = this.users.bySession(packet.session);
         }),
         take(1),
+        tap(() => this.emit('connected')),
         map(() => this),
       ),
     );

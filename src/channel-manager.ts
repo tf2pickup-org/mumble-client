@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import { filter, map, tap } from 'rxjs';
 import { Channel } from './channel';
 import { Client } from './client';
+import { MumbleSocket } from './mumble-socket';
 
 /**
  * @fires ChannelManager#channelCreate
@@ -13,7 +14,7 @@ export class ChannelManager extends EventEmitter {
 
   constructor(public readonly client: Client) {
     super();
-    this.client.connected.subscribe(socket => {
+    this.client.on('connected', (socket: MumbleSocket) => {
       this._channels.clear();
 
       socket.packet
