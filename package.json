@@ -1,8 +1,17 @@
 {
-  "name": "simple-mumble-bot",
+  "name": "@tf2pickup-org/simple-mumble-bot",
   "version": "0.0.1",
   "description": "A simple bot for managing mumble servers",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tf2pickup-org/simple-mumble-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tf2pickup-org/simple-mumble-bot/issues"
+  },
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "dev": "ts-node src/index.ts",
     "lint": "eslint \"src/**/*.ts\"",
@@ -11,8 +20,6 @@
     "test": "jest --watch",
     "test:ci": "NODE_ENV=test jest --ci"
   },
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
   "contributors": [
     "Michał Garapich <garrappachc@gmail.com>"
   ],

@@ -731,12 +731,12 @@ __metadata:
   linkType: hard
 
 "@jridgewell/trace-mapping@npm:^0.3.7, @jridgewell/trace-mapping@npm:^0.3.9":
-  version: 0.3.10
-  resolution: "@jridgewell/trace-mapping@npm:0.3.10"
+  version: 0.3.11
+  resolution: "@jridgewell/trace-mapping@npm:0.3.11"
   dependencies:
     "@jridgewell/resolve-uri": ^3.0.3
     "@jridgewell/sourcemap-codec": ^1.4.10
-  checksum: 1e5f7ff99f6fe8b671aab61b5a943d00f689728380e2d20df1e8a7418b421d4f941679ab327282d9ad5b2d71c0eedf2928ad2b974d0bd046e57c6fd66e891144
+  checksum: 0f1f807e33a23280c538574028af30f8173d7622704799b0d97fcfcacc45864e348ba40692488bb9afb606a21a14ac955fbe0bba02a6e0f021e52869f0fd2d65
   languageName: node
   linkType: hard
 
@@ -884,6 +884,32 @@ __metadata:
   checksum: 7d3aef54e17c1073101cb64d953157c19d62a40e261a30923fa1ee337b049c5f29cc47b1f0c477880f42b5659848ba9ab897607ac8ea4acd5c30ddcfac57fca6
   languageName: node
   linkType: hard
+
+"@tf2pickup-org/simple-mumble-bot@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@tf2pickup-org/simple-mumble-bot@workspace:."
+  dependencies:
+    "@tsconfig/node16": ^1.0.2
+    "@types/jest": 27.5.0
+    "@types/lodash": ^4.14.182
+    "@types/node": ^17.0.31
+    "@typescript-eslint/eslint-plugin": ^5.22.0
+    "@typescript-eslint/parser": ^5.22.0
+    eslint: ^8.14.0
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-prettier: ^4.0.0
+    jest: 28.1.0
+    lodash: ^4.17.21
+    prettier: ^2.6.2
+    rxjs: 7.5.5
+    trace-unhandled: 2.0.1
+    ts-jest: 28.0.2
+    ts-node: ^10.7.0
+    ts-proto: ^1.112.1
+    tsconfig-paths: ^4.0.0
+    typescript: ^4.6.4
+  languageName: unknown
+  linkType: soft
 
 "@tootallnate/once@npm:2":
   version: 2.0.0
@@ -2579,9 +2605,9 @@ __metadata:
   linkType: hard
 
 "ip@npm:^1.1.5":
-  version: 1.1.6
-  resolution: "ip@npm:1.1.6"
-  checksum: 3e5f72b447fd292801491f03091ef1221fbc37de527d3bf306b297e3e58530e7ad80ae92a2f716d8a25fbb6e16afe05cbcb7cef671107ddb37ac7a1693158c6b
+  version: 1.1.7
+  resolution: "ip@npm:1.1.7"
+  checksum: de5530ed518751e03e111548572fa162a4be7b16760e6624f51bef4428da9c6618953bdde43fd5836a1c2f4f74a1a99d6bc238b19faa1864a93ec67b08c81fc2
   languageName: node
   linkType: hard
 
@@ -4105,32 +4131,6 @@ __metadata:
   checksum: a2f098f247adc367dffc27845853e9959b9e88b01cb301658cfe4194352d8d2bb32e18467c786a7fe15f1d44b233ea35633d076d5e737870b7139949d1ab6318
   languageName: node
   linkType: hard
-
-"simple-mumble-bot@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "simple-mumble-bot@workspace:."
-  dependencies:
-    "@tsconfig/node16": ^1.0.2
-    "@types/jest": 27.5.0
-    "@types/lodash": ^4.14.182
-    "@types/node": ^17.0.31
-    "@typescript-eslint/eslint-plugin": ^5.22.0
-    "@typescript-eslint/parser": ^5.22.0
-    eslint: ^8.14.0
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-prettier: ^4.0.0
-    jest: 28.1.0
-    lodash: ^4.17.21
-    prettier: ^2.6.2
-    rxjs: 7.5.5
-    trace-unhandled: 2.0.1
-    ts-jest: 28.0.2
-    ts-node: ^10.7.0
-    ts-proto: ^1.112.1
-    tsconfig-paths: ^4.0.0
-    typescript: ^4.6.4
-  languageName: unknown
-  linkType: soft
 
 "sisteransi@npm:^1.0.5":
   version: 1.0.5
