@@ -34,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Install protoc
+        uses: arduino/setup-protoc@v1
+
       - name: Generate proto files
         run: yarn generate-proto
 
@@ -60,6 +63,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --immutable
+
+      - name: Install protoc
+        uses: arduino/setup-protoc@v1
 
       - name: Generate proto files
         run: yarn generate-proto
