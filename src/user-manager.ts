@@ -2,6 +2,7 @@ import { UserRemove, UserState } from '@proto/Mumble';
 import EventEmitter from 'events';
 import { filter, map, tap } from 'rxjs';
 import { Client } from './client';
+import { MumbleSocket } from './mumble-socket';
 import { User } from './user';
 
 export class UserManager extends EventEmitter {
@@ -9,7 +10,7 @@ export class UserManager extends EventEmitter {
 
   constructor(public readonly client: Client) {
     super();
-    this.client.connected.subscribe(socket => {
+    this.client.on('connected', (socket: MumbleSocket) => {
       this._users.clear();
 
       socket.packet
