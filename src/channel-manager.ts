@@ -4,6 +4,10 @@ import { filter, map, tap } from 'rxjs';
 import { Channel } from './channel';
 import { Client } from './client';
 
+/**
+ * @fires ChannelManager#channelCreate
+ * @fires ChannelManager#channelRemove
+ */
 export class ChannelManager extends EventEmitter {
   private _channels = new Map<number, Channel>();
 
@@ -47,6 +51,11 @@ export class ChannelManager extends EventEmitter {
     if (!channel) {
       channel = new Channel(this.client, channelState);
       this._channels.set(channel.id, channel);
+      /**
+       * Emitted whenever a channel is created.
+       * @event ChannelManager#channelCreate
+       * @property {Channel} channel The channel that was created.
+       */
       this.emit('channelCreate', channel);
     } else {
       channel.sync(channelState);
@@ -57,6 +66,11 @@ export class ChannelManager extends EventEmitter {
     const channel = this.byId(channelRemove.channelId);
     if (channel) {
       this._channels.delete(channelRemove.channelId);
+      /**
+       * Emitted whenever a channel gets deleted.
+       * @event ChannelManager#channelRemove
+       * @property {Channel} channel The channel that was removed.
+       */
       this.emit('channelRemove', channel);
     }
   }

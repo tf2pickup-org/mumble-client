@@ -24,23 +24,15 @@ import {
   Version,
 } from '@proto/Mumble';
 import { User } from './user';
-import { ConnectionOptions } from 'tls';
 import { isEmpty, merge } from 'lodash';
 import { ChannelManager } from './channel-manager';
 import { Channel } from './channel';
 import { UserManager } from './user-manager';
 import EventEmitter from 'events';
 import { encodeMumbleVersion } from './encode-mumble-version';
+import { ClientOptions } from './client-options';
 
-interface MumbleClientOptions {
-  host: string;
-  port: number;
-  username: string;
-  tlsOptions?: ConnectionOptions;
-  pingInterval?: number;
-}
-
-const defaultOptions: Partial<MumbleClientOptions> = {
+const defaultOptions: Partial<ClientOptions> = {
   pingInterval: 5000,
 };
 
@@ -51,9 +43,9 @@ export class Client extends EventEmitter {
   serverVersion?: Version;
   user?: User;
   socket?: MumbleSocket;
-  readonly options: MumbleClientOptions;
+  readonly options: ClientOptions;
 
-  constructor(options: MumbleClientOptions) {
+  constructor(options: ClientOptions) {
     super();
     this.options = merge({}, defaultOptions, options);
   }
