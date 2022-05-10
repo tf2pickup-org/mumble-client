@@ -889,25 +889,25 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tf2pickup-org/simple-mumble-bot@workspace:."
   dependencies:
-    "@tsconfig/node16": ^1.0.2
+    "@tsconfig/node16": 1.0.2
     "@types/jest": 27.5.0
-    "@types/lodash": ^4.14.182
-    "@types/node": ^17.0.31
-    "@typescript-eslint/eslint-plugin": ^5.22.0
-    "@typescript-eslint/parser": ^5.22.0
-    eslint: ^8.14.0
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-prettier: ^4.0.0
+    "@types/lodash": 4.14.182
+    "@types/node": 17.0.31
+    "@typescript-eslint/eslint-plugin": 5.23.0
+    "@typescript-eslint/parser": 5.23.0
+    eslint: 8.15.0
+    eslint-config-prettier: 8.5.0
+    eslint-plugin-prettier: 4.0.0
     jest: 28.1.0
     lodash: ^4.17.21
-    prettier: ^2.6.2
+    prettier: 2.6.2
     rxjs: 7.5.5
     trace-unhandled: 2.0.1
     ts-jest: 28.0.2
-    ts-node: ^10.7.0
+    ts-node: 10.7.0
     ts-proto: ^1.112.1
-    tsconfig-paths: ^4.0.0
-    typescript: ^4.6.4
+    tsconfig-paths: 4.0.0
+    typescript: 4.6.4
   languageName: unknown
   linkType: soft
 
@@ -939,7 +939,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node16@npm:^1.0.2":
+"@tsconfig/node16@npm:1.0.2, @tsconfig/node16@npm:^1.0.2":
   version: 1.0.2
   resolution: "@tsconfig/node16@npm:1.0.2"
   checksum: ca94d3639714672bbfd55f03521d3f56bb6a25479bd425da81faf21f13e1e9d15f40f97377dedbbf477a5841c5b0c8f4cd1b391f33553d750b9202c54c2c07aa
@@ -1038,7 +1038,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.182":
+"@types/lodash@npm:4.14.182":
   version: 4.14.182
   resolution: "@types/lodash@npm:4.14.182"
   checksum: 7dd137aa9dbabd632408bd37009d984655164fa1ecc3f2b6eb94afe35bf0a5852cbab6183148d883e9c73a958b7fec9a9bcf7c8e45d41195add6a18c34958209
@@ -1052,7 +1052,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^17.0.31":
+"@types/node@npm:*, @types/node@npm:17.0.31, @types/node@npm:>=13.7.0":
   version: 17.0.31
   resolution: "@types/node@npm:17.0.31"
   checksum: 704618350f8420d5c47db0f7778398e821b7724369946f5c441a7e6b9343295553936400eb8309f0b07d5e39c240988ab3456b983712ca86265dabc9aee4ad3d
@@ -1096,7 +1096,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.22.0":
+"@typescript-eslint/eslint-plugin@npm:5.23.0":
   version: 5.23.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.23.0"
   dependencies:
@@ -1119,7 +1119,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.22.0":
+"@typescript-eslint/parser@npm:5.23.0":
   version: 5.23.0
   resolution: "@typescript-eslint/parser@npm:5.23.0"
   dependencies:
@@ -1934,7 +1934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.5.0":
+"eslint-config-prettier@npm:8.5.0":
   version: 8.5.0
   resolution: "eslint-config-prettier@npm:8.5.0"
   peerDependencies:
@@ -1945,7 +1945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^4.0.0":
+"eslint-plugin-prettier@npm:4.0.0":
   version: 4.0.0
   resolution: "eslint-plugin-prettier@npm:4.0.0"
   dependencies:
@@ -2005,7 +2005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.14.0":
+"eslint@npm:8.15.0":
   version: 8.15.0
   resolution: "eslint@npm:8.15.0"
   dependencies:
@@ -3826,7 +3826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.5.1, prettier@npm:^2.6.2":
+"prettier@npm:2.6.2, prettier@npm:^2.5.1":
   version: 2.6.2
   resolution: "prettier@npm:2.6.2"
   bin:
@@ -4457,7 +4457,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.7.0":
+"ts-node@npm:10.7.0":
   version: 10.7.0
   resolution: "ts-node@npm:10.7.0"
   dependencies:
@@ -4531,7 +4531,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:^4.0.0":
+"tsconfig-paths@npm:4.0.0":
   version: 4.0.0
   resolution: "tsconfig-paths@npm:4.0.0"
   dependencies:
@@ -4597,7 +4597,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.6.4":
+"typescript@npm:4.6.4":
   version: 4.6.4
   resolution: "typescript@npm:4.6.4"
   bin:
@@ -4607,7 +4607,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@4.6.4#~builtin<compat/typescript>":
   version: 4.6.4
   resolution: "typescript@patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=bda367"
   bin:
