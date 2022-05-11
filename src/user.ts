@@ -1,7 +1,8 @@
 import { filter, map, takeWhile } from 'rxjs';
 import { UserState } from '@proto/Mumble';
 import { Client } from './client';
-import { isEmpty, remove } from 'lodash';
+import { isEmpty } from 'lodash';
+import { Channel } from './channel';
 
 export class User {
   readonly session: number;
@@ -16,8 +17,12 @@ export class User {
     this.channelId = userState.channelId;
     this.selfMute = userState.selfMute;
     this.selfDeaf = userState.selfDeaf;
+  }
 
-    this.client.channels.byId(this.channelId)?.users.push(this);
+  get channel(): Channel {
+    return this.client.channels.findAll(
+      channel => channel.id === this.channelId,
+    )[0];
   }
 
   sync(userState: UserState) {
@@ -26,12 +31,7 @@ export class User {
     }
 
     if (this.channelId !== userState.channelId) {
-      const oldChannel = this.client.channels.byId(this.channelId);
-      if (oldChannel) {
-        remove(oldChannel.users, user => user.session === this.session);
-      }
       this.channelId = userState.channelId;
-      this.client.channels.byId(this.channelId)?.users.push(this);
     }
 
     this.selfMute = userState.mute;

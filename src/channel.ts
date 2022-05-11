@@ -7,7 +7,6 @@ export class Channel {
   readonly id: number;
   name: string;
   parent: number;
-  users: User[] = [];
 
   constructor(public readonly client: Client, channelState: ChannelState) {
     this.id = channelState.channelId;
@@ -23,6 +22,10 @@ export class Channel {
     if (channelState.parent) {
       this.parent = channelState.parent;
     }
+  }
+
+  get users(): User[] {
+    return this.client.users.findAll(user => user.channelId === this.id);
   }
 
   async createSubChannel(name: string): Promise<Channel> {

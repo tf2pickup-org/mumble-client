@@ -76,6 +76,10 @@ export class ChannelManager {
     return lastParent;
   }
 
+  findAll(predicate: (Channel: Channel) => boolean): Channel[] {
+    return Array.from(this._channels.values()).filter(predicate);
+  }
+
   private syncChannel(channelState: ChannelState) {
     let channel = this.byId(channelState.channelId);
     if (!channel) {

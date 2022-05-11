@@ -33,6 +33,10 @@ export class UserManager {
     return this._users.get(session);
   }
 
+  findAll(predicate: (user: User) => boolean): User[] {
+    return Array.from(this._users.values()).filter(predicate);
+  }
+
   private syncUser(userState: UserState) {
     let user = this.bySession(userState.session);
     if (!user) {
