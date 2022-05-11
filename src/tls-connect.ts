@@ -9,7 +9,7 @@ export const tlsConnect = async (
     const socket = tls.connect(port, host, tlsOptions);
     socket.on('error', reject);
     socket.on('secureConnect', () => {
-      if (socket.authorized) {
+      if (socket.authorized || !tlsOptions?.rejectUnauthorized) {
         resolve(socket);
       } else {
         reject(socket.authorizationError);

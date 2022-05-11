@@ -1,16 +1,14 @@
 import { UserRemove, UserState } from '@proto/Mumble';
-import EventEmitter from 'events';
 import { filter, map, tap } from 'rxjs';
 import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
 import { User } from './user';
 
-export class UserManager extends EventEmitter {
+export class UserManager {
   private _users = new Map<number, User>();
 
   constructor(public readonly client: Client) {
-    super();
-    this.client.on('connected', (socket: MumbleSocket) => {
+    this.client.on('socketConnected', (socket: MumbleSocket) => {
       this._users.clear();
 
       socket.packet
@@ -40,7 +38,7 @@ export class UserManager extends EventEmitter {
     if (!user) {
       user = new User(this.client, userState);
       this._users.set(user.session, user);
-      this.emit('userCreate', user);
+      this.client.emit('userCreate', user);
     } else {
       user.sync(userState);
     }
@@ -50,7 +48,7 @@ export class UserManager extends EventEmitter {
     const user = this.bySession(userRemove.session);
     if (user) {
       this._users.delete(userRemove.session);
-      this.emit('userRemove', user);
+      this.client.emit('userRemove', user);
     }
   }
 }

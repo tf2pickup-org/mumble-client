@@ -49,11 +49,7 @@ export class Client extends EventEmitter {
 
   async connect(): Promise<this> {
     this.socket = new MumbleSocket(
-      await tlsConnect(
-        this.options.host,
-        this.options.port,
-        this.options.tlsOptions,
-      ),
+      await tlsConnect(this.options.host, this.options.port, this.options),
     );
     this.emit('socketConnected', this.socket);
 
