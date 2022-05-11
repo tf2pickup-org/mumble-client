@@ -20,7 +20,8 @@
     "prebuild": "yarn generate-proto",
     "build": "tsc",
     "test": "jest --watch",
-    "test:ci": "NODE_ENV=test jest --ci"
+    "test:ci": "NODE_ENV=test jest --ci",
+    "release": "release-it"
   },
   "contributors": [
     "Michał Garapich <garrappachc@gmail.com>"
@@ -35,6 +36,7 @@
     "ts-proto": "^1.112.1"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "5.0.0",
     "@tsconfig/node16": "1.0.2",
     "@types/jest": "27.5.0",
     "@types/lodash": "4.14.182",
@@ -46,6 +48,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "jest": "28.1.0",
     "prettier": "2.6.2",
+    "release-it": "15.0.0",
     "trace-unhandled": "2.0.1",
     "ts-jest": "28.0.2",
     "ts-node": "10.7.0",
