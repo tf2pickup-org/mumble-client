@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "A simple bot for managing mumble servers",
   "license": "MIT",
+  "private": false,
   "homepage": "https://github.com/tf2pickup-org/simple-mumble-bot",
   "repository": {
     "type": "git",
