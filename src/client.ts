@@ -31,7 +31,8 @@ import { encodeMumbleVersion } from './encode-mumble-version';
 import { ClientOptions } from './client-options';
 
 const defaultOptions: Partial<ClientOptions> = {
-  pingInterval: 5000,
+  port: 64738,
+  pingInterval: 10000,
 };
 
 export class Client extends EventEmitter {
