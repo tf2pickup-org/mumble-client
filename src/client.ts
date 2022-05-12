@@ -57,10 +57,6 @@ export class Client extends EventEmitter {
       .pipe(filter(packet => packet.$type === Version.$type))
       .subscribe(version => (this.serverVersion = version as Version));
 
-    // this.socket.packet
-    // .pipe(filter(message => message.$type === PermissionDenied.$type))
-    // .subscribe(message => console.log(message));
-
     const initialized = lastValueFrom(
       this.socket.packet.pipe(
         filter(packet => packet.$type === ServerSync.$type),
@@ -78,6 +74,11 @@ export class Client extends EventEmitter {
     await this.sendVersion();
     this.startPinger();
     return await initialized;
+  }
+
+  disconnect(): this {
+    this.socket?.end();
+    return this;
   }
 
   async createChannel(parent: number, name: string): Promise<Channel> {
