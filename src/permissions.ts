@@ -44,6 +44,11 @@ enum Permission {
 export class Permissions {
   constructor(public readonly permissions: number) {}
 
+  get canJoinChannel(): boolean {
+    // https://github.com/mumble-voip/mumble/blob/4f50172c5c8bc7c425efb350377106d3e83a7e79/src/mumble/MainWindow.cpp#L2517
+    return !!(this.permissions & (Permission.Write | Permission.Enter));
+  }
+
   get canCreateChannel(): boolean {
     // https://github.com/mumble-voip/mumble/blob/4f50172c5c8bc7c425efb350377106d3e83a7e79/src/mumble/MainWindow.cpp#L2519
     return !!(this.permissions & (Permission.Write | Permission.MakeChannel));
