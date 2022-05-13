@@ -5,7 +5,7 @@ describe('List channels (e2e)', () => {
 
   beforeAll(async () => {
     client = new Client({
-      host: '127.0.0.1',
+      host: 'localhost',
       port: 64738,
       username: 'tester',
       rejectUnauthorized: false,
