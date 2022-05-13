@@ -59,6 +59,11 @@ export class Channel {
   }
 
   async remove() {
+    const permissions = await this.getPermissions();
+    if (!permissions.canRemoveChannel) {
+      throw new InsufficientPermissionsError();
+    }
+
     return await this.client.removeChannel(this.id);
   }
 
