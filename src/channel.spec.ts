@@ -1,8 +1,16 @@
-import { ChannelState } from '@proto/Mumble';
+import { ChannelState, PermissionQuery } from '@proto/Mumble';
 import { Channel } from './channel';
 import { Client } from './client';
+import { MumbleSocket } from './mumble-socket';
 
 jest.mock('./client');
+jest.mock('./commands', () => ({
+  fetchChannelPermissions: jest
+    .fn()
+    .mockResolvedValue(
+      PermissionQuery.fromPartial({ permissions: 0x1 | 0x40 }),
+    ),
+}));
 
 describe('Channel', () => {
   let client: jest.Mocked<Client>;
@@ -13,6 +21,7 @@ describe('Channel', () => {
       port: 64738,
       username: 'FAKE_USERNAME',
     }) as jest.Mocked<Client>;
+    client.socket = {} as MumbleSocket;
   });
 
   it('should assign properties', () => {

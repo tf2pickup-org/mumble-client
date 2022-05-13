@@ -1,4 +1,4 @@
-import { ChannelRemove, ChannelState } from '@proto/Mumble';
+import { ChannelRemove, ChannelState, PermissionQuery } from '@proto/Mumble';
 import { filter, map, tap } from 'rxjs';
 import { Channel } from './channel';
 import { Client } from './client';
@@ -15,7 +15,7 @@ export class ChannelManager {
         .pipe(
           filter(packet => packet.$type === ChannelState.$type),
           map(packet => packet as ChannelState),
-          tap(channelState => this.syncChannel(channelState)),
+          tap(channelState => this.syncChannelState(channelState)),
         )
         .subscribe();
 
@@ -24,6 +24,14 @@ export class ChannelManager {
           filter(packet => packet.$type === ChannelRemove.$type),
           map(packet => packet as ChannelRemove),
           tap(channelRemove => this.removeChannel(channelRemove)),
+        )
+        .subscribe();
+
+      socket.packet
+        .pipe(
+          filter(packet => packet.$type === PermissionQuery.$type),
+          map(packet => packet as PermissionQuery),
+          tap(permissionQuery => this.syncChannelPermissions(permissionQuery)),
         )
         .subscribe();
     });
@@ -80,7 +88,7 @@ export class ChannelManager {
     return Array.from(this._channels.values()).filter(predicate);
   }
 
-  private syncChannel(channelState: ChannelState) {
+  private syncChannelState(channelState: ChannelState) {
     let channel = this.byId(channelState.channelId);
     if (!channel) {
       channel = new Channel(this.client, channelState);
@@ -94,6 +102,10 @@ export class ChannelManager {
     } else {
       channel.sync(channelState);
     }
+  }
+
+  private syncChannelPermissions(permissionQuery: PermissionQuery) {
+    this.byId(permissionQuery.channelId)?.sync(permissionQuery);
   }
 
   private removeChannel(channelRemove: ChannelRemove) {

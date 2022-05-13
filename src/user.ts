@@ -3,6 +3,7 @@ import { UserState } from '@proto/Mumble';
 import { Client } from './client';
 import { isEmpty } from 'lodash';
 import { Channel } from './channel';
+import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
 
 export class User {
   readonly session: number;
@@ -42,6 +43,15 @@ export class User {
   }
 
   async moveToChannel(channelId: number): Promise<User> {
+    const channel = this.client.channels.byId(channelId);
+    if (!channel) {
+      throw new NoSuchChannelError(channelId);
+    }
+
+    if (!(await channel.getPermissions()).canJoinChannel) {
+      throw new InsufficientPermissionsError();
+    }
+
     return await this.client.moveUserToChannel(this.session, channelId);
   }
 
