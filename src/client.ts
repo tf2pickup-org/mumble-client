@@ -18,7 +18,6 @@ import {
   ChannelState,
   PermissionDenied,
   permissionDenied_DenyTypeToJSON,
-  PermissionQuery,
   Ping,
   ServerSync,
   UserState,
