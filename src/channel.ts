@@ -76,9 +76,8 @@ export class Channel {
       throw new Error('no socket');
     }
 
-    this.permissions = new Permissions(
+    return new Permissions(
       (await fetchChannelPermissions(this.client.socket, this.id)).permissions,
     );
-    return this.permissions;
   }
 }
