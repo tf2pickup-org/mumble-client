@@ -1,5 +1,12 @@
 
 
+## [0.1.5](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.1.4...0.1.5) (2022-05-13)
+
+
+### Bug Fixes
+
+* respect channel permissions ([#7](https://github.com/tf2pickup-org/simple-mumble-bot/issues/7)) ([e69960c](https://github.com/tf2pickup-org/simple-mumble-bot/commit/e69960cb530fdc6ef496727be3ddb58fe83dc64b))
+
 ## [0.1.4](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.1.3...0.1.4) (2022-05-12)
 
 
