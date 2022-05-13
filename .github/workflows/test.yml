@@ -51,18 +51,12 @@ jobs:
       matrix:
         node-version: [16.x]
 
-    services:
-      mumble:
-        image: mumblevoip/mumble-server:latest
-        ports:
-          - 64738:64738/tcp
-          - 64738:64738/udp
-        volumes:
-          - ${{ github.workspace }}/e2e/mumble-data:/data
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Start mumble server
+        run: docker run --rm --name mumble-server -p 64738:64738/tcp -p 64738:64738/udp --volume ${{ github.workspace }}/e2e/mumble-data:/data mumblevoip/mumble-server:latest
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
