@@ -76,6 +76,9 @@ jobs:
       - name: Run e2e test
         run: yarn test:e2e
 
+      - name: Stop mumble server
+        run: docker stop mumble-server
+
   build:
     name: build
     runs-on: ubuntu-latest
