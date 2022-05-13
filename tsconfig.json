@@ -18,8 +18,11 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "resolveJsonModule": true,
+    "stripInternal": true,
     "paths": {
-      "@proto/*": ["proto/*"]
+      "@proto/*": ["proto/*"],
+      "@": ["src"],
+      "@/*": ["src/*"]
     }
   },
   "types": ["jest"],

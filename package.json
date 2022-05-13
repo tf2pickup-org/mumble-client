@@ -24,6 +24,7 @@
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "test": "jest --watch",
     "test:ci": "NODE_ENV=test jest --ci",
+    "test:e2e": "NODE_ENV=test jest --config e2e.jest.config.ts --runInBand",
     "release": "release-it"
   },
   "contributors": [
