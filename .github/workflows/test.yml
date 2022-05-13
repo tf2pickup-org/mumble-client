@@ -57,8 +57,6 @@ jobs:
         ports:
           - 64738:64738/tcp
           - 64738:64738/udp
-        volumes:
-          - /e2e/mumble-data:/data
 
     steps:
       - name: Checkout repository
