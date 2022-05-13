@@ -25,6 +25,10 @@
       "@/*": ["src/*"]
     }
   },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "types": ["jest"],
   "ts-node": {
     "transpileOnly": true,

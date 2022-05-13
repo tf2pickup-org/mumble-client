@@ -84,6 +84,7 @@ export class Client extends EventEmitter {
   disconnect(): this {
     this.disconnected.next();
     this.socket?.end();
+    this.socket = undefined;
     return this;
   }
 

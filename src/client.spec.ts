@@ -52,14 +52,19 @@ describe(Client.name, () => {
       return connect;
     });
 
+    afterEach(() => {
+      client.disconnect();
+    });
+
     it('should create socket', () => {
       expect(client.socket).toBeTruthy();
     });
 
     describe('disconnect()', () => {
       it('should end the socket', () => {
+        const socket = client.socket;
         client.disconnect();
-        expect(client.socket?.end).toHaveBeenCalled();
+        expect(socket?.end).toHaveBeenCalled();
       });
     });
   });

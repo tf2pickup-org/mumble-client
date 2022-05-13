@@ -21,7 +21,7 @@
     "lint": "eslint \"src/**/*.ts\"",
     "generate-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=proto/ --ts_proto_opt=esModuleInterop=true --ts_proto_opt=exportCommonSymbols=false --ts_proto_opt=outputTypeRegistry=true Mumble.proto",
     "prebuild": "yarn generate-proto",
-    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "test": "jest --watch",
     "test:ci": "NODE_ENV=test jest --ci",
     "test:e2e": "NODE_ENV=test jest --config e2e.jest.config.ts --runInBand",
