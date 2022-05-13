@@ -7,7 +7,9 @@ import {
   lastValueFrom,
   map,
   race,
+  Subject,
   take,
+  takeUntil,
   tap,
 } from 'rxjs';
 import {
@@ -16,6 +18,7 @@ import {
   ChannelState,
   PermissionDenied,
   permissionDenied_DenyTypeToJSON,
+  PermissionQuery,
   Ping,
   ServerSync,
   UserState,
@@ -42,6 +45,7 @@ export class Client extends EventEmitter {
   user?: User;
   socket?: MumbleSocket;
   readonly options: ClientOptions;
+  private readonly disconnected = new Subject<void>();
 
   constructor(options: ClientOptions) {
     super();
@@ -78,7 +82,9 @@ export class Client extends EventEmitter {
   }
 
   disconnect(): this {
+    this.disconnected.next();
     this.socket?.end();
+    this.socket = undefined;
     return this;
   }
 
@@ -238,7 +244,10 @@ export class Client extends EventEmitter {
 
   private startPinger() {
     interval(this.options.pingInterval)
-      .pipe(exhaustMap(() => this.ping()))
+      .pipe(
+        takeUntil(this.disconnected),
+        exhaustMap(() => this.ping()),
+      )
       .subscribe();
   }
 }

@@ -1,4 +1,4 @@
-import { ChannelState } from '@proto/Mumble';
+import { ChannelState, PermissionQuery } from '@proto/Mumble';
 import { isEmpty } from 'lodash';
 import { Client } from './client';
 import { User } from './user';
@@ -14,6 +14,9 @@ export class Channel {
     this.parent = channelState.parent;
   }
 
+  /**
+   * @internal
+   */
   sync(channelState: ChannelState) {
     if (!isEmpty(channelState.name)) {
       this.name = channelState.name;
@@ -34,5 +37,11 @@ export class Channel {
 
   async remove() {
     return await this.client.removeChannel(this.id);
+  }
+
+  async requestPermissions() {
+    return this.client.socket?.send(
+      PermissionQuery.fromPartial({ channelId: this.id }),
+    );
   }
 }

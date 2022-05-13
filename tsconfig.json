@@ -18,10 +18,17 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "resolveJsonModule": true,
+    "stripInternal": true,
     "paths": {
-      "@proto/*": ["proto/*"]
+      "@proto/*": ["proto/*"],
+      "@": ["src"],
+      "@/*": ["src/*"]
     }
   },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "types": ["jest"],
   "ts-node": {
     "transpileOnly": true,

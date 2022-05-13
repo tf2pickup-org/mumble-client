@@ -25,6 +25,9 @@ export class User {
     )[0];
   }
 
+  /**
+   * @internal
+   */
   sync(userState: UserState) {
     if (!isEmpty(userState.name)) {
       this.name = userState.name;

@@ -43,6 +43,42 @@ jobs:
       - name: Run unit test
         run: yarn test:ci
 
+  e2e-tests:
+    name: end-to-end
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Start mumble server
+        run: docker run --rm --detach --name mumble-server -p 64738:64738/tcp -p 64738:64738/udp --volume ${{ github.workspace }}/e2e/mumble-data:/data --user root mumblevoip/mumble-server:latest
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Install protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Generate proto files
+        run: yarn generate-proto
+
+      - name: Run e2e test
+        run: yarn test:e2e
+
+      - name: Stop mumble server
+        run: docker stop mumble-server
+
   build:
     name: build
     runs-on: ubuntu-latest
