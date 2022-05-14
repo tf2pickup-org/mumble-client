@@ -23,4 +23,15 @@ describe('List channels (e2e)', () => {
       .map(channel => channel.name);
     expect(channels).toEqual(['Root', 'one', 'two', 'three']);
   });
+
+  it('should list subchannels', async () => {
+    const subChannels = client.user?.channel.subChannels.map(
+      channel => channel.name,
+    );
+    expect(subChannels?.includes('one')).toBe(true);
+    expect(subChannels?.includes('two')).toBe(true);
+
+    const two = client.channels.byName('two');
+    expect(two?.subChannels[0].name).toEqual('three');
+  });
 });
