@@ -1,16 +1,15 @@
 import { tlsConnect } from './tls-connect';
 import { MumbleSocket } from './mumble-socket';
 import {
+  delay,
   exhaustMap,
   filter,
   interval,
-  lastValueFrom,
   map,
   race,
-  Subject,
   take,
-  takeUntil,
   tap,
+  zip,
 } from 'rxjs';
 import {
   Authenticate,
@@ -20,6 +19,7 @@ import {
   permissionDenied_DenyTypeToJSON,
   Ping,
   Reject,
+  ServerConfig,
   ServerSync,
   UserState,
   Version,
@@ -43,10 +43,11 @@ export class Client extends EventEmitter {
   channels: ChannelManager = new ChannelManager(this);
   users: UserManager = new UserManager(this);
   serverVersion?: Version;
+  serverConfig?: ServerConfig;
   user?: User;
   socket?: MumbleSocket;
+  welcomeText?: string;
   readonly options: ClientOptions;
-  private readonly disconnected = new Subject<void>();
 
   constructor(options: ClientOptions) {
     super();
@@ -59,40 +60,61 @@ export class Client extends EventEmitter {
     );
     this.emit('socketConnected', this.socket);
 
-    this.socket.packet
-      .pipe(
-        filter(packet => packet.$type === Reject.$type),
-        map(packet => packet as Reject),
-      )
-      .subscribe(reject => {
-        throw new ConnectionRejectedError(reject);
-      });
-
-    this.socket.packet
-      .pipe(filter(packet => packet.$type === Version.$type))
-      .subscribe(version => (this.serverVersion = version as Version));
-
-    const initialized = lastValueFrom(
-      this.socket.packet.pipe(
-        filter(packet => packet.$type === ServerSync.$type),
-        map(packet => packet as ServerSync),
-        tap(packet => {
-          this.user = this.users.bySession(packet.session);
-        }),
-        take(1),
-        tap(() => this.emit('connected')),
-        map(() => this),
-      ),
+    const initialize: Promise<this> = new Promise((resolve, reject) =>
+      race(
+        zip(
+          (this.socket as MumbleSocket).packet.pipe(
+            filter(packet => packet.$type === ServerSync.$type),
+            map(packet => packet as ServerSync),
+            take(1),
+          ),
+          (this.socket as MumbleSocket).packet.pipe(
+            filter(packet => packet.$type === ServerConfig.$type),
+            map(packet => packet as ServerConfig),
+            take(1),
+          ),
+          (this.socket as MumbleSocket).packet.pipe(
+            filter(packet => packet.$type === Version.$type),
+            map(packet => packet as Version),
+            take(1),
+          ),
+          (this.socket as MumbleSocket).packet.pipe(
+            filter(packet => packet.$type === Ping.$type),
+            take(1),
+          ),
+        ).pipe(
+          delay(1000),
+          tap(([serverSync, serverConfig, version]) => {
+            this.user = this.users.bySession(serverSync.session);
+            this.welcomeText = serverSync.welcomeText;
+            this.serverVersion = version;
+            this.serverConfig = serverConfig;
+            this.emit('connect');
+            this.startPinger();
+          }),
+          map(([serverSync]) => serverSync),
+        ),
+        (this.socket as MumbleSocket).packet.pipe(
+          filter(packet => packet.$type === Reject.$type),
+          map(packet => packet as Reject),
+        ),
+      ).subscribe(message => {
+        if (message.$type === Reject.$type) {
+          reject(new ConnectionRejectedError(message as Reject));
+        } else {
+          resolve(this);
+        }
+      }),
     );
 
     await this.authenticate();
     await this.sendVersion();
-    this.startPinger();
-    return await initialized;
+    this.ping();
+    return await initialize;
   }
 
   disconnect(): this {
-    this.disconnected.next();
+    this.emit('disconnect');
     this.socket?.end();
     this.socket = undefined;
     return this;
@@ -253,11 +275,9 @@ export class Client extends EventEmitter {
   }
 
   private startPinger() {
-    interval(this.options.pingInterval)
-      .pipe(
-        takeUntil(this.disconnected),
-        exhaustMap(() => this.ping()),
-      )
+    const subscription = interval(this.options.pingInterval)
+      .pipe(exhaustMap(() => this.ping()))
       .subscribe();
+    this.on('disconnect', () => subscription.unsubscribe());
   }
 }
