@@ -49,6 +49,10 @@ export class Channel {
     return this.client.users.findAll(user => user.channelId === this.id);
   }
 
+  get subChannels(): Channel[] {
+    return this.client.channels.findAll(channel => channel.parent === this.id);
+  }
+
   async createSubChannel(name: string): Promise<Channel> {
     const permissions = await this.getPermissions();
     if (!permissions.canCreateChannel) {
