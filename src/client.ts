@@ -19,6 +19,7 @@ import {
   PermissionDenied,
   permissionDenied_DenyTypeToJSON,
   Ping,
+  Reject,
   ServerSync,
   UserState,
   Version,
@@ -31,6 +32,7 @@ import { UserManager } from './user-manager';
 import EventEmitter from 'events';
 import { encodeMumbleVersion } from './encode-mumble-version';
 import { ClientOptions } from './client-options';
+import { ConnectionRejectedError } from './errors';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -56,6 +58,15 @@ export class Client extends EventEmitter {
       await tlsConnect(this.options.host, this.options.port, this.options),
     );
     this.emit('socketConnected', this.socket);
+
+    this.socket.packet
+      .pipe(
+        filter(packet => packet.$type === Reject.$type),
+        map(packet => packet as Reject),
+      )
+      .subscribe(reject => {
+        throw new ConnectionRejectedError(reject);
+      });
 
     this.socket.packet
       .pipe(filter(packet => packet.$type === Version.$type))
