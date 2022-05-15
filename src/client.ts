@@ -83,6 +83,11 @@ export class Client extends EventEmitter {
             take(1),
           ),
         ).pipe(
+          // Add one second delay before resolving the promise for good.
+          // The issue is, in case of rejected connect, the mumble server will
+          // send all the same packets (version, serverConfig, etc.) and send the
+          // Reject packet at the very end.
+          // FIXME Find a way to detect rejected connection without adding a delay
           delay(1000),
           tap(([serverSync, serverConfig, version]) => {
             this.user = this.users.bySession(serverSync.session);
