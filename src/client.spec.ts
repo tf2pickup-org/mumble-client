@@ -1,4 +1,10 @@
-import { Authenticate, ServerSync, Version } from '@proto/Mumble';
+import {
+  Authenticate,
+  Ping,
+  ServerConfig,
+  ServerSync,
+  Version,
+} from '@proto/Mumble';
 import { UnknownMessage } from '@proto/typeRegistry';
 import { Subject } from 'rxjs';
 import { Client } from './client';
@@ -41,10 +47,17 @@ describe(Client.name, () => {
         socket = s;
 
         socket.send.mockImplementation(message => {
-          if (message.$type === Authenticate.$type) {
-            socket.packet.next(Version.fromPartial({}));
-            socket.packet.next(ServerSync.fromPartial({ session: 1234 }));
+          switch (message.$type) {
+            case Authenticate.$type:
+              socket.packet.next(Version.fromPartial({}));
+              socket.packet.next(ServerSync.fromPartial({ session: 1234 }));
+              socket.packet.next(ServerConfig.fromPartial({}));
+              break;
+            case Ping.$type:
+              socket.packet.next(Ping.fromPartial({}));
+              break;
           }
+
           return Promise.resolve();
         });
       });
