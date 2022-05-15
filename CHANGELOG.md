@@ -1,5 +1,17 @@
 
 
+# [0.2.0](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.1.5...0.2.0) (2022-05-15)
+
+
+### Bug Fixes
+
+* handle rejected connection gracefully ([#9](https://github.com/tf2pickup-org/simple-mumble-bot/issues/9)) ([0052724](https://github.com/tf2pickup-org/simple-mumble-bot/commit/00527242c4022e4be9e3b0d8e0d24a3a8c0b9c0d))
+
+
+### Features
+
+* list channel subchannels ([#8](https://github.com/tf2pickup-org/simple-mumble-bot/issues/8)) ([ba676ee](https://github.com/tf2pickup-org/simple-mumble-bot/commit/ba676eeb7da1d009ddef7b104e6e466db6a264b3))
+
 ## [0.1.5](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.1.4...0.1.5) (2022-05-13)
 
 
