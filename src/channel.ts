@@ -1,7 +1,11 @@
 import { ChannelState, PermissionQuery } from '@proto/Mumble';
 import { Client } from './client';
-import { fetchChannelPermissions } from './commands';
-import { InsufficientPermissionsError } from './errors';
+import {
+  fetchChannelPermissions,
+  linkChannels,
+  unlinkChannels,
+} from './commands';
+import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
 import { Permissions } from './permissions';
 import { User } from './user';
 
@@ -10,6 +14,7 @@ export class Channel {
   name?: string;
   parent?: number;
   private permissions?: Permissions;
+  private links: number[] = [];
 
   constructor(
     public readonly client: Client,
@@ -18,6 +23,7 @@ export class Channel {
     this.id = channelState.channelId;
     this.name = channelState.name;
     this.parent = channelState.parent;
+    this.links = [...channelState.links];
   }
 
   /**
@@ -32,6 +38,10 @@ export class Channel {
       if (message.parent !== undefined) {
         this.parent = message.parent;
       }
+
+      this.links = [
+        ...new Set([...this.links, ...message.links, ...message.linksAdd]),
+      ].filter(l => !message.linksRemove.includes(l));
     } else if (PermissionQuery.is(message)) {
       if (message.permissions !== undefined) {
         this.permissions = new Permissions(message.permissions);
@@ -45,6 +55,12 @@ export class Channel {
 
   get subChannels(): Channel[] {
     return this.client.channels.findAll(channel => channel.parent === this.id);
+  }
+
+  get linkedChannels(): Channel[] {
+    return this.links
+      .map(ch => this.client.channels.byId(ch))
+      .filter(ch => ch !== undefined) as Channel[];
   }
 
   async createSubChannel(name: string): Promise<Channel> {
@@ -78,5 +94,55 @@ export class Channel {
       (await fetchChannelPermissions(this.client.socket, this.id))
         .permissions ?? 0,
     );
+  }
+
+  async link(otherChannel: Channel | number): Promise<this> {
+    if (!this.client.socket) {
+      throw new Error('no socket');
+    }
+
+    if (!(await this.getPermissions()).canLinkChannel) {
+      throw new InsufficientPermissionsError();
+    }
+
+    const targetChannel =
+      typeof otherChannel === 'number'
+        ? this.client.channels.byId(otherChannel)
+        : otherChannel;
+    if (targetChannel === undefined) {
+      throw new NoSuchChannelError(`${otherChannel}`);
+    }
+
+    if (!(await targetChannel.getPermissions()).canLinkChannel) {
+      throw new InsufficientPermissionsError();
+    }
+
+    await linkChannels(this.client.socket, this.id, targetChannel.id);
+    return this;
+  }
+
+  async unlink(otherChannel: Channel | number): Promise<this> {
+    if (!this.client.socket) {
+      throw new Error('no socket');
+    }
+
+    if (!(await this.getPermissions()).canLinkChannel) {
+      throw new InsufficientPermissionsError();
+    }
+
+    const targetChannel =
+      typeof otherChannel === 'number'
+        ? this.client.channels.byId(otherChannel)
+        : otherChannel;
+    if (targetChannel === undefined) {
+      throw new NoSuchChannelError(`${otherChannel}`);
+    }
+
+    if (!(await targetChannel.getPermissions()).canLinkChannel) {
+      throw new InsufficientPermissionsError();
+    }
+
+    await unlinkChannels(this.client.socket, this.id, targetChannel.id);
+    return this;
   }
 }

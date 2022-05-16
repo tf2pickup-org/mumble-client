@@ -2,6 +2,7 @@ import { Client } from '@';
 import { ConnectionRejectedError } from '@/errors';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { waitABit } from './utils/wait-a-bit';
 
 describe('Logs in with a certificate (e2e)', () => {
   let client: Client;
@@ -21,9 +22,11 @@ describe('Logs in with a certificate (e2e)', () => {
       rejectUnauthorized: false,
     });
     await client.connect();
+    await waitABit(1000);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await waitABit(1000);
     client.disconnect();
   });
 
