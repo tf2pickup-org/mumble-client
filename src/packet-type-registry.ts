@@ -62,7 +62,7 @@ for (const [key, value] of packetTypeForName.entries()) {
   packetNameForType.set(value, key);
 }
 
-export const packetName = (type: number) => {
+export const packetForType = (type: number) => {
   return packetNameForType.get(type);
 };
 

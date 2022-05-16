@@ -32,6 +32,7 @@ import EventEmitter from 'events';
 import { encodeMumbleVersion } from './encode-mumble-version';
 import { ClientOptions } from './client-options';
 import { ConnectionRejectedError } from './errors';
+import { filterPacket } from './rxjs-operators/filter-packet';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -63,18 +64,21 @@ export class Client extends EventEmitter {
       race(
         zip(
           (this.socket as MumbleSocket).packet.pipe(
-            filter(ServerSync.is),
+            filterPacket(ServerSync),
             take(1),
           ),
           (this.socket as MumbleSocket).packet.pipe(
-            filter(ServerConfig.is),
+            filterPacket(ServerConfig),
             take(1),
           ),
           (this.socket as MumbleSocket).packet.pipe(
-            filter(Version.is),
+            filterPacket(Version),
             take(1),
           ),
-          (this.socket as MumbleSocket).packet.pipe(filter(Ping.is), take(1)),
+          (this.socket as MumbleSocket).packet.pipe(
+            filterPacket(Ping),
+            take(1),
+          ),
         ).pipe(
           // Add one second delay before resolving the promise for good.
           // The issue is, in case of rejected connect, the mumble server will
@@ -94,9 +98,7 @@ export class Client extends EventEmitter {
           }),
           map(([serverSync]) => serverSync),
         ),
-        (this.socket as MumbleSocket).packet.pipe(
-          filter(packet => Reject.is(packet)),
-        ),
+        (this.socket as MumbleSocket).packet.pipe(filterPacket(Reject)),
       ).subscribe(message => {
         if (Reject.is(message)) {
           reject(new ConnectionRejectedError(message));
@@ -128,14 +130,14 @@ export class Client extends EventEmitter {
 
       race(
         this.socket.packet.pipe(
-          filter(ChannelState.is),
+          filterPacket(ChannelState),
           filter(
             channelState =>
               channelState.parent === parent && channelState.name === name,
           ),
           take(1),
         ),
-        this.socket.packet.pipe(filter(PermissionDenied.is), take(1)),
+        this.socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
       ).subscribe(packet => {
         if (PermissionDenied.is(packet)) {
           const reason = packet.reason;
@@ -163,11 +165,11 @@ export class Client extends EventEmitter {
 
       race(
         this.socket.packet.pipe(
-          filter(ChannelRemove.is),
+          filterPacket(ChannelRemove),
           filter(channelRemove => channelRemove.channelId === channelId),
           take(1),
         ),
-        this.socket.packet.pipe(filter(PermissionDenied.is), take(1)),
+        this.socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
       ).subscribe(packet => {
         if (PermissionDenied.is(packet)) {
           const reason = packet.reason;
@@ -204,14 +206,14 @@ export class Client extends EventEmitter {
 
       race(
         this.socket.packet.pipe(
-          filter(UserState.is),
+          filterPacket(UserState),
           filter(
             userState =>
               userState.session === userSession &&
               userState.channelId === channelId,
           ),
         ),
-        this.socket.packet.pipe(filter(PermissionDenied.is), take(1)),
+        this.socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
       ).subscribe(packet => {
         if (PermissionDenied.is(packet)) {
           const reason = packet.reason;

@@ -3,25 +3,22 @@ import { UserState } from '@proto/Mumble';
 import { Client } from './client';
 import { Channel } from './channel';
 import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
+import { filterPacket } from './rxjs-operators/filter-packet';
 
 export class User {
   readonly session: number;
-  name: string;
+  name?: string;
   channelId: number;
   selfMute: boolean;
   selfDeaf: boolean;
 
   constructor(private readonly client: Client, userState: UserState) {
-    if (
-      userState.session === undefined ||
-      userState.name === undefined ||
-      userState.channelId === undefined
-    ) {
+    if (userState.session === undefined) {
       throw new Error('userState invalid');
     }
     this.session = userState.session;
     this.name = userState.name;
-    this.channelId = userState.channelId;
+    this.channelId = userState.channelId ?? 0;
     this.selfMute = userState.selfMute ?? false;
     this.selfDeaf = userState.selfDeaf ?? false;
   }
@@ -72,7 +69,7 @@ export class User {
     return new Promise(resolve => {
       this.client.socket?.packet
         .pipe(
-          filter(UserState.is),
+          filterPacket(UserState),
           filter(userState => userState.session === this.session),
           takeWhile(userState => userState.selfMute === selfMute, true),
         )
@@ -89,7 +86,7 @@ export class User {
     return new Promise(resolve => {
       this.client.socket?.packet
         .pipe(
-          filter(UserState.is),
+          filterPacket(UserState),
           filter(userState => userState.session === this.session),
           takeWhile(userState => userState.selfDeaf === selfDeaf, true),
         )

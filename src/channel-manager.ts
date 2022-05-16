@@ -1,7 +1,8 @@
 import { ChannelRemove, ChannelState, PermissionQuery } from '@proto/Mumble';
-import { filter, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { Channel } from './channel';
 import { Client } from './client';
+import { filterPacket } from './rxjs-operators/filter-packet';
 import { MumbleSocket } from './mumble-socket';
 
 export class ChannelManager {
@@ -13,21 +14,21 @@ export class ChannelManager {
 
       socket.packet
         .pipe(
-          filter(ChannelState.is),
+          filterPacket(ChannelState),
           tap(channelState => this.syncChannelState(channelState)),
         )
         .subscribe();
 
       socket.packet
         .pipe(
-          filter(ChannelRemove.is),
+          filterPacket(ChannelRemove),
           tap(channelRemove => this.removeChannel(channelRemove)),
         )
         .subscribe();
 
       socket.packet
         .pipe(
-          filter(PermissionQuery.is),
+          filterPacket(PermissionQuery),
           tap(permissionQuery => this.syncChannelPermissions(permissionQuery)),
         )
         .subscribe();

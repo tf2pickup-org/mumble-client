@@ -1,6 +1,6 @@
 import { Observable, Subject } from 'rxjs';
 import { TLSSocket } from 'tls';
-import { packetName, packetType } from './packet-type-registry';
+import { packetForType, packetType } from './packet-type-registry';
 import { MessageInfo, MessageType } from '@protobuf-ts/runtime';
 
 interface MumbleSocketReader {
@@ -115,7 +115,7 @@ export class MumbleSocket {
 
   private readPacket(type: number, length: number) {
     this.read(length, data => {
-      const message = packetName(type);
+      const message = packetForType(type);
       if (message) {
         this._packet.next(message.fromBinary(data));
       } else {
