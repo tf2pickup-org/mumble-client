@@ -1,5 +1,19 @@
 
 
+# [0.3.0](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.2.1...0.3.0) (2022-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @protobuf-ts/runtime to v2.6.0 ([#15](https://github.com/tf2pickup-org/simple-mumble-bot/issues/15)) ([3d43924](https://github.com/tf2pickup-org/simple-mumble-bot/commit/3d439248610561d484d0aca238677b84e6df90cb))
+* replace ts-proto with protobuf-ts ([#13](https://github.com/tf2pickup-org/simple-mumble-bot/issues/13)) ([783c864](https://github.com/tf2pickup-org/simple-mumble-bot/commit/783c864034d344e8456fa95ba3a1686bb97667d9))
+* **types:** export errors ([#16](https://github.com/tf2pickup-org/simple-mumble-bot/issues/16)) ([b66ea29](https://github.com/tf2pickup-org/simple-mumble-bot/commit/b66ea2967a4b27482db37de9b29ce6606e9f865c))
+
+
+### Features
+
+* link channels ([#17](https://github.com/tf2pickup-org/simple-mumble-bot/issues/17)) ([44c6ee9](https://github.com/tf2pickup-org/simple-mumble-bot/commit/44c6ee90cf70eb971701722e3d60cbcf4be81f96))
+
 ## [0.2.1](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.2.0...0.2.1) (2022-05-16)
 
 
