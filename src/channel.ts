@@ -7,17 +7,14 @@ import { User } from './user';
 
 export class Channel {
   readonly id: number;
-  name: string;
+  name?: string;
   parent?: number;
   private permissions?: Permissions;
 
-  constructor(public readonly client: Client, channelState: ChannelState) {
-    if (
-      channelState.channelId === undefined ||
-      channelState.name === undefined
-    ) {
-      throw new Error('invalid channelState');
-    }
+  constructor(
+    public readonly client: Client,
+    channelState: ChannelState & { channelId: number },
+  ) {
     this.id = channelState.channelId;
     this.name = channelState.name;
     this.parent = channelState.parent;

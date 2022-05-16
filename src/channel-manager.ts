@@ -88,12 +88,16 @@ export class ChannelManager {
 
   private syncChannelState(channelState: ChannelState) {
     if (channelState.channelId === undefined) {
+      console.log(channelState);
       return;
     }
 
     let channel = this.byId(channelState.channelId);
     if (!channel) {
-      channel = new Channel(this.client, channelState);
+      channel = new Channel(
+        this.client,
+        channelState as ChannelState & { channelId: number },
+      );
       this._channels.set(channel.id, channel);
       /**
        * Emitted whenever a channel is created.

@@ -43,7 +43,10 @@ export class UserManager {
 
     let user = this.bySession(userState.session);
     if (!user) {
-      user = new User(this.client, userState);
+      user = new User(
+        this.client,
+        userState as UserState & { session: number },
+      );
       this._users.set(user.session, user);
       this.client.emit('userCreate', user);
     } else {

@@ -12,10 +12,10 @@ export class User {
   selfMute: boolean;
   selfDeaf: boolean;
 
-  constructor(private readonly client: Client, userState: UserState) {
-    if (userState.session === undefined) {
-      throw new Error('userState invalid');
-    }
+  constructor(
+    private readonly client: Client,
+    userState: UserState & { session: number },
+  ) {
     this.session = userState.session;
     this.name = userState.name;
     this.channelId = userState.channelId ?? 0;
