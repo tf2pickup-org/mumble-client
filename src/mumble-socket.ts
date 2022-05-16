@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { TLSSocket } from 'tls';
 import { packetForType, packetType } from './packet-type-registry';
-import { MessageInfo, MessageType } from '@protobuf-ts/runtime';
+import { MessageType } from '@protobuf-ts/runtime';
 
 interface MumbleSocketReader {
   length: number;
@@ -9,7 +9,7 @@ interface MumbleSocketReader {
 }
 
 export class MumbleSocket {
-  private _packet = new Subject<MessageInfo>();
+  private _packet = new Subject<unknown>();
   private buffers: Buffer[] = [];
   private length = 0;
   private readers: MumbleSocketReader[] = [];
@@ -19,7 +19,7 @@ export class MumbleSocket {
     this.readPrefix();
   }
 
-  get packet(): Observable<MessageInfo> {
+  get packet(): Observable<unknown> {
     return this._packet.asObservable();
   }
 
