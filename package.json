@@ -35,7 +35,7 @@
     "bot"
   ],
   "dependencies": {
-    "@protobuf-ts/runtime": "2.5.0",
+    "@protobuf-ts/runtime": "2.6.0",
     "lodash": "^4.17.21",
     "rxjs": "7.5.5"
   },
