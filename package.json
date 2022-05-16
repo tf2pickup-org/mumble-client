@@ -40,7 +40,7 @@
     "rxjs": "7.5.5"
   },
   "devDependencies": {
-    "@protobuf-ts/plugin": "2.5.0",
+    "@protobuf-ts/plugin": "2.6.0",
     "@release-it/conventional-changelog": "5.0.0",
     "@tsconfig/node16": "1.0.2",
     "@types/jest": "27.5.1",
