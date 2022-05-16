@@ -5,9 +5,9 @@ import {
   ServerSync,
   Version,
 } from '@proto/Mumble';
-import { UnknownMessage } from '@proto/typeRegistry';
 import { Subject } from 'rxjs';
 import { Client } from './client';
+import { encodeMumbleVersion } from './encode-mumble-version';
 import { MumbleSocket } from './mumble-socket';
 
 jest.mock('./mumble-socket', () => ({
@@ -40,22 +40,29 @@ describe(Client.name, () => {
   });
 
   describe('when connected', () => {
-    let socket: jest.Mocked<MumbleSocket> & { packet: Subject<UnknownMessage> };
+    let socket: jest.Mocked<MumbleSocket> & { packet: Subject<unknown> };
 
     beforeEach(async () => {
       client.on('socketConnected', s => {
         socket = s;
 
         socket.send.mockImplementation(message => {
-          switch (message.$type) {
-            case Authenticate.$type:
-              socket.packet.next(Version.fromPartial({}));
-              socket.packet.next(ServerSync.fromPartial({ session: 1234 }));
-              socket.packet.next(ServerConfig.fromPartial({}));
-              break;
-            case Ping.$type:
-              socket.packet.next(Ping.fromPartial({}));
-              break;
+          if (Authenticate.is(message)) {
+            socket.packet.next(
+              Version.create({
+                version: encodeMumbleVersion({
+                  major: 1,
+                  minor: 4,
+                  patch: 230,
+                }),
+              }),
+            );
+            socket.packet.next(ServerSync.create({ session: 1234 }));
+            socket.packet.next(ServerConfig.create({ welcomeText: 'TESTING' }));
+          } else if (Ping.is(message)) {
+            socket.packet.next(
+              Ping.create({ timestamp: BigInt(new Date().getDate()) }),
+            );
           }
 
           return Promise.resolve();
