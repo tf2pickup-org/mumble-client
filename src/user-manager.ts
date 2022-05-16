@@ -1,5 +1,5 @@
 import { UserRemove, UserState } from '@proto/Mumble';
-import { filter, map, tap } from 'rxjs';
+import { filter, tap } from 'rxjs';
 import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
 import { User } from './user';
@@ -13,16 +13,14 @@ export class UserManager {
 
       socket.packet
         .pipe(
-          filter(packet => packet.$type === UserState.$type),
-          map(packet => packet as UserState),
+          filter(UserState.is),
           tap(userState => this.syncUser(userState)),
         )
         .subscribe();
 
       socket.packet
         .pipe(
-          filter(packet => packet.$type === UserRemove.$type),
-          map(packet => packet as UserRemove),
+          filter(UserRemove.is),
           tap(userRemove => this.removeUser(userRemove)),
         )
         .subscribe();
@@ -38,6 +36,10 @@ export class UserManager {
   }
 
   private syncUser(userState: UserState) {
+    if (userState.session === undefined) {
+      return;
+    }
+
     let user = this.bySession(userState.session);
     if (!user) {
       user = new User(this.client, userState);

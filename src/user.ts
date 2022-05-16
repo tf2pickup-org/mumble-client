@@ -1,7 +1,6 @@
-import { filter, map, takeWhile } from 'rxjs';
+import { filter, takeWhile } from 'rxjs';
 import { UserState } from '@proto/Mumble';
 import { Client } from './client';
-import { isEmpty } from 'lodash';
 import { Channel } from './channel';
 import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
 
@@ -13,11 +12,18 @@ export class User {
   selfDeaf: boolean;
 
   constructor(private readonly client: Client, userState: UserState) {
+    if (
+      userState.session === undefined ||
+      userState.name === undefined ||
+      userState.channelId === undefined
+    ) {
+      throw new Error('userState invalid');
+    }
     this.session = userState.session;
     this.name = userState.name;
     this.channelId = userState.channelId;
-    this.selfMute = userState.selfMute;
-    this.selfDeaf = userState.selfDeaf;
+    this.selfMute = userState.selfMute ?? false;
+    this.selfDeaf = userState.selfDeaf ?? false;
   }
 
   get channel(): Channel {
@@ -30,16 +36,23 @@ export class User {
    * @internal
    */
   sync(userState: UserState) {
-    if (!isEmpty(userState.name)) {
+    if (userState.name !== undefined) {
       this.name = userState.name;
     }
 
-    if (this.channelId !== userState.channelId) {
+    if (
+      userState.channelId !== undefined &&
+      this.channelId !== userState.channelId
+    ) {
       this.channelId = userState.channelId;
     }
 
-    this.selfMute = userState.selfMute;
-    this.selfDeaf = userState.selfDeaf;
+    if (userState.selfMute !== undefined) {
+      this.selfMute = userState.selfMute;
+    }
+    if (userState.selfDeaf !== undefined) {
+      this.selfDeaf = userState.selfDeaf;
+    }
   }
 
   async moveToChannel(channelId: number): Promise<User> {
@@ -59,15 +72,15 @@ export class User {
     return new Promise(resolve => {
       this.client.socket?.packet
         .pipe(
-          filter(message => message.$type === UserState.$type),
-          map(message => message as UserState),
+          filter(UserState.is),
           filter(userState => userState.session === this.session),
           takeWhile(userState => userState.selfMute === selfMute, true),
         )
         .subscribe(() => resolve(this));
 
       this.client.socket?.send(
-        UserState.fromPartial({ session: this.session, selfMute }),
+        UserState,
+        UserState.create({ session: this.session, selfMute }),
       );
     });
   }
@@ -76,15 +89,15 @@ export class User {
     return new Promise(resolve => {
       this.client.socket?.packet
         .pipe(
-          filter(message => message.$type === UserState.$type),
-          map(message => message as UserState),
+          filter(UserState.is),
           filter(userState => userState.session === this.session),
           takeWhile(userState => userState.selfDeaf === selfDeaf, true),
         )
         .subscribe(() => resolve());
 
       this.client.socket?.send(
-        UserState.fromPartial({ session: this.session, selfDeaf }),
+        UserState,
+        UserState.create({ session: this.session, selfDeaf }),
       );
     });
   }

@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { TLSSocket } from 'tls';
-import { messageTypeRegistry, UnknownMessage } from '@proto/typeRegistry';
 import { packetName, packetType } from './packet-type-registry';
+import { MessageInfo, MessageType } from '@protobuf-ts/runtime';
 
 interface MumbleSocketReader {
   length: number;
@@ -9,7 +9,7 @@ interface MumbleSocketReader {
 }
 
 export class MumbleSocket {
-  private _packet = new Subject<UnknownMessage>();
+  private _packet = new Subject<MessageInfo>();
   private buffers: Buffer[] = [];
   private length = 0;
   private readers: MumbleSocketReader[] = [];
@@ -19,7 +19,7 @@ export class MumbleSocket {
     this.readPrefix();
   }
 
-  get packet(): Observable<UnknownMessage> {
+  get packet(): Observable<MessageInfo> {
     return this._packet.asObservable();
   }
 
@@ -30,22 +30,20 @@ export class MumbleSocket {
     }
   }
 
-  async send(message: UnknownMessage): Promise<void> {
-    const messageType = messageTypeRegistry.get(message.$type);
-    if (!messageType) {
-      throw new Error(`unknown message type (${message.$type})`);
-    }
-
-    const typeNumber = packetType(message.$type);
+  async send<T extends object>(
+    message: MessageType<T>,
+    payload: T,
+  ): Promise<void> {
+    const typeNumber = packetType(message);
     if (typeNumber === undefined) {
-      throw new Error(`unknown message type (${message.$type})`);
+      throw new Error(`unknown message type (${message.typeName})`);
     }
 
-    const payload = messageType.encode(message).finish();
+    const encoded = message.toBinary(payload);
     const prefix = Buffer.alloc(6);
     prefix.writeUint16BE(typeNumber, 0);
-    prefix.writeUint32BE(payload.length, 2);
-    await this.write(Buffer.concat([prefix, payload]));
+    prefix.writeUint32BE(encoded.length, 2);
+    await this.write(Buffer.concat([prefix, encoded]));
   }
 
   write(buffer: Buffer | Uint8Array): Promise<void> {
@@ -117,14 +115,9 @@ export class MumbleSocket {
 
   private readPacket(type: number, length: number) {
     this.read(length, data => {
-      const packetTypeName = packetName(type);
-      if (packetTypeName) {
-        const message = messageTypeRegistry.get(packetTypeName);
-        if (message) {
-          this._packet.next(message?.decode(data));
-        } else {
-          console.error(`Unrecognized packet type (${packetTypeName})`);
-        }
+      const message = packetName(type);
+      if (message) {
+        this._packet.next(message.fromBinary(data));
       } else {
         console.error(`Unrecognized packet type (${type})`);
       }
