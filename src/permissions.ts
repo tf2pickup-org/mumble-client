@@ -58,4 +58,9 @@ export class Permissions {
     // https://github.com/mumble-voip/mumble/blob/4f50172c5c8bc7c425efb350377106d3e83a7e79/src/mumble/MainWindow.cpp#L2520
     return !!(this.permissions & Permission.Write);
   }
+
+  get canLinkChannel(): boolean {
+    // https://github.com/mumble-voip/mumble/blob/4f50172c5c8bc7c425efb350377106d3e83a7e79/src/mumble/MainWindow.cpp#L2523
+    return !!(this.permissions & (Permission.Write | Permission.LinkChannel));
+  }
 }

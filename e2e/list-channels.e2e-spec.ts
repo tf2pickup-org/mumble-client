@@ -1,4 +1,5 @@
 import { Client } from '@';
+import { waitABit } from './utils/wait-a-bit';
 
 describe('List channels (e2e)', () => {
   let client: Client;
@@ -11,9 +12,11 @@ describe('List channels (e2e)', () => {
       rejectUnauthorized: false,
     });
     await client.connect();
+    await waitABit(1000);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await waitABit(1000);
     client.disconnect();
   });
 
