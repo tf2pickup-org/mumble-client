@@ -32,7 +32,7 @@ import { MessageType } from '@protobuf-ts/runtime';
 type AnyMessage = MessageType<any>;
 
 // https://buildmedia.readthedocs.org/media/pdf/mumble-protocol/latest/mumble-protocol.pdf
-const packetNameForType = new Map<number, AnyMessage>([
+const packetForPacketType = new Map<number, AnyMessage>([
   [0, Version],
   [1, UDPTunnel],
   [2, Authenticate],
@@ -61,15 +61,15 @@ const packetNameForType = new Map<number, AnyMessage>([
   [25, SuggestConfig],
 ]);
 
-const packetTypeForName = new Map<AnyMessage, number>();
-for (const [key, value] of packetTypeForName.entries()) {
-  packetNameForType.set(value, key);
+const packetTypeForPacket = new Map<AnyMessage, number>();
+for (const [key, value] of packetForPacketType.entries()) {
+  packetTypeForPacket.set(value, key);
 }
 
 export const packetForType = (type: number) => {
-  return packetNameForType.get(type);
+  return packetForPacketType.get(type);
 };
 
 export const packetType = (packet: AnyMessage) => {
-  return packetTypeForName.get(packet);
+  return packetTypeForPacket.get(packet);
 };
