@@ -38,8 +38,8 @@ export class User {
       this.channelId = userState.channelId;
     }
 
-    this.selfMute = userState.mute;
-    this.selfDeaf = userState.deaf;
+    this.selfMute = userState.selfMute;
+    this.selfDeaf = userState.selfDeaf;
   }
 
   async moveToChannel(channelId: number): Promise<User> {
