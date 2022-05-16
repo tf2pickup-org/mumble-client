@@ -88,7 +88,6 @@ export class ChannelManager {
 
   private syncChannelState(channelState: ChannelState) {
     if (channelState.channelId === undefined) {
-      console.log(channelState);
       return;
     }
 
