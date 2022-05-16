@@ -7,7 +7,6 @@ import {
 } from '@proto/Mumble';
 import { Subject } from 'rxjs';
 import { Client } from './client';
-import { encodeMumbleVersion } from './encode-mumble-version';
 import { MumbleSocket } from './mumble-socket';
 
 jest.mock('./mumble-socket', () => ({
@@ -46,23 +45,46 @@ describe(Client.name, () => {
       client.on('socketConnected', s => {
         socket = s;
 
-        socket.send.mockImplementation(message => {
-          if (Authenticate.is(message)) {
-            socket.packet.next(
-              Version.create({
-                version: encodeMumbleVersion({
-                  major: 1,
-                  minor: 4,
-                  patch: 230,
+        socket.send.mockImplementation(type => {
+          switch (type.typeName) {
+            case Authenticate.typeName:
+              socket.packet.next(
+                Version.create({
+                  version: 66790,
+                  release: '1.4.230',
+                  os: 'Linux',
+                  osVersion: 'Ubuntu 20.04.4 LTS [x64]',
                 }),
-              }),
-            );
-            socket.packet.next(ServerSync.create({ session: 1234 }));
-            socket.packet.next(ServerConfig.create({ welcomeText: 'TESTING' }));
-          } else if (Ping.is(message)) {
-            socket.packet.next(
-              Ping.create({ timestamp: BigInt(new Date().getDate()) }),
-            );
+              );
+              socket.packet.next(
+                ServerSync.create({
+                  session: 2,
+                  maxBandwidth: 558000,
+                  welcomeText: '',
+                  permissions: BigInt(134744846),
+                }),
+              );
+              socket.packet.next(
+                ServerConfig.create({
+                  allowHtml: true,
+                  messageLength: 5000,
+                  imageMessageLength: 131072,
+                  maxUsers: 100,
+                }),
+              );
+              break;
+
+            case Ping.typeName:
+              socket.packet.next(
+                Ping.create({
+                  timestamp: BigInt(0),
+                  good: 0,
+                  late: 0,
+                  lost: 0,
+                  resync: 0,
+                }),
+              );
+              break;
           }
 
           return Promise.resolve();
