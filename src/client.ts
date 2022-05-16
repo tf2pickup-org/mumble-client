@@ -16,7 +16,6 @@ import {
   ChannelRemove,
   ChannelState,
   PermissionDenied,
-  permissionDenied_DenyTypeToJSON,
   Ping,
   Reject,
   ServerConfig,
@@ -25,7 +24,7 @@ import {
   Version,
 } from '@proto/Mumble';
 import { User } from './user';
-import { isEmpty, merge } from 'lodash';
+import { merge } from 'lodash';
 import { ChannelManager } from './channel-manager';
 import { Channel } from './channel';
 import { UserManager } from './user-manager';
@@ -33,6 +32,7 @@ import EventEmitter from 'events';
 import { encodeMumbleVersion } from './encode-mumble-version';
 import { ClientOptions } from './client-options';
 import { ConnectionRejectedError } from './errors';
+import { filterPacket } from './rxjs-operators/filter-packet';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -64,22 +64,19 @@ export class Client extends EventEmitter {
       race(
         zip(
           (this.socket as MumbleSocket).packet.pipe(
-            filter(packet => packet.$type === ServerSync.$type),
-            map(packet => packet as ServerSync),
+            filterPacket(ServerSync),
             take(1),
           ),
           (this.socket as MumbleSocket).packet.pipe(
-            filter(packet => packet.$type === ServerConfig.$type),
-            map(packet => packet as ServerConfig),
+            filterPacket(ServerConfig),
             take(1),
           ),
           (this.socket as MumbleSocket).packet.pipe(
-            filter(packet => packet.$type === Version.$type),
-            map(packet => packet as Version),
+            filterPacket(Version),
             take(1),
           ),
           (this.socket as MumbleSocket).packet.pipe(
-            filter(packet => packet.$type === Ping.$type),
+            filterPacket(Ping),
             take(1),
           ),
         ).pipe(
@@ -90,7 +87,9 @@ export class Client extends EventEmitter {
           // FIXME Find a way to detect rejected connection without adding a delay
           delay(1000),
           tap(([serverSync, serverConfig, version]) => {
-            this.user = this.users.bySession(serverSync.session);
+            if (serverSync.session) {
+              this.user = this.users.bySession(serverSync.session);
+            }
             this.welcomeText = serverSync.welcomeText;
             this.serverVersion = version;
             this.serverConfig = serverConfig;
@@ -99,13 +98,10 @@ export class Client extends EventEmitter {
           }),
           map(([serverSync]) => serverSync),
         ),
-        (this.socket as MumbleSocket).packet.pipe(
-          filter(packet => packet.$type === Reject.$type),
-          map(packet => packet as Reject),
-        ),
+        (this.socket as MumbleSocket).packet.pipe(filterPacket(Reject)),
       ).subscribe(message => {
-        if (message.$type === Reject.$type) {
-          reject(new ConnectionRejectedError(message as Reject));
+        if (Reject.is(message)) {
+          reject(new ConnectionRejectedError(message));
         } else {
           resolve(this);
         }
@@ -134,34 +130,29 @@ export class Client extends EventEmitter {
 
       race(
         this.socket.packet.pipe(
-          filter(packet => packet.$type === ChannelState.$type),
-          map(packet => packet as ChannelState),
+          filterPacket(ChannelState),
           filter(
             channelState =>
               channelState.parent === parent && channelState.name === name,
           ),
           take(1),
         ),
-        this.socket.packet.pipe(
-          filter(message => message.$type === PermissionDenied.$type),
-          map(message => message as PermissionDenied),
-          take(1),
-        ),
+        this.socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
       ).subscribe(packet => {
-        if (packet.$type === PermissionDenied.$type) {
-          const reason = isEmpty(packet.reason)
-            ? permissionDenied_DenyTypeToJSON(packet.type)
-            : packet.reason;
+        if (PermissionDenied.is(packet)) {
+          const reason = packet.reason;
           reject(new Error(`failed to create channel (${reason})`));
         } else {
-          const channel = this.channels.byId(packet.channelId);
-          if (channel) {
-            resolve(channel);
+          if (packet.channelId) {
+            const channel = this.channels.byId(packet.channelId);
+            if (channel) {
+              resolve(channel);
+            }
           }
         }
       });
 
-      this.socket.send(ChannelState.fromPartial({ parent, name }));
+      this.socket.send(ChannelState, ChannelState.create({ parent, name }));
     });
   }
 
@@ -174,28 +165,21 @@ export class Client extends EventEmitter {
 
       race(
         this.socket.packet.pipe(
-          filter(packet => packet.$type === ChannelRemove.$type),
-          map(packet => packet as ChannelRemove),
+          filterPacket(ChannelRemove),
           filter(channelRemove => channelRemove.channelId === channelId),
           take(1),
         ),
-        this.socket.packet.pipe(
-          filter(message => message.$type === PermissionDenied.$type),
-          map(message => message as PermissionDenied),
-          take(1),
-        ),
+        this.socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
       ).subscribe(packet => {
-        if (packet.$type === PermissionDenied.$type) {
-          const reason = isEmpty(packet.reason)
-            ? permissionDenied_DenyTypeToJSON(packet.type)
-            : packet.reason;
+        if (PermissionDenied.is(packet)) {
+          const reason = packet.reason;
           reject(new Error(`failed to remove channel (${reason})`));
         } else {
           resolve();
         }
       });
 
-      this.socket.send(ChannelRemove.fromPartial({ channelId }));
+      this.socket.send(ChannelRemove, ChannelRemove.create({ channelId }));
     });
   }
 
@@ -222,24 +206,17 @@ export class Client extends EventEmitter {
 
       race(
         this.socket.packet.pipe(
-          filter(packet => packet.$type === UserState.$type),
-          map(packet => packet as UserState),
+          filterPacket(UserState),
           filter(
             userState =>
               userState.session === userSession &&
               userState.channelId === channelId,
           ),
         ),
-        this.socket.packet.pipe(
-          filter(message => message.$type === PermissionDenied.$type),
-          map(message => message as PermissionDenied),
-          take(1),
-        ),
+        this.socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
       ).subscribe(packet => {
-        if (packet.$type === PermissionDenied.$type) {
-          const reason = isEmpty(packet.reason)
-            ? permissionDenied_DenyTypeToJSON(packet.type)
-            : packet.reason;
+        if (PermissionDenied.is(packet)) {
+          const reason = packet.reason;
           reject(new Error(`failed to remove channel (${reason})`));
         } else {
           const user = this.users.bySession(userSession);
@@ -250,7 +227,8 @@ export class Client extends EventEmitter {
       });
 
       this.socket.send(
-        UserState.fromPartial({ session: userSession, channelId }),
+        UserState,
+        UserState.create({ session: userSession, channelId }),
       );
     });
   }
@@ -262,7 +240,8 @@ export class Client extends EventEmitter {
       patch: 230,
     });
     return await this.socket?.send(
-      Version.fromPartial({
+      Version,
+      Version.create({
         release: 'simple mumble bot',
         version,
       }),
@@ -271,12 +250,13 @@ export class Client extends EventEmitter {
 
   private async authenticate(): Promise<void> {
     return await this.socket?.send(
-      Authenticate.fromPartial({ username: this.options.username }),
+      Authenticate,
+      Authenticate.create({ username: this.options.username }),
     );
   }
 
   private async ping() {
-    return await this.socket?.send(Ping.fromPartial({}));
+    return await this.socket?.send(Ping, Ping.create());
   }
 
   private startPinger() {

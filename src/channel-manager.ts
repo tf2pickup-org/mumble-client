@@ -1,7 +1,8 @@
 import { ChannelRemove, ChannelState, PermissionQuery } from '@proto/Mumble';
-import { filter, map, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { Channel } from './channel';
 import { Client } from './client';
+import { filterPacket } from './rxjs-operators/filter-packet';
 import { MumbleSocket } from './mumble-socket';
 
 export class ChannelManager {
@@ -13,24 +14,21 @@ export class ChannelManager {
 
       socket.packet
         .pipe(
-          filter(packet => packet.$type === ChannelState.$type),
-          map(packet => packet as ChannelState),
+          filterPacket(ChannelState),
           tap(channelState => this.syncChannelState(channelState)),
         )
         .subscribe();
 
       socket.packet
         .pipe(
-          filter(packet => packet.$type === ChannelRemove.$type),
-          map(packet => packet as ChannelRemove),
+          filterPacket(ChannelRemove),
           tap(channelRemove => this.removeChannel(channelRemove)),
         )
         .subscribe();
 
       socket.packet
         .pipe(
-          filter(packet => packet.$type === PermissionQuery.$type),
-          map(packet => packet as PermissionQuery),
+          filterPacket(PermissionQuery),
           tap(permissionQuery => this.syncChannelPermissions(permissionQuery)),
         )
         .subscribe();
@@ -89,9 +87,16 @@ export class ChannelManager {
   }
 
   private syncChannelState(channelState: ChannelState) {
+    if (channelState.channelId === undefined) {
+      return;
+    }
+
     let channel = this.byId(channelState.channelId);
     if (!channel) {
-      channel = new Channel(this.client, channelState);
+      channel = new Channel(
+        this.client,
+        channelState as ChannelState & { channelId: number },
+      );
       this._channels.set(channel.id, channel);
       /**
        * Emitted whenever a channel is created.
@@ -105,6 +110,9 @@ export class ChannelManager {
   }
 
   private syncChannelPermissions(permissionQuery: PermissionQuery) {
+    if (permissionQuery.channelId === undefined) {
+      return;
+    }
     this.byId(permissionQuery.channelId)?.sync(permissionQuery);
   }
 

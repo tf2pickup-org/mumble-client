@@ -1,6 +1,4 @@
 import { ChannelState, PermissionQuery } from '@proto/Mumble';
-import { UnknownMessage } from '@proto/typeRegistry';
-import { isEmpty } from 'lodash';
 import { Client } from './client';
 import { fetchChannelPermissions } from './commands';
 import { InsufficientPermissionsError } from './errors';
@@ -9,11 +7,14 @@ import { User } from './user';
 
 export class Channel {
   readonly id: number;
-  name: string;
-  parent: number;
+  name?: string;
+  parent?: number;
   private permissions?: Permissions;
 
-  constructor(public readonly client: Client, channelState: ChannelState) {
+  constructor(
+    public readonly client: Client,
+    channelState: ChannelState & { channelId: number },
+  ) {
     this.id = channelState.channelId;
     this.name = channelState.name;
     this.parent = channelState.parent;
@@ -22,25 +23,18 @@ export class Channel {
   /**
    * @internal
    */
-  sync(message: UnknownMessage) {
-    switch (message.$type) {
-      case ChannelState.$type: {
-        const channelState = message as ChannelState;
-
-        if (!isEmpty(channelState.name)) {
-          this.name = channelState.name;
-        }
-
-        if (channelState.parent) {
-          this.parent = channelState.parent;
-        }
-        break;
+  sync(message: unknown) {
+    if (ChannelState.is(message)) {
+      if (message.name !== undefined) {
+        this.name = message.name;
       }
 
-      case PermissionQuery.$type: {
-        const permissionQuery = message as PermissionQuery;
-        this.permissions = new Permissions(permissionQuery.permissions);
-        break;
+      if (message.parent !== undefined) {
+        this.parent = message.parent;
+      }
+    } else if (PermissionQuery.is(message)) {
+      if (message.permissions !== undefined) {
+        this.permissions = new Permissions(message.permissions);
       }
     }
   }
@@ -81,7 +75,8 @@ export class Channel {
     }
 
     return new Permissions(
-      (await fetchChannelPermissions(this.client.socket, this.id)).permissions,
+      (await fetchChannelPermissions(this.client.socket, this.id))
+        .permissions ?? 0,
     );
   }
 }

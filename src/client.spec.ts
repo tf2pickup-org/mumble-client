@@ -5,7 +5,6 @@ import {
   ServerSync,
   Version,
 } from '@proto/Mumble';
-import { UnknownMessage } from '@proto/typeRegistry';
 import { Subject } from 'rxjs';
 import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
@@ -40,21 +39,51 @@ describe(Client.name, () => {
   });
 
   describe('when connected', () => {
-    let socket: jest.Mocked<MumbleSocket> & { packet: Subject<UnknownMessage> };
+    let socket: jest.Mocked<MumbleSocket> & { packet: Subject<unknown> };
 
     beforeEach(async () => {
       client.on('socketConnected', s => {
         socket = s;
 
-        socket.send.mockImplementation(message => {
-          switch (message.$type) {
-            case Authenticate.$type:
-              socket.packet.next(Version.fromPartial({}));
-              socket.packet.next(ServerSync.fromPartial({ session: 1234 }));
-              socket.packet.next(ServerConfig.fromPartial({}));
+        socket.send.mockImplementation(type => {
+          switch (type.typeName) {
+            case Authenticate.typeName:
+              socket.packet.next(
+                Version.create({
+                  version: 66790,
+                  release: '1.4.230',
+                  os: 'Linux',
+                  osVersion: 'Ubuntu 20.04.4 LTS [x64]',
+                }),
+              );
+              socket.packet.next(
+                ServerSync.create({
+                  session: 2,
+                  maxBandwidth: 558000,
+                  welcomeText: '',
+                  permissions: BigInt(134744846),
+                }),
+              );
+              socket.packet.next(
+                ServerConfig.create({
+                  allowHtml: true,
+                  messageLength: 5000,
+                  imageMessageLength: 131072,
+                  maxUsers: 100,
+                }),
+              );
               break;
-            case Ping.$type:
-              socket.packet.next(Ping.fromPartial({}));
+
+            case Ping.typeName:
+              socket.packet.next(
+                Ping.create({
+                  timestamp: BigInt(0),
+                  good: 0,
+                  late: 0,
+                  lost: 0,
+                  resync: 0,
+                }),
+              );
               break;
           }
 

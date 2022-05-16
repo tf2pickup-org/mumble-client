@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "ts-node src/index.ts",
     "lint": "eslint \"src/**/*.ts\"",
-    "generate-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=proto/ --ts_proto_opt=esModuleInterop=true --ts_proto_opt=exportCommonSymbols=false --ts_proto_opt=outputTypeRegistry=true Mumble.proto",
+    "generate-proto": "protoc --ts_out proto/ --ts_opt eslint_disable --proto_path . Mumble.proto",
     "prebuild": "yarn generate-proto",
     "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "test": "jest --watch",
@@ -35,11 +35,12 @@
     "bot"
   ],
   "dependencies": {
+    "@protobuf-ts/runtime": "2.5.0",
     "lodash": "^4.17.21",
-    "rxjs": "7.5.5",
-    "ts-proto": "^1.112.1"
+    "rxjs": "7.5.5"
   },
   "devDependencies": {
+    "@protobuf-ts/plugin": "2.5.0",
     "@release-it/conventional-changelog": "5.0.0",
     "@tsconfig/node16": "1.0.2",
     "@types/jest": "27.5.1",

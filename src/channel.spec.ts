@@ -7,9 +7,7 @@ jest.mock('./client');
 jest.mock('./commands', () => ({
   fetchChannelPermissions: jest
     .fn()
-    .mockResolvedValue(
-      PermissionQuery.fromPartial({ permissions: 0x1 | 0x40 }),
-    ),
+    .mockResolvedValue(PermissionQuery.create({ permissions: 0x1 | 0x40 })),
 }));
 
 describe('Channel', () => {
@@ -27,11 +25,11 @@ describe('Channel', () => {
   it('should assign properties', () => {
     const channel = new Channel(
       client,
-      ChannelState.fromPartial({
+      ChannelState.create({
         channelId: 7,
         name: 'FAKE_CHANNEL_NAME',
         parent: 6,
-      }),
+      }) as ChannelState & { channelId: number },
     );
     expect(channel.id).toBe(7);
     expect(channel.name).toEqual('FAKE_CHANNEL_NAME');
@@ -41,16 +39,21 @@ describe('Channel', () => {
     let channel: Channel;
 
     beforeEach(() => {
-      channel = new Channel(client, ChannelState.fromPartial({}));
+      channel = new Channel(
+        client,
+        ChannelState.create({ channelId: 0 }) as ChannelState & {
+          channelId: number;
+        },
+      );
     });
 
     it('should update name', () => {
-      channel.sync(ChannelState.fromPartial({ name: 'NEW_CHANNEL_NAME' }));
+      channel.sync(ChannelState.create({ name: 'NEW_CHANNEL_NAME' }));
       expect(channel.name).toEqual('NEW_CHANNEL_NAME');
     });
 
     it('should update parent', () => {
-      channel.sync(ChannelState.fromPartial({ parent: 10 }));
+      channel.sync(ChannelState.create({ parent: 10 }));
       expect(channel.parent).toEqual(10);
     });
   });
@@ -59,7 +62,12 @@ describe('Channel', () => {
     let channel: Channel;
 
     beforeEach(() => {
-      channel = new Channel(client, ChannelState.fromPartial({ channelId: 7 }));
+      channel = new Channel(
+        client,
+        ChannelState.create({ channelId: 7 }) as ChannelState & {
+          channelId: number;
+        },
+      );
     });
 
     it('should attempt to create channel', async () => {
@@ -72,7 +80,12 @@ describe('Channel', () => {
     let channel: Channel;
 
     beforeEach(() => {
-      channel = new Channel(client, ChannelState.fromPartial({ channelId: 7 }));
+      channel = new Channel(
+        client,
+        ChannelState.create({ channelId: 7 }) as ChannelState & {
+          channelId: number;
+        },
+      );
     });
 
     it('should attempt to remove the channel', async () => {

@@ -1,6 +1,7 @@
 import { MumbleSocket } from '@/mumble-socket';
+import { filterPacket } from '@/rxjs-operators/filter-packet';
 import { PermissionQuery } from '@proto/Mumble';
-import { filter, map, take } from 'rxjs';
+import { filter, take } from 'rxjs';
 
 export const fetchChannelPermissions = async (
   socket: MumbleSocket,
@@ -9,12 +10,11 @@ export const fetchChannelPermissions = async (
   return new Promise(resolve => {
     socket.packet
       .pipe(
-        filter(packet => packet.$type === PermissionQuery.$type),
-        map(packet => packet as PermissionQuery),
+        filterPacket(PermissionQuery),
         filter(permissionQuery => permissionQuery.channelId === channelId),
         take(1),
       )
       .subscribe(resolve);
-    socket.send(PermissionQuery.fromPartial({ channelId }));
+    socket.send(PermissionQuery, PermissionQuery.create({ channelId }));
   });
 };
