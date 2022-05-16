@@ -1,5 +1,13 @@
 
 
+## [0.2.1](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.2.0...0.2.1) (2022-05-16)
+
+
+### Bug Fixes
+
+* fix selfMute and selfDeaf states ([#10](https://github.com/tf2pickup-org/simple-mumble-bot/issues/10)) ([985b8ee](https://github.com/tf2pickup-org/simple-mumble-bot/commit/985b8ee508ccc37cf9b1b9bb4c645da3e632e3ee))
+* remove tsc-alias from dependencies ([#11](https://github.com/tf2pickup-org/simple-mumble-bot/issues/11)) ([6ab5966](https://github.com/tf2pickup-org/simple-mumble-bot/commit/6ab5966d36cab8ab574790d777441d3957fd1af5))
+
 # [0.2.0](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.1.5...0.2.0) (2022-05-15)
 
 
