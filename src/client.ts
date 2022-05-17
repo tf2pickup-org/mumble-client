@@ -23,7 +23,6 @@ import {
   Version,
 } from '@proto/Mumble';
 import { User } from './user';
-import { merge } from 'lodash';
 import { ChannelManager } from './channel-manager';
 import { UserManager } from './user-manager';
 import EventEmitter from 'events';
@@ -49,7 +48,7 @@ export class Client extends EventEmitter {
 
   constructor(options: ClientOptions) {
     super();
-    this.options = merge({}, defaultOptions, options);
+    this.options = { ...defaultOptions, ...options };
   }
 
   async connect(): Promise<this> {
