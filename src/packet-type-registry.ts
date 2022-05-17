@@ -66,10 +66,16 @@ for (const [key, value] of packetForPacketType.entries()) {
   packetTypeForPacket.set(value, key);
 }
 
+/**
+ * @internal
+ */
 export const packetForType = (type: number) => {
   return packetForPacketType.get(type);
 };
 
+/**
+ * @internal
+ */
 export const packetType = (packet: AnyMessage) => {
   return packetTypeForPacket.get(packet);
 };

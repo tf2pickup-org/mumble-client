@@ -36,6 +36,9 @@ export class UserManager {
     return Array.from(this._users.values()).filter(predicate);
   }
 
+  /**
+   * @internal
+   */
   private syncUser(userState: UserState) {
     if (userState.session === undefined) {
       return;
@@ -54,6 +57,9 @@ export class UserManager {
     }
   }
 
+  /**
+   * @internal
+   */
   private removeUser(userRemove: UserRemove) {
     const user = this.bySession(userRemove.session);
     if (user) {

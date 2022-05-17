@@ -1,5 +1,8 @@
 import tls from 'tls';
 
+/**
+ * @internal
+ */
 export const tlsConnect = async (
   host: string,
   port: number,
