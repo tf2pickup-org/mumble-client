@@ -195,6 +195,9 @@ export class Client extends EventEmitter {
     });
   }
 
+  /**
+   * @internal
+   */
   private async sendVersion(): Promise<void> {
     const version = encodeMumbleVersion({
       major: 1,
@@ -210,6 +213,9 @@ export class Client extends EventEmitter {
     );
   }
 
+  /**
+   * @internal
+   */
   private async authenticate(): Promise<void> {
     return await this.socket?.send(
       Authenticate,
@@ -217,10 +223,16 @@ export class Client extends EventEmitter {
     );
   }
 
+  /**
+   * @internal
+   */
   private async ping() {
     return await this.socket?.send(Ping, Ping.create());
   }
 
+  /**
+   * @internal
+   */
   private startPinger() {
     const subscription = interval(this.options.pingInterval)
       .pipe(exhaustMap(() => this.ping()))

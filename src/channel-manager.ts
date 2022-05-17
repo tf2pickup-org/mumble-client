@@ -86,6 +86,9 @@ export class ChannelManager {
     return Array.from(this._channels.values()).filter(predicate);
   }
 
+  /**
+   * @internal
+   */
   private syncChannelState(channelState: ChannelState) {
     if (channelState.channelId === undefined) {
       return;
@@ -109,6 +112,9 @@ export class ChannelManager {
     }
   }
 
+  /**
+   * @internal
+   */
   private syncChannelPermissions(permissionQuery: PermissionQuery) {
     if (permissionQuery.channelId === undefined) {
       return;
@@ -116,6 +122,9 @@ export class ChannelManager {
     this.byId(permissionQuery.channelId)?.sync(permissionQuery);
   }
 
+  /**
+   * @internal
+   */
   private removeChannel(channelRemove: ChannelRemove) {
     const channel = this.byId(channelRemove.channelId);
     if (channel) {

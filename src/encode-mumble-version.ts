@@ -1,3 +1,6 @@
+/**
+ * @internal
+ */
 export const encodeMumbleVersion = (version: {
   major: number;
   minor: number;
