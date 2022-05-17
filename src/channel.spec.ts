@@ -1,6 +1,8 @@
 import { ChannelState, PermissionQuery } from '@proto/Mumble';
 import { Channel } from './channel';
+import { ChannelManager } from './channel-manager';
 import { Client } from './client';
+import { createChannel } from './commands';
 import { MumbleSocket } from './mumble-socket';
 
 jest.mock('./client');
@@ -8,6 +10,7 @@ jest.mock('./commands', () => ({
   fetchChannelPermissions: jest
     .fn()
     .mockResolvedValue(PermissionQuery.create({ permissions: 0x1 | 0x40 })),
+  createChannel: jest.fn().mockResolvedValue(1),
 }));
 
 describe('Channel', () => {
@@ -20,6 +23,12 @@ describe('Channel', () => {
       username: 'FAKE_USERNAME',
     }) as jest.Mocked<Client>;
     client.socket = {} as MumbleSocket;
+    client.channels = {
+      byId: jest.fn().mockResolvedValue({}),
+      byName: jest.fn().mockResolvedValue({}),
+      byPath: jest.fn().mockResolvedValue({}),
+      findAll: jest.fn().mockReturnValue([]),
+    } as unknown as ChannelManager;
   });
 
   it('should assign properties', () => {
@@ -72,7 +81,11 @@ describe('Channel', () => {
 
     it('should attempt to create channel', async () => {
       await channel.createSubChannel('SUBCHANNEL_NAME');
-      expect(client.createChannel).toHaveBeenCalledWith(7, 'SUBCHANNEL_NAME');
+      expect(createChannel).toHaveBeenCalledWith(
+        client.socket,
+        7,
+        'SUBCHANNEL_NAME',
+      );
     });
   });
 

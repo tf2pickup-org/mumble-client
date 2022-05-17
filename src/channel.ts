@@ -1,6 +1,7 @@
 import { ChannelState, PermissionQuery } from '@proto/Mumble';
 import { Client } from './client';
 import {
+  createChannel,
   fetchChannelPermissions,
   linkChannels,
   unlinkChannels,
@@ -64,12 +65,17 @@ export class Channel {
   }
 
   async createSubChannel(name: string): Promise<Channel> {
+    if (!this.client.socket) {
+      throw new Error('no socket');
+    }
+
     const permissions = await this.getPermissions();
     if (!permissions.canCreateChannel) {
       throw new InsufficientPermissionsError();
     }
 
-    return await this.client.createChannel(this.id, name);
+    const newChannelId = await createChannel(this.client.socket, this.id, name);
+    return this.client.channels.byId(newChannelId) as Channel;
   }
 
   async remove() {
