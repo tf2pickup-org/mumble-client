@@ -14,7 +14,6 @@ import {
 import {
   Authenticate,
   ChannelRemove,
-  ChannelState,
   PermissionDenied,
   Ping,
   Reject,
@@ -26,7 +25,6 @@ import {
 import { User } from './user';
 import { merge } from 'lodash';
 import { ChannelManager } from './channel-manager';
-import { Channel } from './channel';
 import { UserManager } from './user-manager';
 import EventEmitter from 'events';
 import { encodeMumbleVersion } from './encode-mumble-version';
@@ -119,41 +117,6 @@ export class Client extends EventEmitter {
     this.socket?.end();
     this.socket = undefined;
     return this;
-  }
-
-  async createChannel(parent: number, name: string): Promise<Channel> {
-    return new Promise((resolve, reject) => {
-      if (!this.socket) {
-        reject(new Error('no socket'));
-        return;
-      }
-
-      race(
-        this.socket.packet.pipe(
-          filterPacket(ChannelState),
-          filter(
-            channelState =>
-              channelState.parent === parent && channelState.name === name,
-          ),
-          take(1),
-        ),
-        this.socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
-      ).subscribe(packet => {
-        if (PermissionDenied.is(packet)) {
-          const reason = packet.reason;
-          reject(new Error(`failed to create channel (${reason})`));
-        } else {
-          if (packet.channelId) {
-            const channel = this.channels.byId(packet.channelId);
-            if (channel) {
-              resolve(channel);
-            }
-          }
-        }
-      });
-
-      this.socket.send(ChannelState, ChannelState.create({ parent, name }));
-    });
   }
 
   async removeChannel(channelId: number): Promise<void> {
