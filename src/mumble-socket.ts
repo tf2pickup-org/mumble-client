@@ -2,6 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { TLSSocket } from 'tls';
 import { packetForType, packetType } from './packet-type-registry';
 import { MessageType } from '@protobuf-ts/runtime';
+import { UDPTunnel } from '@proto/Mumble';
 
 interface MumbleSocketReader {
   length: number;
@@ -117,7 +118,14 @@ export class MumbleSocket {
     this.read(length, data => {
       const message = packetForType(type);
       if (message) {
-        this._packet.next(message.fromBinary(data));
+        switch (message.typeName) {
+          case UDPTunnel.typeName:
+            // ignore
+            break;
+
+          default:
+            this._packet.next(message.fromBinary(data));
+        }
       } else {
         console.error(`Unrecognized packet type (${type})`);
       }
