@@ -2,7 +2,7 @@ import { ChannelState, PermissionQuery } from '@proto/Mumble';
 import { Channel } from './channel';
 import { ChannelManager } from './channel-manager';
 import { Client } from './client';
-import { createChannel } from './commands';
+import { createChannel, removeChannel } from './commands';
 import { MumbleSocket } from './mumble-socket';
 
 jest.mock('./client');
@@ -10,7 +10,8 @@ jest.mock('./commands', () => ({
   fetchChannelPermissions: jest
     .fn()
     .mockResolvedValue(PermissionQuery.create({ permissions: 0x1 | 0x40 })),
-  createChannel: jest.fn().mockResolvedValue(1),
+  createChannel: jest.fn().mockResolvedValue(8),
+  removeChannel: jest.fn().mockResolvedValue(7),
 }));
 
 describe('Channel', () => {
@@ -103,7 +104,7 @@ describe('Channel', () => {
 
     it('should attempt to remove the channel', async () => {
       await channel.remove();
-      expect(client.removeChannel).toHaveBeenCalledWith(7);
+      expect(removeChannel).toHaveBeenCalledWith(client.socket, 7);
     });
   });
 });
