@@ -1,5 +1,14 @@
 
 
+## [0.3.1](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.0...0.3.1) (2022-05-18)
+
+
+### Bug Fixes
+
+* add createChannel() command ([#20](https://github.com/tf2pickup-org/simple-mumble-bot/issues/20)) ([df568d0](https://github.com/tf2pickup-org/simple-mumble-bot/commit/df568d0e0dfd0ca9cbf0ab5b4b9a35d8aed781a2))
+* get rid of lodash dependency ([#19](https://github.com/tf2pickup-org/simple-mumble-bot/issues/19)) ([1b94600](https://github.com/tf2pickup-org/simple-mumble-bot/commit/1b9460021713cd8d3f401b2caa39a1bbfaf551fe))
+* ignore UDPTunnel packets ([#22](https://github.com/tf2pickup-org/simple-mumble-bot/issues/22)) ([8367b2d](https://github.com/tf2pickup-org/simple-mumble-bot/commit/8367b2d8cb4d64b2b653b2592bd7d0fe824c5b26))
+
 # [0.3.0](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.2.1...0.3.0) (2022-05-16)
 
 
