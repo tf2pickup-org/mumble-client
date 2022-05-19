@@ -1,5 +1,13 @@
 
 
+## [0.3.2](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.1...0.3.2) (2022-05-19)
+
+
+### Bug Fixes
+
+* better PermissionDeniedError message ([#24](https://github.com/tf2pickup-org/simple-mumble-bot/issues/24)) ([7867025](https://github.com/tf2pickup-org/simple-mumble-bot/commit/78670254da2496182ec45a424efbab461ed78d1e))
+* handle temporary channel property ([#25](https://github.com/tf2pickup-org/simple-mumble-bot/issues/25)) ([74be02c](https://github.com/tf2pickup-org/simple-mumble-bot/commit/74be02c67d4f48bb30d980be503f0c835ceb4219))
+
 ## [0.3.1](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.0...0.3.1) (2022-05-18)
 
 
