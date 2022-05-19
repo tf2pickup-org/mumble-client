@@ -13,7 +13,6 @@ import {
 } from 'rxjs';
 import {
   Authenticate,
-  ChannelRemove,
   PermissionDenied,
   Ping,
   Reject,
@@ -116,33 +115,6 @@ export class Client extends EventEmitter {
     this.socket?.end();
     this.socket = undefined;
     return this;
-  }
-
-  async removeChannel(channelId: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.socket) {
-        reject(new Error('no socket'));
-        return;
-      }
-
-      race(
-        this.socket.packet.pipe(
-          filterPacket(ChannelRemove),
-          filter(channelRemove => channelRemove.channelId === channelId),
-          take(1),
-        ),
-        this.socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
-      ).subscribe(packet => {
-        if (PermissionDenied.is(packet)) {
-          const reason = packet.reason;
-          reject(new Error(`failed to remove channel (${reason})`));
-        } else {
-          resolve();
-        }
-      });
-
-      this.socket.send(ChannelRemove, ChannelRemove.create({ channelId }));
-    });
   }
 
   async moveUserToChannel(

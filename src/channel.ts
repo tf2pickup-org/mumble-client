@@ -4,6 +4,7 @@ import {
   createChannel,
   fetchChannelPermissions,
   linkChannels,
+  removeChannel,
   unlinkChannels,
 } from './commands';
 import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
@@ -79,12 +80,17 @@ export class Channel {
   }
 
   async remove() {
+    if (!this.client.socket) {
+      throw new Error('no socket');
+    }
+
     const permissions = await this.getPermissions();
     if (!permissions.canRemoveChannel) {
       throw new InsufficientPermissionsError();
     }
 
-    return await this.client.removeChannel(this.id);
+    await removeChannel(this.client.socket, this.id);
+    return this;
   }
 
   async getPermissions(): Promise<Permissions> {
