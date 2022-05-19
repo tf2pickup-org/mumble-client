@@ -4,6 +4,7 @@ import { Client } from './client';
 import { Channel } from './channel';
 import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
+import { moveUserToChannel } from './commands';
 
 export class User {
   readonly session: number;
@@ -53,6 +54,10 @@ export class User {
   }
 
   async moveToChannel(channelId: number): Promise<User> {
+    if (!this.client.socket) {
+      throw new Error('no socket');
+    }
+
     const channel = this.client.channels.byId(channelId);
     if (!channel) {
       throw new NoSuchChannelError(channelId);
@@ -62,7 +67,8 @@ export class User {
       throw new InsufficientPermissionsError();
     }
 
-    return await this.client.moveUserToChannel(this.session, channelId);
+    await moveUserToChannel(this.client.socket, this.session, channelId);
+    return this;
   }
 
   setSelfMute(selfMute: boolean): Promise<this> {

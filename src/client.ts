@@ -1,24 +1,12 @@
 import { tlsConnect } from './tls-connect';
 import { MumbleSocket } from './mumble-socket';
-import {
-  delay,
-  exhaustMap,
-  filter,
-  interval,
-  map,
-  race,
-  take,
-  tap,
-  zip,
-} from 'rxjs';
+import { delay, exhaustMap, interval, map, race, take, tap, zip } from 'rxjs';
 import {
   Authenticate,
-  PermissionDenied,
   Ping,
   Reject,
   ServerConfig,
   ServerSync,
-  UserState,
   Version,
 } from '@proto/Mumble';
 import { User } from './user';
@@ -115,56 +103,6 @@ export class Client extends EventEmitter {
     this.socket?.end();
     this.socket = undefined;
     return this;
-  }
-
-  async moveUserToChannel(
-    userSession: number,
-    channelId: number,
-  ): Promise<User> {
-    return new Promise((resolve, reject) => {
-      if (!this.socket) {
-        reject(new Error('no socket'));
-        return;
-      }
-
-      const user = this.users.bySession(userSession);
-      if (!user) {
-        reject(new Error(`no such user (session=${userSession})`));
-        return;
-      }
-
-      if (user.channelId === channelId) {
-        resolve(user);
-        return;
-      }
-
-      race(
-        this.socket.packet.pipe(
-          filterPacket(UserState),
-          filter(
-            userState =>
-              userState.session === userSession &&
-              userState.channelId === channelId,
-          ),
-        ),
-        this.socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
-      ).subscribe(packet => {
-        if (PermissionDenied.is(packet)) {
-          const reason = packet.reason;
-          reject(new Error(`failed to remove channel (${reason})`));
-        } else {
-          const user = this.users.bySession(userSession);
-          if (user) {
-            resolve(user);
-          }
-        }
-      });
-
-      this.socket.send(
-        UserState,
-        UserState.create({ session: userSession, channelId }),
-      );
-    });
   }
 
   /**
