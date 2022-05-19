@@ -15,6 +15,7 @@ export class Channel {
   readonly id: number;
   name?: string;
   parent?: number;
+  temporary: boolean;
   private permissions?: Permissions;
   private links: number[] = [];
 
@@ -26,6 +27,7 @@ export class Channel {
     this.name = channelState.name;
     this.parent = channelState.parent;
     this.links = [...channelState.links];
+    this.temporary = channelState.temporary ?? false;
   }
 
   /**
@@ -39,6 +41,10 @@ export class Channel {
 
       if (message.parent !== undefined) {
         this.parent = message.parent;
+      }
+
+      if (message.temporary !== undefined) {
+        this.temporary = message.temporary;
       }
 
       this.links = [
