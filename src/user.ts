@@ -53,9 +53,13 @@ export class User {
     }
   }
 
-  async moveToChannel(channelId: number): Promise<User> {
+  async moveToChannel(channelId: number): Promise<this> {
     if (!this.client.socket) {
       throw new Error('no socket');
+    }
+
+    if (this.channelId === channelId) {
+      return this;
     }
 
     const channel = this.client.channels.byId(channelId);
