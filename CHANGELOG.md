@@ -1,5 +1,12 @@
 
 
+## [0.3.3](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.2...0.3.3) (2022-05-20)
+
+
+### Bug Fixes
+
+* handle moving to the same channel ([#27](https://github.com/tf2pickup-org/simple-mumble-bot/issues/27)) ([64ace1c](https://github.com/tf2pickup-org/simple-mumble-bot/commit/64ace1c929768ec2121692414c5d9947a67b9061))
+
 ## [0.3.2](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.1...0.3.2) (2022-05-19)
 
 
