@@ -1,6 +1,5 @@
-import type { InitialOptionsTsJest } from 'ts-jest/dist/types';
-import { defaults } from 'ts-jest/presets';
-import { pathsToModuleNameMapper } from 'ts-jest';
+import { type InitialOptionsTsJest, pathsToModuleNameMapper } from 'ts-jest';
+import { defaults } from 'jest-config';
 import { compilerOptions } from './tsconfig.json';
 
 const config: InitialOptionsTsJest = {

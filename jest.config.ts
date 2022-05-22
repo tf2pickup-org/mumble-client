@@ -1,4 +1,4 @@
-import  { type InitialOptionsTsJest, pathsToModuleNameMapper } from 'ts-jest';
+import { type InitialOptionsTsJest, pathsToModuleNameMapper } from 'ts-jest';
 import { defaults } from 'jest-config';
 import { compilerOptions } from './tsconfig.json';
 
