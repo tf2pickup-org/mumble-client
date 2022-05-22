@@ -1,5 +1,14 @@
 
 
+## [0.3.4](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.3...0.3.4) (2022-05-22)
+
+
+### Bug Fixes
+
+* **deps:** remove unused dependencies ([#31](https://github.com/tf2pickup-org/simple-mumble-bot/issues/31)) ([d7ac929](https://github.com/tf2pickup-org/simple-mumble-bot/commit/d7ac9293b400924c68a0513c86f4473d361a736f))
+* handle createChannel command timeout ([#30](https://github.com/tf2pickup-org/simple-mumble-bot/issues/30)) ([cc3524a](https://github.com/tf2pickup-org/simple-mumble-bot/commit/cc3524abac21a776eb659c7317c65a83d11c66c2))
+* linkChannels command timeout ([#32](https://github.com/tf2pickup-org/simple-mumble-bot/issues/32)) ([49fb6ca](https://github.com/tf2pickup-org/simple-mumble-bot/commit/49fb6cabbc19ae251ea5b0b36bdbec574df20a36))
+
 ## [0.3.3](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.2...0.3.3) (2022-05-20)
 
 
