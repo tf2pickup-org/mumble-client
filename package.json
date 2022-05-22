@@ -17,7 +17,6 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "dev": "ts-node src/index.ts",
     "lint": "eslint \"src/**/*.ts\"",
     "generate-proto": "protoc --ts_out proto/ --ts_opt eslint_disable --proto_path . Mumble.proto",
     "prebuild": "yarn generate-proto",
@@ -43,7 +42,6 @@
     "@release-it/conventional-changelog": "5.0.0",
     "@tsconfig/node16": "1.0.2",
     "@types/jest": "27.5.1",
-    "@types/lodash": "4.14.182",
     "@types/node": "17.0.31",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "@typescript-eslint/parser": "5.25.0",
@@ -55,7 +53,6 @@
     "release-it": "15.0.0",
     "trace-unhandled": "2.0.1",
     "ts-jest": "28.0.2",
-    "ts-node": "10.8.0",
     "tsc-alias": "1.6.7",
     "tsconfig-paths": "4.0.0",
     "typescript": "4.6.4"
