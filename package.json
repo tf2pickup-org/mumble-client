@@ -35,8 +35,7 @@
   ],
   "dependencies": {
     "@protobuf-ts/runtime": "2.6.0",
-    "rxjs": "7.5.5",
-    "ts-node": "10.8.0"
+    "rxjs": "7.5.5"
   },
   "devDependencies": {
     "@protobuf-ts/plugin": "2.6.0",
@@ -54,6 +53,7 @@
     "release-it": "15.0.0",
     "trace-unhandled": "2.0.1",
     "ts-jest": "28.0.2",
+    "ts-node": "10.8.0",
     "tsc-alias": "1.6.7",
     "tsconfig-paths": "4.0.0",
     "typescript": "4.6.4"
