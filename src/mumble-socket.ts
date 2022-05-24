@@ -3,7 +3,7 @@ import { TLSSocket } from 'tls';
 import { packetForType, packetType } from './packet-type-registry';
 import { MessageType } from '@protobuf-ts/runtime';
 import { UDPTunnel } from '@tf2pickup-org/mumble-protocol';
-import { PacketSourceType } from './packet-source-type';
+import { PacketType } from './packet-type';
 
 interface MumbleSocketReader {
   length: number;
@@ -11,7 +11,7 @@ interface MumbleSocketReader {
 }
 
 export class MumbleSocket {
-  private _packet = new Subject<PacketSourceType>();
+  private _packet = new Subject<PacketType>();
   private buffers: Buffer[] = [];
   private length = 0;
   private readers: MumbleSocketReader[] = [];
@@ -21,7 +21,7 @@ export class MumbleSocket {
     this.readPrefix();
   }
 
-  get packet(): Observable<PacketSourceType> {
+  get packet(): Observable<PacketType> {
     return this._packet.asObservable();
   }
 
