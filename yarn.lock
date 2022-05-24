@@ -935,51 +935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@protobuf-ts/plugin-framework@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "@protobuf-ts/plugin-framework@npm:2.6.0"
-  dependencies:
-    "@protobuf-ts/runtime": ^2.6.0
-    typescript: ^3.9
-  checksum: 06cd4179fcb00b0e39ac4846af1463b456c50615c004f1164faff5177500c0afe7134bcfe1856218816ddc9c4100dc83dba3baef13d8fc1e56448bac633602ae
-  languageName: node
-  linkType: hard
-
-"@protobuf-ts/plugin@npm:2.6.0":
-  version: 2.6.0
-  resolution: "@protobuf-ts/plugin@npm:2.6.0"
-  dependencies:
-    "@protobuf-ts/plugin-framework": ^2.6.0
-    "@protobuf-ts/protoc": ^2.6.0
-    "@protobuf-ts/runtime": ^2.6.0
-    "@protobuf-ts/runtime-rpc": ^2.6.0
-    typescript: ^3.9
-  bin:
-    protoc-gen-dump: bin/protoc-gen-dump
-    protoc-gen-ts: bin/protoc-gen-ts
-  checksum: 67e04274ce0182629c37b1a85b808cd8774dc74350647fce2848e108f8dfdedca46d2c81cdb565b2b3d62ff5856f53282e9b833c7d27f94f281dfa30ac6ab5d4
-  languageName: node
-  linkType: hard
-
-"@protobuf-ts/protoc@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "@protobuf-ts/protoc@npm:2.6.0"
-  bin:
-    protoc: protoc.js
-  checksum: d9d876515315a568615416cb6b80ec15ad2f108004f3c31979382c61f9d78be43c686f19e75b76c8deab99a71c5608dfa91191639bf723106bc80550d81f3387
-  languageName: node
-  linkType: hard
-
-"@protobuf-ts/runtime-rpc@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "@protobuf-ts/runtime-rpc@npm:2.6.0"
-  dependencies:
-    "@protobuf-ts/runtime": ^2.6.0
-  checksum: f046cd40d5ea07518a83763f6383c0d4f5401e13f42ba94a9f490d0aac2f1449d5023133fe85ca8e2d09ab3d4910466d5333fa1616db59e1e46eef391c251c43
-  languageName: node
-  linkType: hard
-
-"@protobuf-ts/runtime@npm:2.6.0, @protobuf-ts/runtime@npm:^2.6.0":
+"@protobuf-ts/runtime@npm:2.6.0":
   version: 2.6.0
   resolution: "@protobuf-ts/runtime@npm:2.6.0"
   checksum: 01e06a658554a588bf09614bc7f9805b1ac1c311de8314fe075e3eb7882c966455cdc0a3cd3e8feb5138b7b8a3d4bde0185ac6284d1bac142c7d07d20a34add4
@@ -1056,13 +1012,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tf2pickup-org/mumble-protocol@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@tf2pickup-org/mumble-protocol@npm:0.0.4"
+  dependencies:
+    "@protobuf-ts/runtime": 2.6.0
+  checksum: 01e5206ff9b90bec84d26fafde9889075b4d3237066438600db52d26be1a4e34a1f2afd2efb530c8a1d4844bde2599b85a0da426e420fa1f93b4404c867d5bba
+  languageName: node
+  linkType: hard
+
 "@tf2pickup-org/simple-mumble-bot@workspace:.":
   version: 0.0.0-use.local
   resolution: "@tf2pickup-org/simple-mumble-bot@workspace:."
   dependencies:
-    "@protobuf-ts/plugin": 2.6.0
-    "@protobuf-ts/runtime": 2.6.0
     "@release-it/conventional-changelog": 5.0.0
+    "@tf2pickup-org/mumble-protocol": 0.0.4
     "@tsconfig/node16": 1.0.2
     "@types/jest": 27.5.1
     "@types/node": 17.0.31
@@ -7823,16 +7787,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^3.9":
-  version: 3.9.10
-  resolution: "typescript@npm:3.9.10"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 46c842e2cd4797b88b66ef06c9c41dd21da48b95787072ccf39d5f2aa3124361bc4c966aa1c7f709fae0509614d76751455b5231b12dbb72eb97a31369e1ff92
-  languageName: node
-  linkType: hard
-
 "typescript@patch:typescript@4.6.4#~builtin<compat/typescript>":
   version: 4.6.4
   resolution: "typescript@patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=7ad353"
@@ -7840,16 +7794,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 1cb434fbc637d347be90e3a0c6cd05e33c38f941713c8786d3031faf1842c2c148ba91d2fac01e7276b0ae3249b8633f1660e32686cc7a8c6a8fd5361dc52c66
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@^3.9#~builtin<compat/typescript>":
-  version: 3.9.10
-  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=7ad353"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: dc7141ab555b23a8650a6787f98845fc11692063d02b75ff49433091b3af2fe3d773650dea18389d7c21f47d620fb3b110ea363dab4ab039417a6ccbbaf96fc2
   languageName: node
   linkType: hard
 

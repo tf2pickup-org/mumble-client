@@ -1,7 +1,7 @@
 import { PermissionDeniedError } from '@/errors';
 import { MumbleSocket } from '@/mumble-socket';
 import { filterPacket } from '@/rxjs-operators/filter-packet';
-import { ChannelRemove, PermissionDenied } from '@proto/Mumble';
+import { ChannelRemove, PermissionDenied } from '@tf2pickup-org/mumble-protocol';
 import { filter, race, take } from 'rxjs';
 
 export const removeChannel = async (

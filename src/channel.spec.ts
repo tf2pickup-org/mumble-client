@@ -1,4 +1,4 @@
-import { ChannelState, PermissionQuery } from '@proto/Mumble';
+import { ChannelState, PermissionQuery } from '@tf2pickup-org/mumble-protocol';
 import { Channel } from './channel';
 import { ChannelManager } from './channel-manager';
 import { Client } from './client';

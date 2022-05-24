@@ -1,7 +1,7 @@
 import { PermissionDeniedError } from '@/errors';
 import { MumbleSocket } from '@/mumble-socket';
 import { filterPacket } from '@/rxjs-operators/filter-packet';
-import { PermissionDenied, UserState } from '@proto/Mumble';
+import { PermissionDenied, UserState } from '@tf2pickup-org/mumble-protocol';
 import { filter, race, take } from 'rxjs';
 
 export const moveUserToChannel = async (

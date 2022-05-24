@@ -2,7 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { TLSSocket } from 'tls';
 import { packetForType, packetType } from './packet-type-registry';
 import { MessageType } from '@protobuf-ts/runtime';
-import { UDPTunnel } from '@proto/Mumble';
+import { UDPTunnel } from '@tf2pickup-org/mumble-protocol';
 
 interface MumbleSocketReader {
   length: number;

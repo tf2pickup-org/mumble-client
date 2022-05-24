@@ -4,7 +4,7 @@ import {
   ServerConfig,
   ServerSync,
   Version,
-} from '@proto/Mumble';
+} from '@tf2pickup-org/mumble-protocol';
 import { Subject } from 'rxjs';
 import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
