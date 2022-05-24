@@ -2,14 +2,22 @@ import { PermissionDeniedError } from '@/errors';
 import { MumbleSocket } from '@/mumble-socket';
 import { filterPacket } from '@/rxjs-operators/filter-packet';
 import { PermissionDenied, UserState } from '@tf2pickup-org/mumble-protocol';
-import { filter, race, take } from 'rxjs';
+import {
+  concatMap,
+  filter,
+  lastValueFrom,
+  map,
+  race,
+  take,
+  throwError,
+} from 'rxjs';
 
 export const moveUserToChannel = async (
   socket: MumbleSocket,
   userSession: number,
   channelId: number,
-): Promise<void> =>
-  new Promise((resolve, reject) => {
+): Promise<void> => {
+  const ret = lastValueFrom(
     race(
       socket.packet.pipe(
         filterPacket(UserState),
@@ -18,18 +26,18 @@ export const moveUserToChannel = async (
             userState.session === userSession &&
             userState.channelId === channelId,
         ),
+        take(1),
+        map(() => void 0),
       ),
-      socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
-    ).subscribe(packet => {
-      if (PermissionDenied.is(packet)) {
-        reject(new PermissionDeniedError(packet));
-      } else {
-        resolve();
-      }
-    });
-
-    socket.send(
-      UserState,
-      UserState.create({ session: userSession, channelId }),
-    );
-  });
+      socket.packet.pipe(
+        filterPacket(PermissionDenied),
+        take(1),
+        concatMap(permissionDenied =>
+          throwError(() => new PermissionDeniedError(permissionDenied)),
+        ),
+      ),
+    ),
+  );
+  socket.send(UserState, UserState.create({ session: userSession, channelId }));
+  return ret;
+};

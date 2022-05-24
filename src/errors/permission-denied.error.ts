@@ -1,4 +1,7 @@
-import { PermissionDenied, PermissionDenied_DenyType } from '@tf2pickup-org/mumble-protocol';
+import {
+  PermissionDenied,
+  PermissionDenied_DenyType,
+} from '@tf2pickup-org/mumble-protocol';
 
 const toString = (permissionDenied: PermissionDenied): string => {
   switch (permissionDenied.type) {

@@ -3,14 +3,23 @@ import { CommandTimedOutError, PermissionDeniedError } from '@/errors';
 import { MumbleSocket } from '@/mumble-socket';
 import { filterPacket } from '@/rxjs-operators/filter-packet';
 import { ChannelState, PermissionDenied } from '@tf2pickup-org/mumble-protocol';
-import { filter, race, take, timer } from 'rxjs';
+import {
+  concatMap,
+  filter,
+  lastValueFrom,
+  map,
+  race,
+  take,
+  throwError,
+  timer,
+} from 'rxjs';
 
 export const createChannel = async (
   socket: MumbleSocket,
   parentChannelId: number,
   channelName: string,
-): Promise<number> =>
-  new Promise((resolve, reject) => {
+): Promise<number> => {
+  const ret = lastValueFrom(
     race(
       socket.packet.pipe(
         filterPacket(ChannelState),
@@ -20,21 +29,26 @@ export const createChannel = async (
             channelState.name === channelName,
         ),
         take(1),
+        map(channelState => channelState.channelId as number),
       ),
-      socket.packet.pipe(filterPacket(PermissionDenied), take(1)),
-      timer(CommandTimeout),
-    ).subscribe(packet => {
-      if (PermissionDenied.is(packet)) {
-        reject(new PermissionDeniedError(packet));
-      } else if (ChannelState.is(packet)) {
-        resolve(packet.channelId as number);
-      } else {
-        reject(new CommandTimedOutError('createChannel'));
-      }
-    });
+      socket.packet.pipe(
+        filterPacket(PermissionDenied),
+        take(1),
+        concatMap(permissionDenied =>
+          throwError(() => new PermissionDeniedError(permissionDenied)),
+        ),
+      ),
+      timer(CommandTimeout).pipe(
+        concatMap(() =>
+          throwError(() => new CommandTimedOutError('createChannel')),
+        ),
+      ),
+    ),
+  );
 
-    socket.send(
-      ChannelState,
-      ChannelState.create({ parent: parentChannelId, name: channelName }),
-    );
-  });
+  socket.send(
+    ChannelState,
+    ChannelState.create({ parent: parentChannelId, name: channelName }),
+  );
+  return ret;
+};

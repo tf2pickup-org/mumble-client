@@ -1,24 +1,50 @@
+import { CommandTimeout } from '@/config';
+import { CommandTimedOutError, PermissionDeniedError } from '@/errors';
 import { MumbleSocket } from '@/mumble-socket';
 import { filterPacket } from '@/rxjs-operators/filter-packet';
-import { ChannelState } from '@tf2pickup-org/mumble-protocol';
-import { filter, take } from 'rxjs';
+import { ChannelState, PermissionDenied } from '@tf2pickup-org/mumble-protocol';
+import {
+  concatMap,
+  filter,
+  lastValueFrom,
+  map,
+  race,
+  take,
+  throwError,
+  timer,
+} from 'rxjs';
 
 export const unlinkChannels = async (
   socket: MumbleSocket,
   channelId: number,
   targetChannelId: number,
 ): Promise<void> => {
-  return new Promise(resolve => {
-    socket.packet
-      .pipe(
+  const ret = lastValueFrom(
+    race(
+      socket.packet.pipe(
         filterPacket(ChannelState),
         filter(channelSync => channelSync.channelId === channelId),
         take(1),
-      )
-      .subscribe(() => resolve());
-    socket.send(
-      ChannelState,
-      ChannelState.create({ channelId, linksRemove: [targetChannelId] }),
-    );
-  });
+        map(() => void 0),
+      ),
+      socket.packet.pipe(
+        filterPacket(PermissionDenied),
+        filter(permissionDenied => permissionDenied.channelId === channelId),
+        take(1),
+        concatMap(permissionDenied =>
+          throwError(() => new PermissionDeniedError(permissionDenied)),
+        ),
+      ),
+      timer(CommandTimeout).pipe(
+        concatMap(() =>
+          throwError(() => new CommandTimedOutError('linkChannels')),
+        ),
+      ),
+    ),
+  );
+  socket.send(
+    ChannelState,
+    ChannelState.create({ channelId, linksRemove: [targetChannelId] }),
+  );
+  return ret;
 };
