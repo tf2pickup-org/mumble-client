@@ -1,5 +1,13 @@
 
 
+## [0.3.5](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.4...0.3.5) (2022-05-24)
+
+
+### Bug Fixes
+
+* fix packet type recognition ([#36](https://github.com/tf2pickup-org/simple-mumble-bot/issues/36)) ([138d8b0](https://github.com/tf2pickup-org/simple-mumble-bot/commit/138d8b0f45cdaebd958c0180b0db27ede1a71492))
+* use mumble-protocol dependency ([#35](https://github.com/tf2pickup-org/simple-mumble-bot/issues/35)) ([0d3cce8](https://github.com/tf2pickup-org/simple-mumble-bot/commit/0d3cce8efdcb821c9252322e366d56e28b077739))
+
 ## [0.3.4](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.3...0.3.4) (2022-05-22)
 
 
