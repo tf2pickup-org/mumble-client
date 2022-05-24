@@ -8,6 +8,7 @@ import {
 import { Subject } from 'rxjs';
 import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
+import { PacketType } from './packet-type';
 
 jest.mock('./mumble-socket', () => ({
   MumbleSocket: jest.fn().mockImplementation(() => ({
@@ -39,7 +40,7 @@ describe(Client.name, () => {
   });
 
   describe('when connected', () => {
-    let socket: jest.Mocked<MumbleSocket> & { packet: Subject<unknown> };
+    let socket: jest.Mocked<MumbleSocket> & { packet: Subject<PacketType> };
 
     beforeEach(async () => {
       client.on('socketConnected', s => {
@@ -48,42 +49,50 @@ describe(Client.name, () => {
         socket.send.mockImplementation(type => {
           switch (type.typeName) {
             case Authenticate.typeName:
-              socket.packet.next(
-                Version.create({
+              socket.packet.next({
+                type: 0,
+                typeName: Version.typeName,
+                payload: Version.create({
                   version: 66790,
                   release: '1.4.230',
                   os: 'Linux',
                   osVersion: 'Ubuntu 20.04.4 LTS [x64]',
                 }),
-              );
-              socket.packet.next(
-                ServerSync.create({
+              });
+              socket.packet.next({
+                type: 5,
+                typeName: ServerSync.typeName,
+                payload: ServerSync.create({
                   session: 2,
                   maxBandwidth: 558000,
                   welcomeText: '',
                   permissions: BigInt(134744846),
                 }),
-              );
-              socket.packet.next(
-                ServerConfig.create({
+              });
+              socket.packet.next({
+                type: 24,
+                typeName: ServerConfig.typeName,
+                payload: ServerConfig.create({
                   allowHtml: true,
                   messageLength: 5000,
                   imageMessageLength: 131072,
                   maxUsers: 100,
                 }),
-              );
+              });
               break;
 
             case Ping.typeName:
-              socket.packet.next(
-                Ping.create({
+              socket.packet.next({
+                type: 3,
+                typeName: Ping.typeName,
+                payload: Ping.create({
                   timestamp: BigInt(0),
                   good: 0,
                   late: 0,
                   lost: 0,
                   resync: 0,
                 }),
-              );
+              });
               break;
           }
 
