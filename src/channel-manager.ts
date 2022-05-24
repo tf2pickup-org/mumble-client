@@ -1,4 +1,4 @@
-import { ChannelRemove, ChannelState, PermissionQuery } from '@proto/Mumble';
+import { ChannelRemove, ChannelState, PermissionQuery } from '@tf2pickup-org/mumble-protocol';
 import { tap } from 'rxjs';
 import { Channel } from './channel';
 import { Client } from './client';

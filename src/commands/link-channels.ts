@@ -1,7 +1,7 @@
 import { CommandTimeout } from '@/config';
 import { MumbleSocket } from '@/mumble-socket';
 import { filterPacket } from '@/rxjs-operators/filter-packet';
-import { ChannelState } from '@proto/Mumble';
+import { ChannelState } from '@tf2pickup-org/mumble-protocol';
 import { filter, race, take, timer } from 'rxjs';
 
 export const linkChannels = async (

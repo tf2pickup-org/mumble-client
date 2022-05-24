@@ -20,7 +20,6 @@
     "resolveJsonModule": true,
     "stripInternal": true,
     "paths": {
-      "@proto/*": ["proto/*"],
       "@": ["src"],
       "@/*": ["src/*"]
     }

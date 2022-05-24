@@ -8,7 +8,7 @@ import {
   ServerConfig,
   ServerSync,
   Version,
-} from '@proto/Mumble';
+} from '@tf2pickup-org/mumble-protocol';
 import { User } from './user';
 import { ChannelManager } from './channel-manager';
 import { UserManager } from './user-manager';

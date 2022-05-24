@@ -25,7 +25,7 @@ import {
   UserStats,
   Version,
   VoiceTarget,
-} from '@proto/Mumble';
+} from '@tf2pickup-org/mumble-protocol';
 import { MessageType } from '@protobuf-ts/runtime';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

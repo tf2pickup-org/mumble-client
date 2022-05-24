@@ -1,4 +1,4 @@
-import { UserRemove, UserState } from '@proto/Mumble';
+import { UserRemove, UserState } from '@tf2pickup-org/mumble-protocol';
 import { tap } from 'rxjs';
 import { Client } from './client';
 import { filterPacket } from './rxjs-operators/filter-packet';
