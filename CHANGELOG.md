@@ -1,5 +1,12 @@
 
 
+## [0.3.6](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.5...0.3.6) (2022-05-24)
+
+
+### Bug Fixes
+
+* **build:** fix entry points ([#37](https://github.com/tf2pickup-org/simple-mumble-bot/issues/37)) ([504dd7a](https://github.com/tf2pickup-org/simple-mumble-bot/commit/504dd7a2624b4d774f592215de942d5d890680fd))
+
 ## [0.3.5](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.4...0.3.5) (2022-05-24)
 
 
