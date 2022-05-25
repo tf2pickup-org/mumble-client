@@ -34,10 +34,12 @@ export class Client extends EventEmitter {
   socket?: MumbleSocket;
   welcomeText?: string;
   readonly options: ClientOptions;
+  readonly providesCertificate;
 
   constructor(options: ClientOptions) {
     super();
     this.options = { ...defaultOptions, ...options };
+    this.providesCertificate = !!options.key && !!options.cert;
   }
 
   async connect(): Promise<this> {

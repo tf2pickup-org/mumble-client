@@ -76,11 +76,6 @@ export class Channel {
       throw new Error('no socket');
     }
 
-    const permissions = await this.getPermissions();
-    if (!permissions.canCreateChannel) {
-      throw new InsufficientPermissionsError();
-    }
-
     const newChannelId = await createChannel(this.client.socket, this.id, name);
     return this.client.channels.byId(newChannelId) as Channel;
   }
@@ -88,11 +83,6 @@ export class Channel {
   async remove() {
     if (!this.client.socket) {
       throw new Error('no socket');
-    }
-
-    const permissions = await this.getPermissions();
-    if (!permissions.canRemoveChannel) {
-      throw new InsufficientPermissionsError();
     }
 
     await removeChannel(this.client.socket, this.id);
