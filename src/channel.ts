@@ -7,7 +7,7 @@ import {
   removeChannel,
   unlinkChannels,
 } from './commands';
-import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
+import { NoSuchChannelError } from './errors';
 import { Permissions } from './permissions';
 import { User } from './user';
 
@@ -108,21 +108,12 @@ export class Channel {
     if (!this.client.socket) {
       throw new Error('no socket');
     }
-
-    if (!(await this.getPermissions()).canLinkChannel) {
-      throw new InsufficientPermissionsError();
-    }
-
     const targetChannel =
       typeof otherChannel === 'number'
         ? this.client.channels.byId(otherChannel)
         : otherChannel;
     if (targetChannel === undefined) {
       throw new NoSuchChannelError(`${otherChannel}`);
-    }
-
-    if (!(await targetChannel.getPermissions()).canLinkChannel) {
-      throw new InsufficientPermissionsError();
     }
 
     await linkChannels(this.client.socket, this.id, targetChannel.id);
@@ -134,20 +125,12 @@ export class Channel {
       throw new Error('no socket');
     }
 
-    if (!(await this.getPermissions()).canLinkChannel) {
-      throw new InsufficientPermissionsError();
-    }
-
     const targetChannel =
       typeof otherChannel === 'number'
         ? this.client.channels.byId(otherChannel)
         : otherChannel;
     if (targetChannel === undefined) {
       throw new NoSuchChannelError(`${otherChannel}`);
-    }
-
-    if (!(await targetChannel.getPermissions()).canLinkChannel) {
-      throw new InsufficientPermissionsError();
     }
 
     await unlinkChannels(this.client.socket, this.id, targetChannel.id);

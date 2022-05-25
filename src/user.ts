@@ -2,7 +2,7 @@ import { filter, takeWhile } from 'rxjs';
 import { UserState } from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import { Channel } from './channel';
-import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
+import { NoSuchChannelError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { moveUserToChannel } from './commands';
 
@@ -65,10 +65,6 @@ export class User {
     const channel = this.client.channels.byId(channelId);
     if (!channel) {
       throw new NoSuchChannelError(channelId);
-    }
-
-    if (!(await channel.getPermissions()).canJoinChannel) {
-      throw new InsufficientPermissionsError();
     }
 
     await moveUserToChannel(this.client.socket, this.session, channelId);
