@@ -18,6 +18,12 @@ export interface ClientOptions extends ConnectionOptions {
   username: string;
 
   /**
+   * Client name.
+   * Default: 'simple mumble bot'
+   */
+  clientName?: string;
+
+  /**
    * The interval the bot will send pings to the server (in milliseconds).
    * It has to be less than 30000 (30 seconds), otherwise the server will kick the client.
    * Default: 10000 (10 seconds)

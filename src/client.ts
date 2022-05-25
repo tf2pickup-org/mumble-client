@@ -17,9 +17,11 @@ import { encodeMumbleVersion } from './encode-mumble-version';
 import { ClientOptions } from './client-options';
 import { ConnectionRejectedError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
+import { platform, release } from 'os';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
+  clientName: 'simple mumble bot',
   pingInterval: 10000,
 };
 
@@ -117,8 +119,10 @@ export class Client extends EventEmitter {
     return await this.socket?.send(
       Version,
       Version.create({
-        release: 'simple mumble bot',
+        release: this.options.clientName,
         version,
+        os: platform(),
+        osVersion: release(),
       }),
     );
   }
