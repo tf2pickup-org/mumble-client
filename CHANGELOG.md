@@ -1,5 +1,12 @@
 
 
+## [0.4.1](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.4.0...0.4.1) (2022-05-25)
+
+
+### Bug Fixes
+
+* fix fetchChannelPermissions command timeout ([#42](https://github.com/tf2pickup-org/simple-mumble-bot/issues/42)) ([f6cd762](https://github.com/tf2pickup-org/simple-mumble-bot/commit/f6cd7629f18b45499916cf62f258d1f7c0483c4f))
+
 # [0.4.0](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.6...0.4.0) (2022-05-25)
 
 
