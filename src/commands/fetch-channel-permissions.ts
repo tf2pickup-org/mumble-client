@@ -3,32 +3,22 @@ import { CommandTimedOutError } from '@/errors';
 import { MumbleSocket } from '@/mumble-socket';
 import { filterPacket } from '@/rxjs-operators/filter-packet';
 import { PermissionQuery } from '@tf2pickup-org/mumble-protocol';
-import {
-  concatMap,
-  filter,
-  lastValueFrom,
-  race,
-  take,
-  throwError,
-  timer,
-} from 'rxjs';
+import { filter, lastValueFrom, take, throwError, timeout } from 'rxjs';
 
 export const fetchChannelPermissions = async (
   socket: MumbleSocket,
   channelId: number,
 ): Promise<PermissionQuery> => {
   const ret = lastValueFrom(
-    race(
-      socket.packet.pipe(
-        filterPacket(PermissionQuery),
-        filter(permissionQuery => permissionQuery.channelId === channelId),
-        take(1),
-      ),
-      timer(CommandTimeout).pipe(
-        concatMap(() =>
+    socket.packet.pipe(
+      filterPacket(PermissionQuery),
+      filter(permissionQuery => permissionQuery.channelId === channelId),
+      take(1),
+      timeout({
+        first: CommandTimeout,
+        with: () =>
           throwError(() => new CommandTimedOutError('fetchChannelPermissions')),
-        ),
-      ),
+      }),
     ),
   );
 

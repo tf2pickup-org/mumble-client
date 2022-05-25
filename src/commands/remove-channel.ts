@@ -14,7 +14,7 @@ import {
   race,
   take,
   throwError,
-  timer,
+  timeout,
 } from 'rxjs';
 
 export const removeChannel = async (
@@ -28,6 +28,11 @@ export const removeChannel = async (
         filter(channelRemove => channelRemove.channelId === channelId),
         take(1),
         map(channelRemove => channelRemove.channelId),
+        timeout({
+          first: CommandTimeout,
+          with: () =>
+            throwError(() => new CommandTimedOutError('removeChannel')),
+        }),
       ),
       socket.packet.pipe(
         filterPacket(PermissionDenied),
@@ -35,11 +40,6 @@ export const removeChannel = async (
         take(1),
         concatMap(permissionDenied =>
           throwError(() => new PermissionDeniedError(permissionDenied)),
-        ),
-      ),
-      timer(CommandTimeout).pipe(
-        concatMap(() =>
-          throwError(() => new CommandTimedOutError('removeChannel')),
         ),
       ),
     ),

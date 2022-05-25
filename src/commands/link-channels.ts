@@ -11,7 +11,7 @@ import {
   race,
   take,
   throwError,
-  timer,
+  timeout,
 } from 'rxjs';
 
 export const linkChannels = async (
@@ -26,6 +26,11 @@ export const linkChannels = async (
         filter(channelSync => channelSync.channelId === channelId),
         take(1),
         map(() => void 0),
+        timeout({
+          first: CommandTimeout,
+          with: () =>
+            throwError(() => new CommandTimedOutError('linkChannels')),
+        }),
       ),
       socket.packet.pipe(
         filterPacket(PermissionDenied),
@@ -33,11 +38,6 @@ export const linkChannels = async (
         take(1),
         concatMap(permissionDenied =>
           throwError(() => new PermissionDeniedError(permissionDenied)),
-        ),
-      ),
-      timer(CommandTimeout).pipe(
-        concatMap(() =>
-          throwError(() => new CommandTimedOutError('linkChannels')),
         ),
       ),
     ),

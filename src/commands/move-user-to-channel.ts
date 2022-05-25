@@ -1,4 +1,5 @@
-import { PermissionDeniedError } from '@/errors';
+import { CommandTimeout } from '@/config';
+import { CommandTimedOutError, PermissionDeniedError } from '@/errors';
 import { MumbleSocket } from '@/mumble-socket';
 import { filterPacket } from '@/rxjs-operators/filter-packet';
 import { PermissionDenied, UserState } from '@tf2pickup-org/mumble-protocol';
@@ -10,6 +11,7 @@ import {
   race,
   take,
   throwError,
+  timeout,
 } from 'rxjs';
 
 export const moveUserToChannel = async (
@@ -28,6 +30,11 @@ export const moveUserToChannel = async (
         ),
         take(1),
         map(() => void 0),
+        timeout({
+          first: CommandTimeout,
+          with: () =>
+            throwError(() => new CommandTimedOutError('moveUserToChannel')),
+        }),
       ),
       socket.packet.pipe(
         filterPacket(PermissionDenied),

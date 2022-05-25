@@ -11,7 +11,7 @@ import {
   race,
   take,
   throwError,
-  timer,
+  timeout,
 } from 'rxjs';
 
 export const createChannel = async (
@@ -30,17 +30,17 @@ export const createChannel = async (
         ),
         take(1),
         map(channelState => channelState.channelId as number),
+        timeout({
+          first: CommandTimeout,
+          with: () =>
+            throwError(() => new CommandTimedOutError('createChannel')),
+        }),
       ),
       socket.packet.pipe(
         filterPacket(PermissionDenied),
         take(1),
         concatMap(permissionDenied =>
           throwError(() => new PermissionDeniedError(permissionDenied)),
-        ),
-      ),
-      timer(CommandTimeout).pipe(
-        concatMap(() =>
-          throwError(() => new CommandTimedOutError('createChannel')),
         ),
       ),
     ),
