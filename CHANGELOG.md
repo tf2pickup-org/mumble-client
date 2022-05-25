@@ -1,5 +1,17 @@
 
 
+# [0.4.0](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.6...0.4.0) (2022-05-25)
+
+
+### Bug Fixes
+
+* fix commands' error handling ([#39](https://github.com/tf2pickup-org/simple-mumble-bot/issues/39)) ([8cd80cf](https://github.com/tf2pickup-org/simple-mumble-bot/commit/8cd80cfcb88a725b9de82a124dc57e0d0868b464))
+
+
+### Features
+
+* support for client name & version ([#40](https://github.com/tf2pickup-org/simple-mumble-bot/issues/40)) ([8efb6da](https://github.com/tf2pickup-org/simple-mumble-bot/commit/8efb6da52c8139034245e02faef3486d882e769a))
+
 ## [0.3.6](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.3.5...0.3.6) (2022-05-24)
 
 
