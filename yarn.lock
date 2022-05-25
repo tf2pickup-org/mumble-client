@@ -1012,12 +1012,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tf2pickup-org/mumble-protocol@npm:0.0.4":
-  version: 0.0.4
-  resolution: "@tf2pickup-org/mumble-protocol@npm:0.0.4"
+"@tf2pickup-org/mumble-protocol@npm:0.0.3":
+  version: 0.0.3
+  resolution: "@tf2pickup-org/mumble-protocol@npm:0.0.3"
   dependencies:
     "@protobuf-ts/runtime": 2.6.0
-  checksum: 01e5206ff9b90bec84d26fafde9889075b4d3237066438600db52d26be1a4e34a1f2afd2efb530c8a1d4844bde2599b85a0da426e420fa1f93b4404c867d5bba
+  checksum: 0c0f8692e58462d16cc967d517cb9ffab9d9701c23de267a5f002878f06cbba9d02db178cef357972a1eebde3c30e5acac46b05e42b72bbbff574e7fb9b76e87
   languageName: node
   linkType: hard
 
@@ -1026,7 +1026,7 @@ __metadata:
   resolution: "@tf2pickup-org/simple-mumble-bot@workspace:."
   dependencies:
     "@release-it/conventional-changelog": 5.0.0
-    "@tf2pickup-org/mumble-protocol": 0.0.4
+    "@tf2pickup-org/mumble-protocol": 0.0.3
     "@tsconfig/node16": 1.0.2
     "@types/jest": 27.5.1
     "@types/node": 17.0.31
