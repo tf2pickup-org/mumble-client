@@ -4,7 +4,7 @@ import { Client } from './client';
 import { Channel } from './channel';
 import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
-import { moveUserToChannel } from './commands';
+import { moveUserToChannel, setUserSelfMute } from './commands';
 
 export class User {
   readonly session: number;
@@ -75,21 +75,13 @@ export class User {
     return this;
   }
 
-  setSelfMute(selfMute: boolean): Promise<this> {
-    return new Promise(resolve => {
-      this.client.socket?.packet
-        .pipe(
-          filterPacket(UserState),
-          filter(userState => userState.session === this.session),
-          takeWhile(userState => userState.selfMute === selfMute, true),
-        )
-        .subscribe(() => resolve(this));
+  async setSelfMute(selfMute: boolean): Promise<this> {
+    if (!this.client.socket) {
+      throw new Error('no socket');
+    }
 
-      this.client.socket?.send(
-        UserState,
-        UserState.create({ session: this.session, selfMute }),
-      );
-    });
+    await setUserSelfMute(this.client.socket, this.session, selfMute);
+    return this;
   }
 
   setSelfDeaf(selfDeaf: boolean): Promise<void> {
