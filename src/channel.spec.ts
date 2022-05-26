@@ -58,12 +58,12 @@ describe('Channel', () => {
     });
 
     it('should update name', () => {
-      channel.sync(ChannelState.create({ name: 'NEW_CHANNEL_NAME' }));
+      channel.syncState(ChannelState.create({ name: 'NEW_CHANNEL_NAME' }));
       expect(channel.name).toEqual('NEW_CHANNEL_NAME');
     });
 
     it('should update parent', () => {
-      channel.sync(ChannelState.create({ parent: 10 }));
+      channel.syncState(ChannelState.create({ parent: 10 }));
       expect(channel.parent).toEqual(10);
     });
   });

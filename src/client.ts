@@ -3,6 +3,7 @@ import { MumbleSocket } from './mumble-socket';
 import { delay, exhaustMap, interval, map, race, take, tap, zip } from 'rxjs';
 import {
   Authenticate,
+  PermissionQuery,
   Ping,
   Reject,
   ServerConfig,
@@ -18,6 +19,7 @@ import { ClientOptions } from './client-options';
 import { ConnectionRejectedError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { platform, release } from 'os';
+import { Permissions } from './permissions';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -35,6 +37,9 @@ export class Client extends EventEmitter {
   welcomeText?: string;
   readonly options: ClientOptions;
 
+  // Channel permission cache
+  readonly permissions = new Map<number, Permissions>();
+
   constructor(options: ClientOptions) {
     super();
     this.options = { ...defaultOptions, ...options };
@@ -45,6 +50,19 @@ export class Client extends EventEmitter {
       await tlsConnect(this.options.host, this.options.port, this.options),
     );
     this.emit('socketConnected', this.socket);
+
+    this.socket.packet
+      .pipe(filterPacket(PermissionQuery))
+      .subscribe(permissionQuery => {
+        if (permissionQuery.channelId === undefined) {
+          return;
+        }
+
+        this.permissions.set(
+          permissionQuery.channelId,
+          new Permissions(permissionQuery.permissions ?? 0),
+        );
+      });
 
     const initialize: Promise<this> = new Promise((resolve, reject) =>
       race(
