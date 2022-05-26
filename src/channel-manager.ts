@@ -1,4 +1,4 @@
-import { ChannelRemove, ChannelState, PermissionQuery } from '@tf2pickup-org/mumble-protocol';
+import { ChannelRemove, ChannelState } from '@tf2pickup-org/mumble-protocol';
 import { tap } from 'rxjs';
 import { Channel } from './channel';
 import { Client } from './client';
@@ -23,13 +23,6 @@ export class ChannelManager {
         .pipe(
           filterPacket(ChannelRemove),
           tap(channelRemove => this.removeChannel(channelRemove)),
-        )
-        .subscribe();
-
-      socket.packet
-        .pipe(
-          filterPacket(PermissionQuery),
-          tap(permissionQuery => this.syncChannelPermissions(permissionQuery)),
         )
         .subscribe();
     });
@@ -108,18 +101,8 @@ export class ChannelManager {
        */
       this.client.emit('channelCreate', channel);
     } else {
-      channel.sync(channelState);
+      channel.syncState(channelState);
     }
-  }
-
-  /**
-   * @internal
-   */
-  private syncChannelPermissions(permissionQuery: PermissionQuery) {
-    if (permissionQuery.channelId === undefined) {
-      return;
-    }
-    this.byId(permissionQuery.channelId)?.sync(permissionQuery);
   }
 
   /**

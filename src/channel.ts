@@ -1,4 +1,4 @@
-import { ChannelState, PermissionQuery } from '@tf2pickup-org/mumble-protocol';
+import { ChannelState } from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import {
   createChannel,
@@ -16,7 +16,6 @@ export class Channel {
   name?: string;
   parent?: number;
   temporary: boolean;
-  private permissions?: Permissions;
   private links: number[] = [];
 
   constructor(
@@ -33,28 +32,26 @@ export class Channel {
   /**
    * @internal
    */
-  sync(message: unknown) {
-    if (ChannelState.is(message)) {
-      if (message.name !== undefined) {
-        this.name = message.name;
-      }
-
-      if (message.parent !== undefined) {
-        this.parent = message.parent;
-      }
-
-      if (message.temporary !== undefined) {
-        this.temporary = message.temporary;
-      }
-
-      this.links = [
-        ...new Set([...this.links, ...message.links, ...message.linksAdd]),
-      ].filter(l => !message.linksRemove.includes(l));
-    } else if (PermissionQuery.is(message)) {
-      if (message.permissions !== undefined) {
-        this.permissions = new Permissions(message.permissions);
-      }
+  syncState(channelState: ChannelState) {
+    if (channelState.name !== undefined) {
+      this.name = channelState.name;
     }
+
+    if (channelState.parent !== undefined) {
+      this.parent = channelState.parent;
+    }
+
+    if (channelState.temporary !== undefined) {
+      this.temporary = channelState.temporary;
+    }
+
+    this.links = [
+      ...new Set([
+        ...this.links,
+        ...channelState.links,
+        ...channelState.linksAdd,
+      ]),
+    ].filter(l => !channelState.linksRemove.includes(l));
   }
 
   get users(): User[] {
@@ -100,8 +97,8 @@ export class Channel {
   }
 
   async getPermissions(): Promise<Permissions> {
-    if (this.permissions) {
-      return this.permissions;
+    if (this.client.permissions.has(this.id)) {
+      return this.client.permissions.get(this.id) as Permissions;
     }
 
     if (!this.client.socket) {
