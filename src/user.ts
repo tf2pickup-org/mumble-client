@@ -1,7 +1,11 @@
 import { UserState } from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import { Channel } from './channel';
-import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
+import {
+  ClientDisconnectedError,
+  InsufficientPermissionsError,
+  NoSuchChannelError,
+} from './errors';
 import { moveUserToChannel, setSelfDeaf, setSelfMute } from './commands';
 
 export class User {
@@ -53,7 +57,7 @@ export class User {
 
   async moveToChannel(channelId: number): Promise<this> {
     if (!this.client.socket) {
-      throw new Error('no socket');
+      throw new ClientDisconnectedError();
     }
 
     if (this.channelId === channelId) {
@@ -75,7 +79,7 @@ export class User {
 
   async setSelfMute(selfMute: boolean): Promise<this> {
     if (!this.client.socket) {
-      throw new Error('no socket');
+      throw new ClientDisconnectedError();
     }
 
     await setSelfMute(this.client.socket, this.session, selfMute);
@@ -84,7 +88,7 @@ export class User {
 
   async setSelfDeaf(selfDeaf: boolean): Promise<this> {
     if (!this.client.socket) {
-      throw new Error('no socket');
+      throw new ClientDisconnectedError();
     }
 
     await setSelfDeaf(this.client.socket, this.session, selfDeaf);

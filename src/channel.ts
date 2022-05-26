@@ -7,7 +7,11 @@ import {
   removeChannel,
   unlinkChannels,
 } from './commands';
-import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
+import {
+  ClientDisconnectedError,
+  InsufficientPermissionsError,
+  NoSuchChannelError,
+} from './errors';
 import { Permissions } from './permissions';
 import { User } from './user';
 
@@ -70,7 +74,7 @@ export class Channel {
 
   async createSubChannel(name: string): Promise<Channel> {
     if (!this.client.socket) {
-      throw new Error('no socket');
+      throw new ClientDisconnectedError();
     }
 
     const permissions = await this.getPermissions();
@@ -84,7 +88,7 @@ export class Channel {
 
   async remove() {
     if (!this.client.socket) {
-      throw new Error('no socket');
+      throw new ClientDisconnectedError();
     }
 
     const permissions = await this.getPermissions();
@@ -102,7 +106,7 @@ export class Channel {
     }
 
     if (!this.client.socket) {
-      throw new Error('no socket');
+      throw new ClientDisconnectedError();
     }
 
     return new Permissions(
@@ -113,7 +117,7 @@ export class Channel {
 
   async link(otherChannel: Channel | number): Promise<this> {
     if (!this.client.socket) {
-      throw new Error('no socket');
+      throw new ClientDisconnectedError();
     }
 
     if (!(await this.getPermissions()).canLinkChannel) {
@@ -138,7 +142,7 @@ export class Channel {
 
   async unlink(otherChannel: Channel | number): Promise<this> {
     if (!this.client.socket) {
-      throw new Error('no socket');
+      throw new ClientDisconnectedError();
     }
 
     if (!(await this.getPermissions()).canLinkChannel) {

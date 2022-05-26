@@ -1,3 +1,4 @@
+export { ClientDisconnectedError } from './client-disconnected.error';
 export { CommandTimedOutError } from './command-timed-out.error';
 export { ConnectionRejectedError } from './connection-rejected.error';
 export { InsufficientPermissionsError } from './insufficient-permissions.error';
