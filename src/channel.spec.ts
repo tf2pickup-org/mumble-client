@@ -4,6 +4,7 @@ import { ChannelManager } from './channel-manager';
 import { Client } from './client';
 import { createChannel, removeChannel } from './commands';
 import { MumbleSocket } from './mumble-socket';
+import { Permissions } from './permissions';
 
 jest.mock('./client');
 jest.mock('./commands', () => ({
@@ -30,6 +31,8 @@ describe('Channel', () => {
       byPath: jest.fn().mockResolvedValue({}),
       findAll: jest.fn().mockReturnValue([]),
     } as unknown as ChannelManager;
+    (client as { permissions: Map<number, Permissions> }).permissions =
+      new Map();
   });
 
   it('should assign properties', () => {
