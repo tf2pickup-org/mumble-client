@@ -1,10 +1,8 @@
-import { filter, takeWhile } from 'rxjs';
 import { UserState } from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import { Channel } from './channel';
 import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
-import { filterPacket } from './rxjs-operators/filter-packet';
-import { moveUserToChannel, setSelfMute } from './commands';
+import { moveUserToChannel, setSelfDeaf, setSelfMute } from './commands';
 
 export class User {
   readonly session: number;
@@ -84,20 +82,12 @@ export class User {
     return this;
   }
 
-  setSelfDeaf(selfDeaf: boolean): Promise<void> {
-    return new Promise(resolve => {
-      this.client.socket?.packet
-        .pipe(
-          filterPacket(UserState),
-          filter(userState => userState.session === this.session),
-          takeWhile(userState => userState.selfDeaf === selfDeaf, true),
-        )
-        .subscribe(() => resolve());
+  async setSelfDeaf(selfDeaf: boolean): Promise<this> {
+    if (!this.client.socket) {
+      throw new Error('no socket');
+    }
 
-      this.client.socket?.send(
-        UserState,
-        UserState.create({ session: this.session, selfDeaf }),
-      );
-    });
+    await setSelfDeaf(this.client.socket, this.session, selfDeaf);
+    return this;
   }
 }
