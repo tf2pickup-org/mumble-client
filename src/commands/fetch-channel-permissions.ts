@@ -22,11 +22,6 @@ export const fetchChannelPermissions = async (
     ),
   );
 
-  // Send TWO PermissionQuery packets; if we send only one, the mumble server might not respond,
-  // causing the command to time out.
-  // I have no idea what is going on here, but I'm either dumb or mumble server is bugged as heck.
-  [0, 1].forEach(() =>
-    socket.send(PermissionQuery, PermissionQuery.create({ channelId })),
-  );
+  socket.send(PermissionQuery, PermissionQuery.create({ channelId }));
   return ret;
 };
