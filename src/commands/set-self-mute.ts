@@ -5,7 +5,7 @@ import { filterPacket } from '@/rxjs-operators/filter-packet';
 import { UserState } from '@tf2pickup-org/mumble-protocol';
 import { filter, lastValueFrom, map, take, throwError, timeout } from 'rxjs';
 
-export const setUserSelfMute = async (
+export const setSelfMute = async (
   socket: MumbleSocket,
   userSession: number,
   selfMute: boolean,

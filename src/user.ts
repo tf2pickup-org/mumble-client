@@ -4,7 +4,7 @@ import { Client } from './client';
 import { Channel } from './channel';
 import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
-import { moveUserToChannel, setUserSelfMute } from './commands';
+import { moveUserToChannel, setSelfMute } from './commands';
 
 export class User {
   readonly session: number;
@@ -80,7 +80,7 @@ export class User {
       throw new Error('no socket');
     }
 
-    await setUserSelfMute(this.client.socket, this.session, selfMute);
+    await setSelfMute(this.client.socket, this.session, selfMute);
     return this;
   }
 
