@@ -1,5 +1,13 @@
 
 
+## [0.4.2](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.4.1...0.4.2) (2022-05-26)
+
+
+### Bug Fixes
+
+* better timeout handling ([#44](https://github.com/tf2pickup-org/simple-mumble-bot/issues/44)) ([f8c8590](https://github.com/tf2pickup-org/simple-mumble-bot/commit/f8c8590e123ed2660b3d55aaa8275c5c345e28c0))
+* cache channel permissions ([#45](https://github.com/tf2pickup-org/simple-mumble-bot/issues/45)) ([cd4238c](https://github.com/tf2pickup-org/simple-mumble-bot/commit/cd4238c0f8a7a19698be0c4890437719e974815a))
+
 ## [0.4.1](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.4.0...0.4.1) (2022-05-25)
 
 
