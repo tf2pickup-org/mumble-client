@@ -16,7 +16,6 @@ export class Channel {
   name?: string;
   parent?: number;
   temporary: boolean;
-  private permissions?: Permissions;
   private links: number[] = [];
 
   constructor(

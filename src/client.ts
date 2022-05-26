@@ -1,6 +1,16 @@
 import { tlsConnect } from './tls-connect';
 import { MumbleSocket } from './mumble-socket';
-import { delay, exhaustMap, interval, map, race, take, tap, zip } from 'rxjs';
+import {
+  delay,
+  exhaustMap,
+  filter,
+  interval,
+  map,
+  race,
+  take,
+  tap,
+  zip,
+} from 'rxjs';
 import {
   Authenticate,
   PermissionQuery,
@@ -52,16 +62,16 @@ export class Client extends EventEmitter {
     this.emit('socketConnected', this.socket);
 
     this.socket.packet
-      .pipe(filterPacket(PermissionQuery))
-      .subscribe(permissionQuery => {
-        if (permissionQuery.channelId === undefined) {
-          return;
-        }
-
-        this.permissions.set(
-          permissionQuery.channelId,
-          new Permissions(permissionQuery.permissions ?? 0),
-        );
+      .pipe(
+        filterPacket(PermissionQuery),
+        filter(permissionQuery => permissionQuery.channelId !== undefined),
+        map(permissionQuery => ({
+          channelId: permissionQuery.channelId as number,
+          permissions: new Permissions(permissionQuery.permissions ?? 0),
+        })),
+      )
+      .subscribe(({ channelId, permissions }) => {
+        this.permissions.set(channelId, permissions);
       });
 
     const initialize: Promise<this> = new Promise((resolve, reject) =>
