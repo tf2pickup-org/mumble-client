@@ -161,7 +161,11 @@ export class Client extends EventEmitter {
   private async authenticate(): Promise<void> {
     return await this.socket?.send(
       Authenticate,
-      Authenticate.create({ username: this.options.username }),
+      Authenticate.create({
+        username: this.options.username,
+        password: this.options.password,
+        tokens: this.options.tokens,
+      }),
     );
   }
 
