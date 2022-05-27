@@ -5,10 +5,13 @@ import {
   exhaustMap,
   filter,
   interval,
+  lastValueFrom,
   map,
   race,
+  switchMap,
   take,
   tap,
+  throwError,
   zip,
 } from 'rxjs';
 import {
@@ -30,6 +33,7 @@ import { ConnectionRejectedError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { platform, release } from 'os';
 import { Permissions } from './permissions';
+import { EventNames } from './event-names';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -55,11 +59,14 @@ export class Client extends EventEmitter {
     this.options = { ...defaultOptions, ...options };
   }
 
+  /**
+   * Establishes a connection to the provided Mumble server.
+   */
   async connect(): Promise<this> {
     this.socket = new MumbleSocket(
       await tlsConnect(this.options.host, this.options.port, this.options),
     );
-    this.emit('socketConnected', this.socket);
+    this.emit(EventNames.socketConnect, this.socket);
 
     this.socket.packet
       .pipe(
@@ -74,7 +81,7 @@ export class Client extends EventEmitter {
         this.permissions.set(channelId, permissions);
       });
 
-    const initialize: Promise<this> = new Promise((resolve, reject) =>
+    const initialize: Promise<this> = lastValueFrom(
       race(
         zip(
           (this.socket as MumbleSocket).packet.pipe(
@@ -107,19 +114,18 @@ export class Client extends EventEmitter {
             this.welcomeText = serverSync.welcomeText;
             this.serverVersion = version;
             this.serverConfig = serverConfig;
-            this.emit('connect');
+            this.emit(EventNames.connect);
             this.startPinger();
           }),
-          map(([serverSync]) => serverSync),
+          map(() => this),
         ),
-        (this.socket as MumbleSocket).packet.pipe(filterPacket(Reject)),
-      ).subscribe(message => {
-        if (Reject.is(message)) {
-          reject(new ConnectionRejectedError(message));
-        } else {
-          resolve(this);
-        }
-      }),
+        (this.socket as MumbleSocket).packet.pipe(
+          filterPacket(Reject),
+          switchMap(reject =>
+            throwError(() => new ConnectionRejectedError(reject)),
+          ),
+        ),
+      ),
     );
 
     await this.authenticate();
@@ -128,8 +134,11 @@ export class Client extends EventEmitter {
     return await initialize;
   }
 
+  /**
+   * Disconnects from the server.
+   */
   disconnect(): this {
-    this.emit('disconnect');
+    this.emit(EventNames.disconnect);
     this.socket?.end();
     this.socket = undefined;
     return this;

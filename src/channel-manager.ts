@@ -4,12 +4,16 @@ import { Channel } from './channel';
 import { Client } from './client';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { MumbleSocket } from './mumble-socket';
+import { EventNames } from './event-names';
 
+/**
+ * A manager of channels.
+ */
 export class ChannelManager {
   private _channels = new Map<number, Channel>();
 
   constructor(public readonly client: Client) {
-    this.client.on('socketConnected', (socket: MumbleSocket) => {
+    this.client.on(EventNames.socketConnect, (socket: MumbleSocket) => {
       this._channels.clear();
 
       socket.packet
@@ -51,7 +55,9 @@ export class ChannelManager {
   /**
    * Resolve the channel by its full path.
    * @example
+   * ```ts
    * const channel = client.channels.byPath('tf2pickup-pl', '1234', 'RED');
+   * ```
    * @param channelPath The full path to the channel.
    */
   byPath(...channelPath: string[]): Channel | undefined {
@@ -75,7 +81,21 @@ export class ChannelManager {
     return lastParent;
   }
 
-  findAll(predicate: (Channel: Channel) => boolean): Channel[] {
+  /**
+   * Find the first channel that meets the condition specified by the predicate function.
+   * @param predicate The predicate function.
+   * @returns First channel that passes the predicate test, or undefined if no channel was found.
+   */
+  find(predicate: (channel: Channel) => boolean): Channel | undefined {
+    return Array.from(this._channels.values()).find(predicate);
+  }
+
+  /**
+   * Find all channels that meet the condition specified in the predicate function.
+   * @param predicate The predicate function.
+   * @returns List of all channels passing the predicate.
+   */
+  findAll(predicate: (channel: Channel) => boolean): Channel[] {
     return Array.from(this._channels.values()).filter(predicate);
   }
 
@@ -99,7 +119,7 @@ export class ChannelManager {
        * @event Client#channelCreate
        * @property {Channel} channel The channel that was created.
        */
-      this.client.emit('channelCreate', channel);
+      this.client.emit(EventNames.channelCreate, channel);
     } else {
       channel.syncState(channelState);
     }
@@ -117,7 +137,7 @@ export class ChannelManager {
        * @event Client#channelRemove
        * @property {Channel} channel The channel that was removed.
        */
-      this.client.emit('channelRemove', channel);
+      this.client.emit(EventNames.channelRemove, channel);
     }
   }
 }

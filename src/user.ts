@@ -8,12 +8,15 @@ import {
 } from './errors';
 import { moveUserToChannel, setSelfDeaf, setSelfMute } from './commands';
 
+/**
+ * Represents a single user connected to the server.
+ */
 export class User {
   readonly session: number;
   name?: string;
-  channelId: number;
-  selfMute: boolean;
-  selfDeaf: boolean;
+  channelId = 0;
+  selfMute = false;
+  selfDeaf = false;
 
   constructor(
     private readonly client: Client,
@@ -21,29 +24,27 @@ export class User {
   ) {
     this.session = userState.session;
     this.name = userState.name;
-    this.channelId = userState.channelId ?? 0;
-    this.selfMute = userState.selfMute ?? false;
-    this.selfDeaf = userState.selfDeaf ?? false;
+    this.syncState(userState);
   }
 
+  /**
+   * A channel on which the user currently is.
+   */
   get channel(): Channel {
-    return this.client.channels.findAll(
+    return this.client.channels.find(
       channel => channel.id === this.channelId,
-    )[0];
+    ) as Channel;
   }
 
   /**
    * @internal
    */
-  sync(userState: UserState) {
+  syncState(userState: UserState) {
     if (userState.name !== undefined) {
       this.name = userState.name;
     }
 
-    if (
-      userState.channelId !== undefined &&
-      this.channelId !== userState.channelId
-    ) {
+    if (userState.channelId !== undefined) {
       this.channelId = userState.channelId;
     }
 
@@ -55,6 +56,11 @@ export class User {
     }
   }
 
+  /**
+   * Move the user to the given channel.
+   * @param channelId The ID of the target channel.
+   * @returns This user.
+   */
   async moveToChannel(channelId: number): Promise<this> {
     if (!this.client.socket) {
       throw new ClientDisconnectedError();
@@ -77,6 +83,12 @@ export class User {
     return this;
   }
 
+  /**
+   * Set self-mute of the user to the given value. Note: this call is valid only
+   * for the client's user.
+   * @param selfMute The selfMute property.
+   * @returns This user.
+   */
   async setSelfMute(selfMute: boolean): Promise<this> {
     if (!this.client.socket) {
       throw new ClientDisconnectedError();
@@ -86,6 +98,12 @@ export class User {
     return this;
   }
 
+  /**
+   * Set self-deaf of the user to the given value. Note: this call is valid only
+   * for the client's user.
+   * @param selfDeaf The selfDeaf property.
+   * @returns This user.
+   */
   async setSelfDeaf(selfDeaf: boolean): Promise<this> {
     if (!this.client.socket) {
       throw new ClientDisconnectedError();
