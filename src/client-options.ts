@@ -18,6 +18,16 @@ export interface ClientOptions extends ConnectionOptions {
   username: string;
 
   /**
+   * Server or user password.
+   */
+  password?: string;
+
+  /**
+   * Additional access tokens for server ACL groups.
+   */
+  tokens?: string[];
+
+  /**
    * Client name.
    * Default: 'simple mumble bot'
    */
