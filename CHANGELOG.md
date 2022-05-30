@@ -1,5 +1,20 @@
 
 
+# [0.5.0](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.4.2...0.5.0) (2022-05-30)
+
+
+### Bug Fixes
+
+* add setSelfDeaf command ([#48](https://github.com/tf2pickup-org/simple-mumble-bot/issues/48)) ([e4c1ce7](https://github.com/tf2pickup-org/simple-mumble-bot/commit/e4c1ce70cedfa5bd7805ef2f5fbb71e202616bcd))
+* add setSelfMute command ([#47](https://github.com/tf2pickup-org/simple-mumble-bot/issues/47)) ([fc88c95](https://github.com/tf2pickup-org/simple-mumble-bot/commit/fc88c954dc79beeb1ff31036a653f3a95d8248b2))
+* send PermissionQuery only once ([#46](https://github.com/tf2pickup-org/simple-mumble-bot/issues/46)) ([943c72d](https://github.com/tf2pickup-org/simple-mumble-bot/commit/943c72d3cc1e317b2f30bee01223aab63ada684c))
+
+
+### Features
+
+* add ClientDisconnectedError ([#49](https://github.com/tf2pickup-org/simple-mumble-bot/issues/49)) ([24051bb](https://github.com/tf2pickup-org/simple-mumble-bot/commit/24051bbd6aed7a67b4fc57a8f72813bb47d39ed3))
+* support client password and access tokens ([#50](https://github.com/tf2pickup-org/simple-mumble-bot/issues/50)) ([b224733](https://github.com/tf2pickup-org/simple-mumble-bot/commit/b224733ee1c6f596fd5cf896dea493edc844840f))
+
 ## [0.4.2](https://github.com/tf2pickup-org/simple-mumble-bot/compare/0.4.1...0.4.2) (2022-05-26)
 
 
