@@ -15,6 +15,9 @@ import {
 import { Permissions } from './permissions';
 import { User } from './user';
 
+/**
+ * Represents a single channel.
+ */
 export class Channel {
   readonly id: number;
   name?: string;
@@ -58,20 +61,34 @@ export class Channel {
     ].filter(l => !channelState.linksRemove.includes(l));
   }
 
+  /**
+   * List of users that are currently connected to the channel.
+   */
   get users(): User[] {
     return this.client.users.findAll(user => user.channelId === this.id);
   }
 
+  /**
+   * List of sub-channels of this channel.
+   */
   get subChannels(): Channel[] {
     return this.client.channels.findAll(channel => channel.parent === this.id);
   }
 
+  /**
+   * List of channels that are linked to this one.
+   */
   get linkedChannels(): Channel[] {
     return this.links
       .map(ch => this.client.channels.byId(ch))
       .filter(ch => ch !== undefined) as Channel[];
   }
 
+  /**
+   * Create a sub-channel.
+   * @param name The name of the channel to create.
+   * @returns The newly created channel.
+   */
   async createSubChannel(name: string): Promise<Channel> {
     if (!this.client.socket) {
       throw new ClientDisconnectedError();
@@ -86,7 +103,11 @@ export class Channel {
     return this.client.channels.byId(newChannelId) as Channel;
   }
 
-  async remove() {
+  /**
+   * Remove this channel and all sub-channels.
+   * @returns This channel.
+   */
+  async remove(): Promise<this> {
     if (!this.client.socket) {
       throw new ClientDisconnectedError();
     }
@@ -100,6 +121,10 @@ export class Channel {
     return this;
   }
 
+  /**
+   * Fetch permissions to this channel.
+   * @returns Permissions.
+   */
   async getPermissions(): Promise<Permissions> {
     if (this.client.permissions.has(this.id)) {
       return this.client.permissions.get(this.id) as Permissions;
@@ -115,6 +140,11 @@ export class Channel {
     );
   }
 
+  /**
+   * Link two channels together.
+   * @param otherChannel The other channel to link to this one.
+   * @returns This channel.
+   */
   async link(otherChannel: Channel | number): Promise<this> {
     if (!this.client.socket) {
       throw new ClientDisconnectedError();
@@ -140,6 +170,11 @@ export class Channel {
     return this;
   }
 
+  /**
+   * Removes link between two channels.
+   * @param otherChannel The channel to unlink.
+   * @returns This channel.
+   */
   async unlink(otherChannel: Channel | number): Promise<this> {
     if (!this.client.socket) {
       throw new ClientDisconnectedError();
