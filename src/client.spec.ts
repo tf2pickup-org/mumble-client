@@ -7,6 +7,7 @@ import {
 } from '@tf2pickup-org/mumble-protocol';
 import { Subject } from 'rxjs';
 import { Client } from './client';
+import { EventNames } from './event-names';
 import { MumbleSocket } from './mumble-socket';
 import { PacketType } from './packet-type';
 
@@ -43,7 +44,7 @@ describe(Client.name, () => {
     let socket: jest.Mocked<MumbleSocket> & { packet: Subject<PacketType> };
 
     beforeEach(async () => {
-      client.on('socketConnected', s => {
+      client.on(EventNames.socketConnect, s => {
         socket = s;
 
         socket.send.mockImplementation(type => {
