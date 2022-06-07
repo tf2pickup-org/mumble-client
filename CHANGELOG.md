@@ -1,5 +1,12 @@
 
 
+# [0.6.0](https://github.com/tf2pickup-org/mumble-client/compare/0.5.0...0.6.0) (2022-06-07)
+
+
+### Features
+
+* rename package to @tf2pickup-org/mumble-client ([cb16547](https://github.com/tf2pickup-org/mumble-client/commit/cb16547c158b4488c7c5b182da66343961e940b4))
+
 # [0.5.0](https://github.com/tf2pickup-org/mumble-client/compare/0.4.2...0.5.0) (2022-05-30)
 
 
