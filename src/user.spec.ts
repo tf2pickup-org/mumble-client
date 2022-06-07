@@ -64,6 +64,39 @@ describe('User', () => {
       });
     });
 
+    it('should update mute', () => {
+      user.syncState(UserState.create({ mute: true }));
+      expect(user.mute).toBe(true);
+      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+        mute: {
+          previousValue: false,
+          currentValue: true,
+        },
+      });
+    });
+
+    it('should update deaf', () => {
+      user.syncState(UserState.create({ deaf: true }));
+      expect(user.deaf).toBe(true);
+      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+        deaf: {
+          previousValue: false,
+          currentValue: true,
+        },
+      });
+    });
+
+    it('should update suppress', () => {
+      user.syncState(UserState.create({ suppress: true }));
+      expect(user.suppress).toBe(true);
+      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+        suppress: {
+          previousValue: false,
+          currentValue: true,
+        },
+      });
+    });
+
     it('should update selfMute', () => {
       user.syncState(UserState.create({ selfMute: true }));
       expect(user.selfMute).toBe(true);
