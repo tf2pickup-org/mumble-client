@@ -4,8 +4,10 @@ export enum EventNames {
   disconnect = 'disconnect',
 
   channelCreate = 'channelCreate',
+  channelUpdate = 'channelUpdate',
   channelRemove = 'channelRemove',
 
   userCreate = 'userCreate',
+  userUpdate = 'userUpdate',
   userRemove = 'userRemove',
 }

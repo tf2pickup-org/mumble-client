@@ -7,6 +7,12 @@ import {
   NoSuchChannelError,
 } from './errors';
 import { moveUserToChannel, setSelfDeaf, setSelfMute } from './commands';
+import { Change } from './change';
+import { EventNames } from './event-names';
+
+export type UserChanges = {
+  [P in keyof Omit<User, 'session'>]?: Change<User[P]>;
+};
 
 /**
  * Represents a single user connected to the server.
@@ -24,7 +30,7 @@ export class User {
   ) {
     this.session = userState.session;
     this.name = userState.name;
-    this.syncState(userState);
+    this.syncState(userState, false);
   }
 
   /**
@@ -39,20 +45,49 @@ export class User {
   /**
    * @internal
    */
-  syncState(userState: UserState) {
+  syncState(userState: UserState, emitUpdate = true) {
+    const changes: UserChanges = {};
+
     if (userState.name !== undefined) {
+      changes.name = {
+        previousValue: `${this.name}`,
+        currentValue: `${userState.name}`,
+      };
       this.name = userState.name;
     }
 
     if (userState.channelId !== undefined) {
+      changes.channelId = {
+        previousValue: this.channelId,
+        currentValue: userState.channelId,
+      };
       this.channelId = userState.channelId;
     }
 
     if (userState.selfMute !== undefined) {
+      changes.selfMute = {
+        previousValue: this.selfMute,
+        currentValue: userState.selfMute,
+      };
       this.selfMute = userState.selfMute;
     }
+
     if (userState.selfDeaf !== undefined) {
+      changes.selfDeaf = {
+        previousValue: this.selfDeaf,
+        currentValue: userState.selfDeaf,
+      };
       this.selfDeaf = userState.selfDeaf;
+    }
+
+    if (emitUpdate && Object.keys(changes).length > 0) {
+      /**
+       * Emitted when a user is updated.
+       * @event Client#userUpdate
+       * @property {User} user The user that was updated.
+       * @property {UserChanges} changes What changes were made to the user.
+       */
+      this.client.emit(EventNames.userUpdate, this, changes);
     }
   }
 
