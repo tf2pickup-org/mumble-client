@@ -10,8 +10,13 @@ import { moveUserToChannel, setSelfDeaf, setSelfMute } from './commands';
 import { Change } from './change';
 import { EventNames } from './event-names';
 
+type UserWritableProps = Pick<
+  User,
+  'name' | 'channelId' | 'mute' | 'deaf' | 'suppress' | 'selfMute' | 'selfDeaf'
+>;
+
 export type UserChanges = {
-  [P in keyof Omit<User, 'session'>]?: Change<User[P]>;
+  [P in keyof UserWritableProps]?: Change<User[P]>;
 };
 
 /**
@@ -21,6 +26,9 @@ export class User {
   readonly session: number;
   name?: string;
   channelId = 0;
+  mute = false;
+  deaf = false;
+  suppress = false;
   selfMute = false;
   selfDeaf = false;
 
@@ -48,37 +56,13 @@ export class User {
   syncState(userState: UserState, emitUpdate = true) {
     const changes: UserChanges = {};
 
-    if (userState.name !== undefined) {
-      changes.name = {
-        previousValue: `${this.name}`,
-        currentValue: `${userState.name}`,
-      };
-      this.name = userState.name;
-    }
-
-    if (userState.channelId !== undefined) {
-      changes.channelId = {
-        previousValue: this.channelId,
-        currentValue: userState.channelId,
-      };
-      this.channelId = userState.channelId;
-    }
-
-    if (userState.selfMute !== undefined) {
-      changes.selfMute = {
-        previousValue: this.selfMute,
-        currentValue: userState.selfMute,
-      };
-      this.selfMute = userState.selfMute;
-    }
-
-    if (userState.selfDeaf !== undefined) {
-      changes.selfDeaf = {
-        previousValue: this.selfDeaf,
-        currentValue: userState.selfDeaf,
-      };
-      this.selfDeaf = userState.selfDeaf;
-    }
+    this.syncProperty('name', userState.name, changes);
+    this.syncProperty('channelId', userState.channelId, changes);
+    this.syncProperty('mute', userState.mute, changes);
+    this.syncProperty('deaf', userState.deaf, changes);
+    this.syncProperty('suppress', userState.suppress, changes);
+    this.syncProperty('selfMute', userState.selfMute, changes);
+    this.syncProperty('selfDeaf', userState.selfDeaf, changes);
 
     if (emitUpdate && Object.keys(changes).length > 0) {
       /**
@@ -146,5 +130,21 @@ export class User {
 
     await setSelfDeaf(this.client.socket, this.session, selfDeaf);
     return this;
+  }
+
+  private syncProperty<R extends keyof UserWritableProps>(
+    propertyName: R,
+    newValue: this[R] | undefined,
+    changes: UserChanges,
+  ) {
+    if (newValue === undefined) {
+      return;
+    }
+
+    (changes[propertyName] as Change<User[R]>) = {
+      previousValue: this[propertyName],
+      currentValue: newValue,
+    };
+    this[propertyName] = newValue;
   }
 }

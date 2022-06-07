@@ -1,4 +1,4 @@
-export interface Change<T = unknown> {
+export interface Change<T> {
   previousValue: T;
   currentValue: T;
 }
