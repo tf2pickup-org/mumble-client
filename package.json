@@ -45,7 +45,7 @@
     "eslint": "8.17.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
-    "jest": "28.1.0",
+    "jest": "28.1.1",
     "prettier": "2.6.2",
     "release-it": "15.0.0",
     "trace-unhandled": "2.0.1",

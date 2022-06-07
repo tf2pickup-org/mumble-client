@@ -488,7 +488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/core@npm:^28.1.0, @jest/core@npm:^28.1.1":
+"@jest/core@npm:^28.1.1":
   version: 28.1.1
   resolution: "@jest/core@npm:28.1.1"
   dependencies:
@@ -1036,7 +1036,7 @@ __metadata:
     eslint: 8.17.0
     eslint-config-prettier: 8.5.0
     eslint-plugin-prettier: 4.0.0
-    jest: 28.1.0
+    jest: 28.1.1
     prettier: 2.6.2
     release-it: 15.0.0
     rxjs: 7.5.5
@@ -4679,7 +4679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-cli@npm:^28.1.0":
+"jest-cli@npm:^28.1.1":
   version: 28.1.1
   resolution: "jest-cli@npm:28.1.1"
   dependencies:
@@ -5093,13 +5093,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:28.1.0":
-  version: 28.1.0
-  resolution: "jest@npm:28.1.0"
+"jest@npm:28.1.1":
+  version: 28.1.1
+  resolution: "jest@npm:28.1.1"
   dependencies:
-    "@jest/core": ^28.1.0
+    "@jest/core": ^28.1.1
+    "@jest/types": ^28.1.1
     import-local: ^3.0.2
-    jest-cli: ^28.1.0
+    jest-cli: ^28.1.1
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
@@ -5107,7 +5108,7 @@ __metadata:
       optional: true
   bin:
     jest: bin/jest.js
-  checksum: f025164c408cf5ddb6e74dac1e8cbaf94c1c31dd1c67aba4ceee5989b2d8a77886db8ed1fb88853b45cf194b14cd802b454bbbe6b278a1e2140250297dc100d3
+  checksum: 398a143d9ef1a78e2ba516a09b6343cb926bf20e29ad400141dd3bd57e964195b82817a60eb8745ba9006fcd7c028ceda5108e3c426fa4e29877f28d87cf88a3
   languageName: node
   linkType: hard
 
