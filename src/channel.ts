@@ -1,4 +1,5 @@
 import { ChannelState } from '@tf2pickup-org/mumble-protocol';
+import { Change } from './change';
 import { Client } from './client';
 import {
   createChannel,
@@ -14,6 +15,15 @@ import {
 } from './errors';
 import { Permissions } from './permissions';
 import { User } from './user';
+
+type ChannelChangeableProps = Pick<
+  Channel,
+  'name' | 'parent' | 'temporary' | 'linkedChannels'
+>;
+
+export type ChannelChanges = {
+  -readonly [P in keyof ChannelChangeableProps]?: Change<Channel[P]>;
+};
 
 /**
  * Represents a single channel.
@@ -39,26 +49,31 @@ export class Channel {
   /**
    * @internal
    */
-  syncState(channelState: ChannelState) {
-    if (channelState.name !== undefined) {
-      this.name = channelState.name;
+  syncState(channelState: ChannelState): ChannelChanges {
+    const changes: ChannelChanges = {};
+
+    this.syncProperty('name', channelState.name, changes);
+    this.syncProperty('parent', channelState.parent, changes);
+    this.syncProperty('temporary', channelState.temporary, changes);
+
+    if (channelState.linksAdd.length + channelState.linksRemove.length > 0) {
+      changes.linkedChannels = {
+        previousValue: [...this.linkedChannels],
+        currentValue: [],
+      };
+
+      this.links = [
+        ...new Set([
+          ...this.links,
+          ...channelState.links,
+          ...channelState.linksAdd,
+        ]),
+      ].filter(l => !channelState.linksRemove.includes(l));
+
+      changes.linkedChannels.currentValue = this.linkedChannels;
     }
 
-    if (channelState.parent !== undefined) {
-      this.parent = channelState.parent;
-    }
-
-    if (channelState.temporary !== undefined) {
-      this.temporary = channelState.temporary;
-    }
-
-    this.links = [
-      ...new Set([
-        ...this.links,
-        ...channelState.links,
-        ...channelState.linksAdd,
-      ]),
-    ].filter(l => !channelState.linksRemove.includes(l));
+    return changes;
   }
 
   /**
@@ -198,5 +213,21 @@ export class Channel {
 
     await unlinkChannels(this.client.socket, this.id, targetChannel.id);
     return this;
+  }
+
+  private syncProperty<R extends keyof ChannelChangeableProps>(
+    propertyName: R,
+    newValue: this[R] | undefined,
+    changes: ChannelChanges,
+  ) {
+    if (newValue === undefined) {
+      return;
+    }
+
+    (changes[propertyName] as Change<Channel[R]>) = {
+      previousValue: this[propertyName],
+      currentValue: newValue,
+    };
+    this[propertyName] = newValue;
   }
 }
