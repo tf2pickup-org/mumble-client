@@ -48,26 +48,43 @@ describe('Channel', () => {
     expect(channel.name).toEqual('FAKE_CHANNEL_NAME');
   });
 
-  describe('sync()', () => {
+  describe('syncState()', () => {
     let channel: Channel;
 
     beforeEach(() => {
       channel = new Channel(
         client,
-        ChannelState.create({ channelId: 0 }) as ChannelState & {
+        ChannelState.create({
+          channelId: 0,
+          name: 'FAKE_CHANNEL_NAME',
+        }) as ChannelState & {
           channelId: number;
         },
       );
     });
 
     it('should update name', () => {
-      channel.syncState(ChannelState.create({ name: 'NEW_CHANNEL_NAME' }));
+      const changes = channel.syncState(
+        ChannelState.create({ name: 'NEW_CHANNEL_NAME' }),
+      );
       expect(channel.name).toEqual('NEW_CHANNEL_NAME');
+      expect(changes).toEqual({
+        name: {
+          previousValue: 'FAKE_CHANNEL_NAME',
+          currentValue: 'NEW_CHANNEL_NAME',
+        },
+      });
     });
 
     it('should update parent', () => {
-      channel.syncState(ChannelState.create({ parent: 10 }));
+      const changes = channel.syncState(ChannelState.create({ parent: 10 }));
       expect(channel.parent).toEqual(10);
+      expect(changes).toEqual({
+        parent: {
+          previousValue: undefined,
+          currentValue: 10,
+        },
+      });
     });
   });
 
