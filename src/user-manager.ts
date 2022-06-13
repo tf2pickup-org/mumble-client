@@ -75,7 +75,7 @@ export class UserManager {
          * @property {User} user The user that was updated.
          * @property {UserChanges} changes What changes were made to the user.
          */
-        this.client.emit(EventNames.userUpdate, this, changes);
+        this.client.emit(EventNames.userUpdate, user, changes);
       }
     }
   }
