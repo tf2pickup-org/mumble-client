@@ -121,7 +121,16 @@ export class ChannelManager {
        */
       this.client.emit(EventNames.channelCreate, channel);
     } else {
-      channel.syncState(channelState);
+      const changes = channel.syncState(channelState);
+      if (Object.keys(changes).length > 0) {
+        /**
+         * Emitted when a channel is updated.
+         * @event Client#channelUpdate
+         * @property {Channel} channel The channel that was updated.
+         * @property {ChannelChanges} changes What changes were made to the channel.
+         */
+        this.client.emit(EventNames.channelUpdate, channel, changes);
+      }
     }
   }
 
