@@ -2,7 +2,6 @@ import { UserState } from '@tf2pickup-org/mumble-protocol';
 import { ChannelManager } from './channel-manager';
 import { Client } from './client';
 import { ClientDisconnectedError, NoSuchChannelError } from './errors';
-import { EventNames } from './event-names';
 import { MumbleSocket } from './mumble-socket';
 import { Permissions } from './permissions';
 import { User } from './user';
@@ -43,9 +42,11 @@ describe('User', () => {
 
   describe('syncState()', () => {
     it('should update name', () => {
-      user.syncState(UserState.create({ name: 'NEW_USER_NAME' }));
+      const changes = user.syncState(
+        UserState.create({ name: 'NEW_USER_NAME' }),
+      );
       expect(user.name).toEqual('NEW_USER_NAME');
-      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+      expect(changes).toEqual({
         name: {
           previousValue: 'FAKE_USER',
           currentValue: 'NEW_USER_NAME',
@@ -54,9 +55,9 @@ describe('User', () => {
     });
 
     it('should update channelId', () => {
-      user.syncState(UserState.create({ channelId: 30 }));
+      const changes = user.syncState(UserState.create({ channelId: 30 }));
       expect(user.channelId).toBe(30);
-      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+      expect(changes).toEqual({
         channelId: {
           previousValue: 0,
           currentValue: 30,
@@ -65,9 +66,9 @@ describe('User', () => {
     });
 
     it('should update mute', () => {
-      user.syncState(UserState.create({ mute: true }));
+      const changes = user.syncState(UserState.create({ mute: true }));
       expect(user.mute).toBe(true);
-      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+      expect(changes).toEqual({
         mute: {
           previousValue: false,
           currentValue: true,
@@ -76,9 +77,9 @@ describe('User', () => {
     });
 
     it('should update deaf', () => {
-      user.syncState(UserState.create({ deaf: true }));
+      const changes = user.syncState(UserState.create({ deaf: true }));
       expect(user.deaf).toBe(true);
-      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+      expect(changes).toEqual({
         deaf: {
           previousValue: false,
           currentValue: true,
@@ -87,9 +88,9 @@ describe('User', () => {
     });
 
     it('should update suppress', () => {
-      user.syncState(UserState.create({ suppress: true }));
+      const changes = user.syncState(UserState.create({ suppress: true }));
       expect(user.suppress).toBe(true);
-      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+      expect(changes).toEqual({
         suppress: {
           previousValue: false,
           currentValue: true,
@@ -98,9 +99,9 @@ describe('User', () => {
     });
 
     it('should update selfMute', () => {
-      user.syncState(UserState.create({ selfMute: true }));
+      const changes = user.syncState(UserState.create({ selfMute: true }));
       expect(user.selfMute).toBe(true);
-      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+      expect(changes).toEqual({
         selfMute: {
           previousValue: false,
           currentValue: true,
@@ -109,9 +110,9 @@ describe('User', () => {
     });
 
     it('should update selfDeaf', () => {
-      user.syncState(UserState.create({ selfDeaf: true }));
+      const changes = user.syncState(UserState.create({ selfDeaf: true }));
       expect(user.selfDeaf).toBe(true);
-      expect(client.emit).toHaveBeenCalledWith(EventNames.userUpdate, user, {
+      expect(changes).toEqual({
         selfDeaf: {
           previousValue: false,
           currentValue: true,
