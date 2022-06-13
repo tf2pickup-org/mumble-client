@@ -8,7 +8,6 @@ import {
 } from './errors';
 import { moveUserToChannel, setSelfDeaf, setSelfMute } from './commands';
 import { Change } from './change';
-import { EventNames } from './event-names';
 
 type UserWritableProps = Pick<
   User,
@@ -38,7 +37,7 @@ export class User {
   ) {
     this.session = userState.session;
     this.name = userState.name;
-    this.syncState(userState, false);
+    this.syncState(userState);
   }
 
   /**
@@ -53,9 +52,8 @@ export class User {
   /**
    * @internal
    */
-  syncState(userState: UserState, emitUpdate = true) {
+  syncState(userState: UserState): UserChanges {
     const changes: UserChanges = {};
-
     this.syncProperty('name', userState.name, changes);
     this.syncProperty('channelId', userState.channelId, changes);
     this.syncProperty('mute', userState.mute, changes);
@@ -63,16 +61,7 @@ export class User {
     this.syncProperty('suppress', userState.suppress, changes);
     this.syncProperty('selfMute', userState.selfMute, changes);
     this.syncProperty('selfDeaf', userState.selfDeaf, changes);
-
-    if (emitUpdate && Object.keys(changes).length > 0) {
-      /**
-       * Emitted when a user is updated.
-       * @event Client#userUpdate
-       * @property {User} user The user that was updated.
-       * @property {UserChanges} changes What changes were made to the user.
-       */
-      this.client.emit(EventNames.userUpdate, this, changes);
-    }
+    return changes;
   }
 
   /**
