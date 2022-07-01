@@ -34,18 +34,33 @@ describe('Creates and removes channels (e2e)', () => {
   });
 
   it('should create channels', async () => {
+    let channelCreatedEventEmitted = false;
+    client.once('channelCreate', (channel: Channel) => {
+      expect(channel.name).toEqual('sub1');
+      channelCreatedEventEmitted = true;
+    });
+
     const channel = client.user?.channel as Channel;
     expect(channel).toBeTruthy();
     const sub1 = await channel.createSubChannel('sub1');
     expect(sub1.parent).toEqual(channel.id);
+    expect(channelCreatedEventEmitted).toBe(true);
 
     const sub2 = await sub1.createSubChannel('sub2');
     expect(sub2.parent).toEqual(sub1.id);
   });
 
   it('should remove channels', async () => {
+    let channelRemoveEventEmitted = false;
+
+    client.once('channelRemove', (channel: Channel) => {
+      expect(channel.name).toEqual('sub1');
+      channelRemoveEventEmitted = true;
+    });
+
     const channel = client.channels.byName('sub1');
     await channel?.remove();
     expect(client.channels.byName('sub1')).toBe(undefined);
+    expect(channelRemoveEventEmitted).toBe(true);
   });
 });
