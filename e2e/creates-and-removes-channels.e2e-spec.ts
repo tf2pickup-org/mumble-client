@@ -58,9 +58,13 @@ describe('Creates and removes channels (e2e)', () => {
       channelRemoveEventEmitted = true;
     });
 
-    const channel = client.channels.byName('sub2');
-    await channel?.remove();
+    const sub2 = client.channels.byName('sub2');
+    await sub2?.remove();
     expect(client.channels.byName('sub2')).toBe(undefined);
     expect(channelRemoveEventEmitted).toBe(true);
+
+    const sub1 = client.channels.byName('sub1');
+    await sub1?.remove();
+    expect(client.channels.byName('sub1')).toBe(undefined);
   });
 });
