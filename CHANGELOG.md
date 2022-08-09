@@ -1,5 +1,20 @@
 
 
+# [0.7.0](https://github.com/tf2pickup-org/mumble-client/compare/0.6.0...0.7.0) (2022-08-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1 ([#63](https://github.com/tf2pickup-org/mumble-client/issues/63)) ([dff6eac](https://github.com/tf2pickup-org/mumble-client/commit/dff6eacb0579afb1e5a6f80b51a5b27b36dac7ad))
+* **deps:** update dependency rxjs to v7.5.6 ([#94](https://github.com/tf2pickup-org/mumble-client/issues/94)) ([6b2e0a1](https://github.com/tf2pickup-org/mumble-client/commit/6b2e0a18631e6545e917c27ecd60d83a9dbc602e))
+
+
+### Features
+
+* add ChannelUpdate event ([#67](https://github.com/tf2pickup-org/mumble-client/issues/67)) ([27e005c](https://github.com/tf2pickup-org/mumble-client/commit/27e005c41c7e966e739bc173e6fe28107f674240))
+* add userUpdate event ([#64](https://github.com/tf2pickup-org/mumble-client/issues/64)) ([d56f4d8](https://github.com/tf2pickup-org/mumble-client/commit/d56f4d8447fe4ea08e65eaf1aa5f107738b2662e))
+* support mute, deaf and suppress props ([#66](https://github.com/tf2pickup-org/mumble-client/issues/66)) ([f3fa123](https://github.com/tf2pickup-org/mumble-client/commit/f3fa12395eb437ae5770210bdfc754aa605f1ba6))
+
 # [0.6.0](https://github.com/tf2pickup-org/mumble-client/compare/0.5.0...0.6.0) (2022-06-07)
 
 
