@@ -1170,7 +1170,7 @@ __metadata:
     eslint-plugin-prettier: 4.2.1
     jest: 29.1.2
     prettier: 2.7.1
-    release-it: 15.4.3
+    release-it: 15.5.0
     rxjs: 7.5.7
     trace-unhandled: 2.0.1
     ts-jest: 29.0.3
@@ -6926,9 +6926,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"release-it@npm:15.4.3":
-  version: 15.4.3
-  resolution: "release-it@npm:15.4.3"
+"release-it@npm:15.5.0":
+  version: 15.5.0
+  resolution: "release-it@npm:15.5.0"
   dependencies:
     "@iarna/toml": 2.2.5
     "@octokit/rest": 19.0.4
@@ -6959,7 +6959,7 @@ __metadata:
     yargs-parser: 21.1.1
   bin:
     release-it: bin/release-it.js
-  checksum: a3b13867841a4bbd50e100eb878f02f775a2796591887f67519fea0a4c84611cb38d6b837dfb6909c737bb0cc85a4f7b5113aaa0fbe5986e625e82ed29626120
+  checksum: e00ebb638b407b193633308410591039970cf06450b053569e7801c2e759ddff29105a6002c31dc1250d4b8de9f7bd9b635f050144e3330a75834b6b2f848508
   languageName: node
   linkType: hard
 
