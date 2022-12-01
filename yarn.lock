@@ -1167,7 +1167,7 @@ __metadata:
     trace-unhandled: 2.0.1
     ts-jest: 29.0.3
     ts-node: 10.9.1
-    tsc-alias: 1.7.1
+    tsc-alias: 1.8.0
     tsconfig-paths: 4.1.1
     typescript: 4.9.3
   languageName: unknown
@@ -7845,9 +7845,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsc-alias@npm:1.7.1":
-  version: 1.7.1
-  resolution: "tsc-alias@npm:1.7.1"
+"tsc-alias@npm:1.8.0":
+  version: 1.8.0
+  resolution: "tsc-alias@npm:1.8.0"
   dependencies:
     chokidar: ^3.5.3
     commander: ^9.0.0
@@ -7857,7 +7857,7 @@ __metadata:
     plimit-lit: ^1.2.6
   bin:
     tsc-alias: dist/bin/index.js
-  checksum: 3e153cad544997303c1ff030358f898b4b381e692a05170e772fb35182d23c3c52c5e604ff00752f33a6133b27552f6b3794b05d8b9e0d8997cd3fe76a03bafd
+  checksum: c79fb71ee8b7645e16f39e7941e12e94f39f7a77a7eb4f6a83e17c23734137e9229a2ac7f006e99adf5bb3fc0c3a7c23b2f6aa80b83e9d3afaadc52b4951898c
   languageName: node
   linkType: hard
 
