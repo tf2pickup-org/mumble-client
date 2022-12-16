@@ -33,7 +33,7 @@
   ],
   "dependencies": {
     "@tf2pickup-org/mumble-protocol": "1.0.1",
-    "rxjs": "7.6.0"
+    "rxjs": "7.8.0"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "5.1.1",
