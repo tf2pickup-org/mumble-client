@@ -31,9 +31,9 @@ import { encodeMumbleVersion } from './encode-mumble-version';
 import { ClientOptions } from './client-options';
 import { ConnectionRejectedError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
-import { platform, release } from 'os';
 import { Permissions } from './permissions';
 import { EventNames } from './event-names';
+import { discoverPlatform } from './discover-platform';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -148,6 +148,7 @@ export class Client extends EventEmitter {
    * @internal
    */
   private async sendVersion(): Promise<void> {
+    const { platform, version: platformVersion } = await discoverPlatform();
     const version = encodeMumbleVersion({
       major: 1,
       minor: 4,
@@ -158,8 +159,8 @@ export class Client extends EventEmitter {
       Version.create({
         release: this.options.clientName,
         version,
-        os: platform(),
-        osVersion: release(),
+        os: platform,
+        osVersion: platformVersion,
       }),
     );
   }
