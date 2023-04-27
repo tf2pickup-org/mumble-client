@@ -51,7 +51,7 @@
     "trace-unhandled": "2.0.1",
     "ts-jest": "29.1.0",
     "ts-node": "10.9.1",
-    "tsc-alias": "1.8.5",
+    "tsc-alias": "1.8.6",
     "tsconfig-paths": "4.2.0",
     "typescript": "5.0.4"
   },
