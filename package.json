@@ -1,6 +1,6 @@
 {
   "name": "@tf2pickup-org/mumble-client",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A simple bot for managing mumble servers",
   "license": "MIT",
   "publishConfig": {

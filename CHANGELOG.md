@@ -1,5 +1,16 @@
 
 
+## [0.7.1](https://github.com/tf2pickup-org/mumble-client/compare/0.7.0...0.7.1) (2023-06-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.1 ([#116](https://github.com/tf2pickup-org/mumble-client/issues/116)) ([e117876](https://github.com/tf2pickup-org/mumble-client/commit/e117876a6a4a4b45ca28525e5c7c4293c5c242d4))
+* **deps:** update dependency rxjs to v7.5.7 ([#150](https://github.com/tf2pickup-org/mumble-client/issues/150)) ([ab01b79](https://github.com/tf2pickup-org/mumble-client/commit/ab01b798217fbc7ac57a90205d96aa35d1e1d5c2))
+* **deps:** update dependency rxjs to v7.6.0 ([#199](https://github.com/tf2pickup-org/mumble-client/issues/199)) ([6777b97](https://github.com/tf2pickup-org/mumble-client/commit/6777b97915b097541cb283aea19e5c41283a9d11))
+* **deps:** update dependency rxjs to v7.8.0 ([#212](https://github.com/tf2pickup-org/mumble-client/issues/212)) ([67eeb0d](https://github.com/tf2pickup-org/mumble-client/commit/67eeb0d82bfbe9c1a6d0bc72f26c71046d349058))
+* **deps:** update dependency rxjs to v7.8.1 ([#317](https://github.com/tf2pickup-org/mumble-client/issues/317)) ([bc75921](https://github.com/tf2pickup-org/mumble-client/commit/bc75921dbc312994f1c479059c19f114f2514a21))
+
 # [0.7.0](https://github.com/tf2pickup-org/mumble-client/compare/0.6.0...0.7.0) (2022-08-09)
 
 
