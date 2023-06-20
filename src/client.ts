@@ -21,6 +21,7 @@ import {
   Reject,
   ServerConfig,
   ServerSync,
+  UserRemove,
   Version,
 } from '@tf2pickup-org/mumble-protocol';
 import { User } from './user';
@@ -79,6 +80,18 @@ export class Client extends EventEmitter {
       )
       .subscribe(({ channelId, permissions }) => {
         this.permissions.set(channelId, permissions);
+      });
+
+    this.socket.packet
+      .pipe(
+        filterPacket(UserRemove),
+        filter(userRemove => userRemove.session === this.user?.session),
+      )
+      .subscribe(userRemove => {
+        this.emit(EventNames.disconnect, {
+          reason: userRemove.reason,
+        });
+        this.socket = undefined;
       });
 
     const initialize: Promise<this> = lastValueFrom(
@@ -192,6 +205,6 @@ export class Client extends EventEmitter {
     const subscription = interval(this.options.pingInterval)
       .pipe(exhaustMap(() => this.ping()))
       .subscribe();
-    this.on('disconnect', () => subscription.unsubscribe());
+    this.on(EventNames.disconnect, () => subscription.unsubscribe());
   }
 }
