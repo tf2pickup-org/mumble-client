@@ -1,5 +1,12 @@
 
 
+## [0.7.2](https://github.com/tf2pickup-org/mumble-client/compare/0.7.1...0.7.2) (2023-06-20)
+
+
+### Bug Fixes
+
+* handle server-induced disconnects ([#356](https://github.com/tf2pickup-org/mumble-client/issues/356)) ([b57c2dd](https://github.com/tf2pickup-org/mumble-client/commit/b57c2ddf0cf018ea08e96b9f13425038e627e7be))
+
 ## [0.7.1](https://github.com/tf2pickup-org/mumble-client/compare/0.7.0...0.7.1) (2023-06-19)
 
 
