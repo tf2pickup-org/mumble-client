@@ -32,7 +32,7 @@
     "bot"
   ],
   "dependencies": {
-    "@tf2pickup-org/mumble-protocol": "1.0.1",
+    "@tf2pickup-org/mumble-protocol": "1.0.2",
     "rxjs": "7.8.1"
   },
   "devDependencies": {
