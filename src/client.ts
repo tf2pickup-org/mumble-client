@@ -187,6 +187,7 @@ export class Client extends EventEmitter {
         username: this.options.username,
         password: this.options.password,
         tokens: this.options.tokens,
+        opus: true,
       }),
     );
   }
