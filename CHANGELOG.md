@@ -1,5 +1,13 @@
 
 
+## [0.7.3](https://github.com/tf2pickup-org/mumble-client/compare/0.7.2...0.7.3) (2023-06-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.2 ([#357](https://github.com/tf2pickup-org/mumble-client/issues/357)) ([25d9d03](https://github.com/tf2pickup-org/mumble-client/commit/25d9d031c8297fbf498a8f065eccc7da12c8855d))
+* report using OPUS codec ([#358](https://github.com/tf2pickup-org/mumble-client/issues/358)) ([15849ad](https://github.com/tf2pickup-org/mumble-client/commit/15849ad308ec5856e57cb6a147315f73d466c86d))
+
 ## [0.7.2](https://github.com/tf2pickup-org/mumble-client/compare/0.7.1...0.7.2) (2023-06-20)
 
 
