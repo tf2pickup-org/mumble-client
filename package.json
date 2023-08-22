@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "7.0.0",
-    "@tsconfig/node16": "16.1.0",
+    "@tsconfig/node16": "16.1.1",
     "@types/jest": "29.5.3",
     "@types/node": "18.17.6",
     "@typescript-eslint/eslint-plugin": "6.4.1",
