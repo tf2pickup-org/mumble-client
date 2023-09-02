@@ -39,7 +39,7 @@
     "@release-it/conventional-changelog": "7.0.0",
     "@tsconfig/node16": "16.1.1",
     "@types/jest": "29.5.4",
-    "@types/node": "18.17.12",
+    "@types/node": "18.17.13",
     "@typescript-eslint/eslint-plugin": "6.5.0",
     "@typescript-eslint/parser": "6.5.0",
     "eslint": "8.48.0",
