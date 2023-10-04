@@ -13,6 +13,7 @@
       "automerge": true
     }
   ],
+  "automergeType": "branch",
   "labels": ["renovate"],
   "semanticCommits": "enabled"
 }
