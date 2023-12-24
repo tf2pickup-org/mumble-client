@@ -165,7 +165,7 @@ export class Client extends EventEmitter {
     const version = {
       major: 1,
       minor: 4,
-      patch: 230,
+      patch: 287,
     };
     return await this.socket?.send(
       Version,
