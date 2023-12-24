@@ -1121,10 +1121,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@protobuf-ts/runtime@npm:2.9.1":
-  version: 2.9.1
-  resolution: "@protobuf-ts/runtime@npm:2.9.1"
-  checksum: b07664d251cf4a93df4da7bdf507e1901ad3cecf4b351073158d26671f5dba3597eee6d4fdebcd2575afb32c0bc4d33dbbbb774a58bbc617eb58adf6bf1f018b
+"@protobuf-ts/runtime@npm:2.9.3":
+  version: 2.9.3
+  resolution: "@protobuf-ts/runtime@npm:2.9.3"
+  checksum: 312fd283683340a3b4d87d94ab74ce28d9e5b3f4fc594f7847da249d49f8b05682f298f7f7217320e90526a28da7c5fe4fd463115a45b1b3ffe3be9b34ba814a
   languageName: node
   linkType: hard
 
@@ -1195,7 +1195,7 @@ __metadata:
   resolution: "@tf2pickup-org/mumble-client@workspace:."
   dependencies:
     "@release-it/conventional-changelog": "npm:8.0.1"
-    "@tf2pickup-org/mumble-protocol": "npm:1.0.3"
+    "@tf2pickup-org/mumble-protocol": "npm:1.0.4"
     "@tsconfig/node16": "npm:16.1.1"
     "@types/jest": "npm:29.5.11"
     "@types/node": "npm:20.10.5"
@@ -1217,12 +1217,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tf2pickup-org/mumble-protocol@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@tf2pickup-org/mumble-protocol@npm:1.0.3"
+"@tf2pickup-org/mumble-protocol@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@tf2pickup-org/mumble-protocol@npm:1.0.4"
   dependencies:
-    "@protobuf-ts/runtime": "npm:2.9.1"
-  checksum: 4f6b18b4f8eab36f95cc0453fb00fadb735cd7a4d155054aff7e177fecbfcbb1d292cf7029138bf88c41b06d34e98cd79d3bf33b0220a3110f05837af1b97985
+    "@protobuf-ts/runtime": "npm:2.9.3"
+  checksum: 3324fef69889e1ecaf280670f4b8887b5e5951a5a36bcc32f40a066195afcd0c41ad5ff3b17e3d2d9a756625b7a27831d949740e6557d4afbb16ae94bfcbac34
   languageName: node
   linkType: hard
 
