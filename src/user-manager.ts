@@ -4,7 +4,6 @@ import { Client } from './client';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { MumbleSocket } from './mumble-socket';
 import { User } from './user';
-import { EventNames } from './event-names';
 
 /**
  * A manager of users.
@@ -13,7 +12,7 @@ export class UserManager {
   private _users = new Map<number, User>();
 
   constructor(public readonly client: Client) {
-    this.client.on(EventNames.socketConnect, (socket: MumbleSocket) => {
+    this.client.on('socketConnect', (socket: MumbleSocket) => {
       this._users.clear();
 
       socket.packet
@@ -65,7 +64,7 @@ export class UserManager {
        * @event Client#userCreate
        * @property {User} user The user that was created.
        */
-      this.client.emit(EventNames.userCreate, user);
+      this.client.emit('userCreate', user);
     } else {
       const changes = user.syncState(userState);
       if (Object.keys(changes).length > 0) {
@@ -75,7 +74,7 @@ export class UserManager {
          * @property {User} user The user that was updated.
          * @property {UserChanges} changes What changes were made to the user.
          */
-        this.client.emit(EventNames.userUpdate, user, changes);
+        this.client.emit('userUpdate', user, changes);
       }
     }
   }
@@ -88,11 +87,11 @@ export class UserManager {
     if (user) {
       this._users.delete(userRemove.session);
       /**
-       * Emitted whenever a user disconnected from the server.
+       * Emitted whenever a user is disconnected from the server.
        * @event Client#userRemove
        * @property {User} user The user that was removed.
        */
-      this.client.emit(EventNames.userRemove, user);
+      this.client.emit('userRemove', user);
     }
   }
 }

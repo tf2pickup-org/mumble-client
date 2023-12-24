@@ -4,7 +4,6 @@ import { Channel } from './channel';
 import { Client } from './client';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { MumbleSocket } from './mumble-socket';
-import { EventNames } from './event-names';
 
 /**
  * A manager of channels.
@@ -13,7 +12,7 @@ export class ChannelManager {
   private _channels = new Map<number, Channel>();
 
   constructor(public readonly client: Client) {
-    this.client.on(EventNames.socketConnect, (socket: MumbleSocket) => {
+    this.client.on('socketConnect', (socket: MumbleSocket) => {
       this._channels.clear();
 
       socket.packet
@@ -119,7 +118,7 @@ export class ChannelManager {
        * @event Client#channelCreate
        * @property {Channel} channel The channel that was created.
        */
-      this.client.emit(EventNames.channelCreate, channel);
+      this.client.emit('channelCreate', channel);
     } else {
       const changes = channel.syncState(channelState);
       if (Object.keys(changes).length > 0) {
@@ -129,7 +128,7 @@ export class ChannelManager {
          * @property {Channel} channel The channel that was updated.
          * @property {ChannelChanges} changes What changes were made to the channel.
          */
-        this.client.emit(EventNames.channelUpdate, channel, changes);
+        this.client.emit('channelUpdate', channel, changes);
       }
     }
   }
@@ -146,7 +145,7 @@ export class ChannelManager {
        * @event Client#channelRemove
        * @property {Channel} channel The channel that was removed.
        */
-      this.client.emit(EventNames.channelRemove, channel);
+      this.client.emit('channelRemove', channel);
     }
   }
 }
