@@ -35,6 +35,7 @@ import { filterPacket } from './rxjs-operators/filter-packet';
 import { platform, release } from 'os';
 import { Permissions } from './permissions';
 import { EventNames } from './event-names';
+import { encodeMumbleVersionLegacy } from './encode-mumble-version-legacy';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -161,16 +162,17 @@ export class Client extends EventEmitter {
    * @internal
    */
   private async sendVersion(): Promise<void> {
-    const version = encodeMumbleVersion({
+    const version = {
       major: 1,
       minor: 4,
       patch: 230,
-    });
+    };
     return await this.socket?.send(
       Version,
       Version.create({
         release: this.options.clientName,
-        version,
+        versionV1: encodeMumbleVersionLegacy(version),
+        versionV2: encodeMumbleVersion(version),
         os: platform(),
         osVersion: release(),
       }),
