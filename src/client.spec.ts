@@ -54,7 +54,8 @@ describe(Client.name, () => {
                 type: 0,
                 typeName: Version.typeName,
                 payload: Version.create({
-                  version: 66790,
+                  versionV1: 66790,
+                  versionV2: BigInt(66790),
                   release: '1.4.230',
                   os: 'Linux',
                   osVersion: 'Ubuntu 20.04.4 LTS [x64]',
