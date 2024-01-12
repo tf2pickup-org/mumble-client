@@ -1205,7 +1205,7 @@ __metadata:
     eslint-config-prettier: "npm:9.1.0"
     eslint-plugin-prettier: "npm:5.1.3"
     jest: "npm:29.7.0"
-    prettier: "npm:3.1.1"
+    prettier: "npm:3.2.0"
     release-it: "npm:17.0.1"
     rxjs: "npm:7.8.1"
     trace-unhandled: "npm:2.0.1"
@@ -6404,12 +6404,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.1.1":
-  version: 3.1.1
-  resolution: "prettier@npm:3.1.1"
+"prettier@npm:3.2.0":
+  version: 3.2.0
+  resolution: "prettier@npm:3.2.0"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 26a249f321b97d26c04483f1bf2eeb22e082a76f4222a2c922bebdc60111691aad4ec3979610e83942e0b956058ec361d9e9c81c185172264eb6db9aa678082b
+  checksum: eb2eb63038ca9aaf86bda7dc49b879a278bc8344d28236fef08a8f185e8ce721a40155acc4a494e8f91ecbcdd9a132fd326516f791c61cbfa9037c1f74d6d029
   languageName: node
   linkType: hard
 
