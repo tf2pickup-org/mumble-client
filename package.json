@@ -49,7 +49,7 @@
     "prettier": "3.2.4",
     "release-it": "17.0.1",
     "trace-unhandled": "2.0.1",
-    "ts-jest": "29.1.1",
+    "ts-jest": "29.1.2",
     "ts-node": "10.9.2",
     "tsc-alias": "1.8.8",
     "tsconfig-paths": "4.2.0",
