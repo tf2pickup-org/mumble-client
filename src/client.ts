@@ -27,15 +27,15 @@ import {
 import { User } from './user';
 import { ChannelManager } from './channel-manager';
 import { UserManager } from './user-manager';
-import EventEmitter from 'events';
 import { encodeMumbleVersion } from './encode-mumble-version';
 import { ClientOptions } from './client-options';
 import { ConnectionRejectedError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { platform, release } from 'os';
 import { Permissions } from './permissions';
-import { EventNames } from './event-names';
 import { encodeMumbleVersionLegacy } from './encode-mumble-version-legacy';
+import { TypedEventEmitter } from './typed-event-emitter';
+import { Events } from './events';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -43,7 +43,7 @@ const defaultOptions: Partial<ClientOptions> = {
   pingInterval: 10000,
 };
 
-export class Client extends EventEmitter {
+export class Client extends TypedEventEmitter<Events, Events> {
   channels: ChannelManager = new ChannelManager(this);
   users: UserManager = new UserManager(this);
   serverVersion?: Version;
@@ -68,7 +68,7 @@ export class Client extends EventEmitter {
     this.socket = new MumbleSocket(
       await tlsConnect(this.options.host, this.options.port, this.options),
     );
-    this.emit(EventNames.socketConnect, this.socket);
+    this.emit('socketConnect', this.socket);
 
     this.socket.packet
       .pipe(
@@ -89,7 +89,7 @@ export class Client extends EventEmitter {
         filter(userRemove => userRemove.session === this.user?.session),
       )
       .subscribe(userRemove => {
-        this.emit(EventNames.disconnect, {
+        this.emit('disconnect', {
           reason: userRemove.reason,
         });
         this.socket = undefined;
@@ -128,7 +128,7 @@ export class Client extends EventEmitter {
             this.welcomeText = serverSync.welcomeText;
             this.serverVersion = version;
             this.serverConfig = serverConfig;
-            this.emit(EventNames.connect);
+            this.emit('connect');
             this.startPinger();
           }),
           map(() => this),
@@ -152,7 +152,7 @@ export class Client extends EventEmitter {
    * Disconnects from the server.
    */
   disconnect(): this {
-    this.emit(EventNames.disconnect);
+    this.emit('disconnect');
     this.socket?.end();
     this.socket = undefined;
     return this;
@@ -208,6 +208,6 @@ export class Client extends EventEmitter {
     const subscription = interval(this.options.pingInterval)
       .pipe(exhaustMap(() => this.ping()))
       .subscribe();
-    this.on(EventNames.disconnect, () => subscription.unsubscribe());
+    this.on('disconnect', () => subscription.unsubscribe());
   }
 }
