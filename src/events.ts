@@ -2,7 +2,7 @@ import { Channel, ChannelChanges } from './channel';
 import { MumbleSocket } from './mumble-socket';
 import { User, UserChanges } from './user';
 
-export type Events = {
+export interface Events {
   socketConnect: (socket: MumbleSocket) => void;
   connect: () => void;
   disconnect: (payload?: { reason?: string }) => void;
@@ -14,4 +14,4 @@ export type Events = {
   userCreate: (user: User) => void;
   userUpdate: (user: User, changes: UserChanges) => void;
   userRemove: (user: User) => void;
-};
+}

@@ -16,13 +16,16 @@ export const setSelfDeaf = async (
       filter(userState => userState.session === userSession),
       filter(userState => userState.selfDeaf !== undefined),
       take(1),
-      map(userState => userState.selfDeaf as boolean),
+      map(userState => userState.selfDeaf!),
       timeout({
         first: CommandTimeout,
         with: () => throwError(() => new CommandTimedOutError('setSelfDeaf')),
       }),
     ),
   );
-  socket.send(UserState, UserState.create({ session: userSession, selfDeaf }));
+  await socket.send(
+    UserState,
+    UserState.create({ session: userSession, selfDeaf }),
+  );
   return ret;
 };

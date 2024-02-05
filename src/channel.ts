@@ -115,7 +115,7 @@ export class Channel {
     }
 
     const newChannelId = await createChannel(this.client.socket, this.id, name);
-    return this.client.channels.byId(newChannelId) as Channel;
+    return this.client.channels.byId(newChannelId)!;
   }
 
   /**
@@ -142,7 +142,7 @@ export class Channel {
    */
   async getPermissions(): Promise<Permissions> {
     if (this.client.permissions.has(this.id)) {
-      return this.client.permissions.get(this.id) as Permissions;
+      return this.client.permissions.get(this.id)!;
     }
 
     if (!this.client.socket) {
@@ -174,7 +174,9 @@ export class Channel {
         ? this.client.channels.byId(otherChannel)
         : otherChannel;
     if (targetChannel === undefined) {
-      throw new NoSuchChannelError(`${otherChannel}`);
+      throw new NoSuchChannelError(
+        typeof otherChannel === 'number' ? otherChannel : otherChannel.id,
+      );
     }
 
     if (!(await targetChannel.getPermissions()).canLinkChannel) {
@@ -204,7 +206,9 @@ export class Channel {
         ? this.client.channels.byId(otherChannel)
         : otherChannel;
     if (targetChannel === undefined) {
-      throw new NoSuchChannelError(`${otherChannel}`);
+      throw new NoSuchChannelError(
+        typeof otherChannel === 'number' ? otherChannel : otherChannel.id,
+      );
     }
 
     if (!(await targetChannel.getPermissions()).canLinkChannel) {
@@ -224,7 +228,7 @@ export class Channel {
       return;
     }
 
-    (changes[propertyName] as Change<Channel[R]>) = {
+    changes[propertyName] = {
       previousValue: this[propertyName],
       currentValue: newValue,
     };

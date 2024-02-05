@@ -42,7 +42,7 @@ export const linkChannels = async (
       ),
     ),
   );
-  socket.send(
+  await socket.send(
     ChannelState,
     ChannelState.create({ channelId, linksAdd: [targetChannelId] }),
   );

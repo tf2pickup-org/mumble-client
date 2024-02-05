@@ -75,7 +75,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
         filterPacket(PermissionQuery),
         filter(permissionQuery => permissionQuery.channelId !== undefined),
         map(permissionQuery => ({
-          channelId: permissionQuery.channelId as number,
+          channelId: permissionQuery.channelId!,
           permissions: new Permissions(permissionQuery.permissions ?? 0),
         })),
       )
@@ -98,22 +98,10 @@ export class Client extends TypedEventEmitter<Events, Events> {
     const initialize: Promise<this> = lastValueFrom(
       race(
         zip(
-          (this.socket as MumbleSocket).packet.pipe(
-            filterPacket(ServerSync),
-            take(1),
-          ),
-          (this.socket as MumbleSocket).packet.pipe(
-            filterPacket(ServerConfig),
-            take(1),
-          ),
-          (this.socket as MumbleSocket).packet.pipe(
-            filterPacket(Version),
-            take(1),
-          ),
-          (this.socket as MumbleSocket).packet.pipe(
-            filterPacket(Ping),
-            take(1),
-          ),
+          this.socket.packet.pipe(filterPacket(ServerSync), take(1)),
+          this.socket.packet.pipe(filterPacket(ServerConfig), take(1)),
+          this.socket.packet.pipe(filterPacket(Version), take(1)),
+          this.socket.packet.pipe(filterPacket(Ping), take(1)),
         ).pipe(
           // Add one second delay before resolving the promise for good.
           // The issue is, in case of rejected connect, the mumble server will
@@ -133,7 +121,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
           }),
           map(() => this),
         ),
-        (this.socket as MumbleSocket).packet.pipe(
+        this.socket.packet.pipe(
           filterPacket(Reject),
           switchMap(reject =>
             throwError(() => new ConnectionRejectedError(reject)),
@@ -144,7 +132,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
 
     await this.authenticate();
     await this.sendVersion();
-    this.ping();
+    await this.ping();
     return await initialize;
   }
 

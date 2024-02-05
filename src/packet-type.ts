@@ -1,4 +1,4 @@
-export type PacketType = {
+export interface PacketType {
   /**
    * Packet type number, as described in the protocol specification.
    * https://buildmedia.readthedocs.org/media/pdf/mumble-protocol/latest/mumble-protocol.pdf
@@ -22,4 +22,4 @@ export type PacketType = {
    * The parsed packet payload.
    */
   payload: unknown;
-};
+}

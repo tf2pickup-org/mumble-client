@@ -44,6 +44,7 @@ export const removeChannel = async (
       ),
     ),
   );
-  socket.send(ChannelRemove, ChannelRemove.create({ channelId }));
+
+  await socket.send(ChannelRemove, ChannelRemove.create({ channelId }));
   return ret;
 };

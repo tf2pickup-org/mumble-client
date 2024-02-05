@@ -44,9 +44,7 @@ export class User {
    * A channel on which the user currently is.
    */
   get channel(): Channel {
-    return this.client.channels.find(
-      channel => channel.id === this.channelId,
-    ) as Channel;
+    return this.client.channels.find(channel => channel.id === this.channelId)!;
   }
 
   /**
@@ -130,7 +128,7 @@ export class User {
       return;
     }
 
-    (changes[propertyName] as Change<User[R]>) = {
+    changes[propertyName] = {
       previousValue: this[propertyName],
       currentValue: newValue,
     };
