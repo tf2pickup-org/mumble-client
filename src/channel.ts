@@ -50,11 +50,11 @@ export class Channel {
    * @internal
    */
   syncState(channelState: ChannelState): ChannelChanges {
-    const changes: ChannelChanges = {};
-
-    this.syncProperty('name', channelState.name, changes);
-    this.syncProperty('parent', channelState.parent, changes);
-    this.syncProperty('temporary', channelState.temporary, changes);
+    const changes: ChannelChanges = {
+      ...this.syncProperty('name', channelState.name),
+      ...this.syncProperty('parent', channelState.parent),
+      ...this.syncProperty('temporary', channelState.temporary),
+    };
 
     if (channelState.linksAdd.length + channelState.linksRemove.length > 0) {
       changes.linkedChannels = {
@@ -222,16 +222,19 @@ export class Channel {
   private syncProperty<R extends keyof ChannelChangeableProps>(
     propertyName: R,
     newValue: this[R] | undefined,
-    changes: ChannelChanges,
   ) {
     if (newValue === undefined) {
       return;
     }
 
-    changes[propertyName] = {
-      previousValue: this[propertyName],
-      currentValue: newValue,
-    };
+    const previousValue = this[propertyName];
     this[propertyName] = newValue;
+
+    return {
+      [propertyName]: {
+        previousValue,
+        currentValue: newValue,
+      },
+    };
   }
 }

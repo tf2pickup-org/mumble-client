@@ -1,6 +1,7 @@
 import { EventEmitter } from 'node:events';
 
-type EventsMap = Record<string, (...args: unknown[]) => void>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type EventsMap = Record<string, (...args: any[]) => void>;
 
 type EventNames<Map extends EventsMap> = keyof Map & (string | symbol);
 
