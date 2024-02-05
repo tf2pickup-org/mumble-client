@@ -51,14 +51,15 @@ export class User {
    * @internal
    */
   syncState(userState: UserState): UserChanges {
-    const changes: UserChanges = {};
-    this.syncProperty('name', userState.name, changes);
-    this.syncProperty('channelId', userState.channelId, changes);
-    this.syncProperty('mute', userState.mute, changes);
-    this.syncProperty('deaf', userState.deaf, changes);
-    this.syncProperty('suppress', userState.suppress, changes);
-    this.syncProperty('selfMute', userState.selfMute, changes);
-    this.syncProperty('selfDeaf', userState.selfDeaf, changes);
+    const changes: UserChanges = {
+      ...this.syncProperty('name', userState.name),
+      ...this.syncProperty('channelId', userState.channelId),
+      ...this.syncProperty('mute', userState.mute),
+      ...this.syncProperty('deaf', userState.deaf),
+      ...this.syncProperty('suppress', userState.suppress),
+      ...this.syncProperty('selfMute', userState.selfMute),
+      ...this.syncProperty('selfDeaf', userState.selfDeaf),
+    };
     return changes;
   }
 
@@ -122,16 +123,19 @@ export class User {
   private syncProperty<R extends keyof UserWritableProps>(
     propertyName: R,
     newValue: this[R] | undefined,
-    changes: UserChanges,
   ) {
     if (newValue === undefined) {
       return;
     }
 
-    changes[propertyName] = {
-      previousValue: this[propertyName],
-      currentValue: newValue,
-    };
+    const previousValue = this[propertyName];
     this[propertyName] = newValue;
+
+    return {
+      [propertyName]: {
+        previousValue,
+        currentValue: newValue,
+      },
+    };
   }
 }
