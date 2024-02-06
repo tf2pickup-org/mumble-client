@@ -8,6 +8,7 @@ import {
 } from './errors';
 import { moveUserToChannel, setSelfDeaf, setSelfMute } from './commands';
 import { Change } from './change';
+import { syncProperty } from './sync-property';
 
 type UserWritableProps = Pick<
   User,
@@ -52,13 +53,13 @@ export class User {
    */
   syncState(userState: UserState): UserChanges {
     const changes: UserChanges = {
-      ...this.syncProperty('name', userState.name),
-      ...this.syncProperty('channelId', userState.channelId),
-      ...this.syncProperty('mute', userState.mute),
-      ...this.syncProperty('deaf', userState.deaf),
-      ...this.syncProperty('suppress', userState.suppress),
-      ...this.syncProperty('selfMute', userState.selfMute),
-      ...this.syncProperty('selfDeaf', userState.selfDeaf),
+      ...syncProperty(this, 'name', userState.name),
+      ...syncProperty(this, 'channelId', userState.channelId),
+      ...syncProperty(this, 'mute', userState.mute),
+      ...syncProperty(this, 'deaf', userState.deaf),
+      ...syncProperty(this, 'suppress', userState.suppress),
+      ...syncProperty(this, 'selfMute', userState.selfMute),
+      ...syncProperty(this, 'selfDeaf', userState.selfDeaf),
     };
     return changes;
   }
@@ -118,24 +119,5 @@ export class User {
 
     await setSelfDeaf(this.client.socket, this.session, selfDeaf);
     return this;
-  }
-
-  private syncProperty<R extends keyof UserWritableProps>(
-    propertyName: R,
-    newValue: this[R] | undefined,
-  ) {
-    if (newValue === undefined) {
-      return;
-    }
-
-    const previousValue = this[propertyName];
-    this[propertyName] = newValue;
-
-    return {
-      [propertyName]: {
-        previousValue,
-        currentValue: newValue,
-      },
-    };
   }
 }

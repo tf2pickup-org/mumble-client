@@ -15,6 +15,7 @@ import {
 } from './errors';
 import { Permissions } from './permissions';
 import { User } from './user';
+import { syncProperty } from './sync-property';
 
 type ChannelChangeableProps = Pick<
   Channel,
@@ -51,9 +52,9 @@ export class Channel {
    */
   syncState(channelState: ChannelState): ChannelChanges {
     const changes: ChannelChanges = {
-      ...this.syncProperty('name', channelState.name),
-      ...this.syncProperty('parent', channelState.parent),
-      ...this.syncProperty('temporary', channelState.temporary),
+      ...syncProperty(this, 'name', channelState.name),
+      ...syncProperty(this, 'parent', channelState.parent),
+      ...syncProperty(this, 'temporary', channelState.temporary),
     };
 
     if (channelState.linksAdd.length + channelState.linksRemove.length > 0) {
@@ -217,24 +218,5 @@ export class Channel {
 
     await unlinkChannels(this.client.socket, this.id, targetChannel.id);
     return this;
-  }
-
-  private syncProperty<R extends keyof ChannelChangeableProps>(
-    propertyName: R,
-    newValue: this[R] | undefined,
-  ) {
-    if (newValue === undefined) {
-      return;
-    }
-
-    const previousValue = this[propertyName];
-    this[propertyName] = newValue;
-
-    return {
-      [propertyName]: {
-        previousValue,
-        currentValue: newValue,
-      },
-    };
   }
 }
