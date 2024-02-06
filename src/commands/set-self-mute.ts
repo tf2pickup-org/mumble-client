@@ -16,7 +16,7 @@ export const setSelfMute = async (
       filter(userState => userState.session === userSession),
       filter(userState => userState.selfMute !== undefined),
       take(1),
-      map(userState => userState.selfMute as boolean),
+      map(userState => userState.selfMute!),
       timeout({
         first: CommandTimeout,
         with: () =>
@@ -24,6 +24,9 @@ export const setSelfMute = async (
       }),
     ),
   );
-  socket.send(UserState, UserState.create({ session: userSession, selfMute }));
+  await socket.send(
+    UserState,
+    UserState.create({ session: userSession, selfMute }),
+  );
   return ret;
 };

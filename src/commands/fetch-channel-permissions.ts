@@ -22,6 +22,6 @@ export const fetchChannelPermissions = async (
     ),
   );
 
-  socket.send(PermissionQuery, PermissionQuery.create({ channelId }));
+  await socket.send(PermissionQuery, PermissionQuery.create({ channelId }));
   return ret;
 };

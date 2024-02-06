@@ -1,4 +1,4 @@
-import { Channel, Client } from '@';
+import { Client } from '@';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { waitABit } from './utils/wait-a-bit';
@@ -30,10 +30,10 @@ describe('Links and unlinks channels (e2e)', () => {
   });
 
   it('should link & unlink channels', async () => {
-    const one = client.channels.byName('one') as Channel;
+    const one = client.channels.byName('one')!;
     expect(one).toBeTruthy();
     expect(one.linkedChannels.length).toBe(0);
-    const two = client.channels.byName('two') as Channel;
+    const two = client.channels.byName('two')!;
     expect(two).toBeTruthy();
     expect(two.linkedChannels.length).toBe(0);
 

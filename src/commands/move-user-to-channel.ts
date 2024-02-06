@@ -45,6 +45,9 @@ export const moveUserToChannel = async (
       ),
     ),
   );
-  socket.send(UserState, UserState.create({ session: userSession, channelId }));
+  await socket.send(
+    UserState,
+    UserState.create({ session: userSession, channelId }),
+  );
   return ret;
 };

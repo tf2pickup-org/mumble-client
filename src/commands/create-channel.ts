@@ -29,7 +29,7 @@ export const createChannel = async (
             channelState.name === channelName,
         ),
         take(1),
-        map(channelState => channelState.channelId as number),
+        map(channelState => channelState.channelId!),
         timeout({
           first: CommandTimeout,
           with: () =>
@@ -46,7 +46,7 @@ export const createChannel = async (
     ),
   );
 
-  socket.send(
+  await socket.send(
     ChannelState,
     ChannelState.create({ parent: parentChannelId, name: channelName }),
   );

@@ -8,6 +8,7 @@ import {
 } from './errors';
 import { moveUserToChannel, setSelfDeaf, setSelfMute } from './commands';
 import { Change } from './change';
+import { syncProperty } from './sync-property';
 
 type UserWritableProps = Pick<
   User,
@@ -44,23 +45,22 @@ export class User {
    * A channel on which the user currently is.
    */
   get channel(): Channel {
-    return this.client.channels.find(
-      channel => channel.id === this.channelId,
-    ) as Channel;
+    return this.client.channels.find(channel => channel.id === this.channelId)!;
   }
 
   /**
    * @internal
    */
   syncState(userState: UserState): UserChanges {
-    const changes: UserChanges = {};
-    this.syncProperty('name', userState.name, changes);
-    this.syncProperty('channelId', userState.channelId, changes);
-    this.syncProperty('mute', userState.mute, changes);
-    this.syncProperty('deaf', userState.deaf, changes);
-    this.syncProperty('suppress', userState.suppress, changes);
-    this.syncProperty('selfMute', userState.selfMute, changes);
-    this.syncProperty('selfDeaf', userState.selfDeaf, changes);
+    const changes: UserChanges = {
+      ...syncProperty(this, 'name', userState.name),
+      ...syncProperty(this, 'channelId', userState.channelId),
+      ...syncProperty(this, 'mute', userState.mute),
+      ...syncProperty(this, 'deaf', userState.deaf),
+      ...syncProperty(this, 'suppress', userState.suppress),
+      ...syncProperty(this, 'selfMute', userState.selfMute),
+      ...syncProperty(this, 'selfDeaf', userState.selfDeaf),
+    };
     return changes;
   }
 
@@ -119,21 +119,5 @@ export class User {
 
     await setSelfDeaf(this.client.socket, this.session, selfDeaf);
     return this;
-  }
-
-  private syncProperty<R extends keyof UserWritableProps>(
-    propertyName: R,
-    newValue: this[R] | undefined,
-    changes: UserChanges,
-  ) {
-    if (newValue === undefined) {
-      return;
-    }
-
-    (changes[propertyName] as Change<User[R]>) = {
-      previousValue: this[propertyName],
-      currentValue: newValue,
-    };
-    this[propertyName] = newValue;
   }
 }

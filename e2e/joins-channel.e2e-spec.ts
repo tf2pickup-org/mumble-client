@@ -1,4 +1,4 @@
-import { Channel, Client } from '@';
+import { Client } from '@';
 import { waitABit } from './utils/wait-a-bit';
 
 describe('Joins a channel (e2e)', () => {
@@ -21,7 +21,7 @@ describe('Joins a channel (e2e)', () => {
   });
 
   it('should join a channel', async () => {
-    const one = client.channels.byName('one') as Channel;
+    const one = client.channels.byName('one')!;
     expect(one).toBeTruthy();
     await client.user?.moveToChannel(one.id);
     expect(client.user?.channel.id).toEqual(one.id);

@@ -20,14 +20,14 @@ describe('List channels (e2e)', () => {
     client.disconnect();
   });
 
-  it('should list channels', async () => {
+  it('should list channels', () => {
     const channels = client.channels
       .findAll(() => true)
       .map(channel => channel.name);
     expect(channels).toEqual(['Root', 'one', 'two', 'three']);
   });
 
-  it('should list subchannels', async () => {
+  it('should list subchannels', () => {
     const subChannels = client.user?.channel.subChannels.map(
       channel => channel.name,
     );

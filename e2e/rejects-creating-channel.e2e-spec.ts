@@ -1,4 +1,4 @@
-import { Channel, Client } from '@';
+import { Client } from '@';
 import { waitABit } from './utils/wait-a-bit';
 
 describe('Rejects creating channel when there are insufficient permissions (e2e)', () => {
@@ -26,7 +26,7 @@ describe('Rejects creating channel when there are insufficient permissions (e2e)
 
     const one = client.channels.byName('one');
     expect(one).toBeTruthy();
-    await client.user?.moveToChannel((one as Channel).id);
+    await client.user?.moveToChannel(one!.id);
     await expect(channel?.createSubChannel('test')).rejects.toThrow();
   });
 });

@@ -1,4 +1,4 @@
-import { Channel, Client } from '@';
+import { Client } from '@';
 import { waitABit } from './utils/wait-a-bit';
 
 describe('Rejects moving to a channel when there are insufficient permissions (e2e)', () => {
@@ -24,8 +24,6 @@ describe('Rejects moving to a channel when there are insufficient permissions (e
     // channel 'three' has all permissions denied for all users
     const three = client.channels.byName('three');
     expect(three).toBeTruthy();
-    await expect(
-      client.user?.moveToChannel((three as Channel).id),
-    ).rejects.toThrow();
+    await expect(client.user?.moveToChannel(three!.id)).rejects.toThrow();
   });
 });

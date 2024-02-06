@@ -42,7 +42,7 @@ export const unlinkChannels = async (
       ),
     ),
   );
-  socket.send(
+  await socket.send(
     ChannelState,
     ChannelState.create({ channelId, linksRemove: [targetChannelId] }),
   );
