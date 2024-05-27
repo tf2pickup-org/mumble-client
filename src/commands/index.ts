@@ -6,3 +6,5 @@ export { removeChannel } from './remove-channel';
 export { setSelfDeaf } from './set-self-deaf';
 export { setSelfMute } from './set-self-mute';
 export { unlinkChannels } from './unlink-channels';
+export { userRegister } from './user-register';
+export { userRenameRegistered } from './user-rename-registered'
