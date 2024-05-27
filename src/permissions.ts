@@ -70,4 +70,14 @@ export class Permissions {
     // https://github.com/mumble-voip/mumble/blob/4f50172c5c8bc7c425efb350377106d3e83a7e79/src/mumble/MainWindow.cpp#L2523
     return !!(this.permissions & (Permission.Write | Permission.LinkChannel));
   }
+
+  get canSelfRegister(): boolean {
+    // https://github.com/mumble-voip/mumble/blob/2fc30044b764c78f00315e8525bc34eb41c5a4da/src/mumble/MainWindow.cpp#L1569
+    return !!(this.permissions & (Permission.SelfRegister | Permission.Write));
+  }
+
+  get canRegister(): boolean {
+    // https://github.com/mumble-voip/mumble/blob/2fc30044b764c78f00315e8525bc34eb41c5a4da/src/mumble/MainWindow.cpp#L1717
+    return !!(this.permissions & (Permission.Register | Permission.Write));
+  }
 }

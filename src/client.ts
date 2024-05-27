@@ -21,6 +21,7 @@ import {
   Reject,
   ServerConfig,
   ServerSync,
+  UserList_User,
   UserRemove,
   Version,
 } from '@tf2pickup-org/mumble-protocol';
@@ -29,13 +30,14 @@ import { ChannelManager } from './channel-manager';
 import { UserManager } from './user-manager';
 import { encodeMumbleVersion } from './encode-mumble-version';
 import { ClientOptions } from './client-options';
-import { ConnectionRejectedError } from './errors';
+import { ClientDisconnectedError, ConnectionRejectedError } from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { platform, release } from 'os';
 import { Permissions } from './permissions';
 import { encodeMumbleVersionLegacy } from './encode-mumble-version-legacy';
 import { TypedEventEmitter } from './typed-event-emitter';
 import { Events } from './events';
+import { fetchRegisteredUsers } from './commands';
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -144,6 +146,14 @@ export class Client extends TypedEventEmitter<Events, Events> {
     this.socket?.end();
     this.socket = undefined;
     return this;
+  }
+
+  async fetchRegisteredUsers(): Promise<UserList_User[]> {
+    if (!this.socket) {
+      throw new ClientDisconnectedError();
+    }
+
+    return (await fetchRegisteredUsers(this.socket)).users;
   }
 
   /**
