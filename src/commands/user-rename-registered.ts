@@ -19,12 +19,23 @@ export const userRenameRegistered = async (
   userId: number,
   name: string | undefined,
 ): Promise<void> => {
+  return await socket.send(
+    UserList,
+    UserList.create({users: [{ userId, name: name }]}),
+  );
+};
+
+export const userRenameRegisteredByName = async (
+  socket: MumbleSocket,
+  oldName: string,
+  newName: string | undefined,
+): Promise<void> => {
   const ret = lastValueFrom(
     race(
       socket.packet.pipe(
         filterPacket(UserList),
         take(1),
-        map(userList => userList.users.find(u => u.userId == userId)),
+        map(userList => userList.users.find(u => u.name === oldName)),
         map(userListUser => {
           if (!userListUser) {
             throwError(() => new NoRegisteredUserError())
@@ -32,9 +43,10 @@ export const userRenameRegistered = async (
           return userListUser!;
         }),
         map(async userListUser => {
+          console.log(userListUser);
           await socket.send(
             UserList,
-            UserList.create({users: [{ ...userListUser, name: name }]}),
+            UserList.create({users: [{ ...userListUser, name: newName }]}),
           );
         }),
         timeout({
