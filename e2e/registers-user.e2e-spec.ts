@@ -3,7 +3,7 @@ import { Client } from '@';
 import { waitABit } from './utils/wait-a-bit';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { userRenameRegisteredByName } from '@/commands';
+import { getRegisteredUser, userRenameRegistered } from '@/commands';
 
 describe('registers a user', () => {
   let client: Client;
@@ -33,29 +33,24 @@ describe('registers a user', () => {
 
   it('should register self and deregister', async () => {
     await client.user!.register();
-    await waitABit(200);
     expect(client.user!.userId).toBeTruthy()
 
     await client.user!.renameRegistered("TESTER_NEW_NAME");
-    await waitABit(200);
     expect(client.user!.name === "TESTER_NEW_NAME");
 
     await client.user!.deregister();
-    await waitABit(200);
     expect(client.user!.userId).toBeFalsy()
   });
 
   it('should register self and deregister by name', async () => {
     await client.user!.register();
-    await waitABit(200);
     expect(client.user!.userId).toBeTruthy()
 
     await client.user!.renameRegistered("TESTER_NEW_NAME2");
-    await waitABit(200);
     expect(client.user!.name === "TESTER_NEW_NAME2");
 
-    await userRenameRegisteredByName(client.socket!, "TESTER_NEW_NAME2", undefined);
-    await waitABit(200);
+    const user = await getRegisteredUser(client.socket!, "TESTER_NEW_NAME2");
+    await userRenameRegistered(client.socket!, user.userId, undefined);
     expect(client.user!.userId).toBeFalsy()
   });
 });

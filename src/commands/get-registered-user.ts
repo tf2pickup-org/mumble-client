@@ -1,22 +1,26 @@
 import { MumbleSocket } from '@/mumble-socket';
-import { PermissionDenied, UserList, UserState } from '@tf2pickup-org/mumble-protocol';
 import { concatMap, lastValueFrom, map, race, take, throwError, timeout } from 'rxjs';
 import { filterPacket } from '@/rxjs-operators/filter-packet';
-import { CommandTimedOutError, PermissionDeniedError } from '@';
+import { PermissionDenied, UserList, UserList_User } from '@tf2pickup-org/mumble-protocol';
+import { CommandTimedOutError, NoRegisteredUserError, PermissionDeniedError } from '@';
 import { CommandTimeout } from '@/config';
 
-// renaming the user to an undefined name deletes the user registration
-export const userRenameRegistered = async (
+export const getRegisteredUser = async (
   socket: MumbleSocket,
-  userId: number,
-  name: string | undefined,
-): Promise<void> => {
+  name: string,
+): Promise<UserList_User> => {
   const ret = lastValueFrom(
     race(
       socket.packet.pipe(
-        filterPacket(UserState),
+        filterPacket(UserList),
         take(1),
-        map(() => void 0),
+        map(userList => userList.users.find(u => u.name === name)),
+        map(userListUser => {
+          if (!userListUser) {
+            throwError(() => new NoRegisteredUserError())
+          }
+          return userListUser!;
+        }),
         timeout({
           first: CommandTimeout,
           with: () =>
@@ -35,7 +39,7 @@ export const userRenameRegistered = async (
 
   await socket.send(
     UserList,
-    UserList.create({users: [{ userId, name: name }]}),
+    UserList.create(),
   );
 
   return ret;
