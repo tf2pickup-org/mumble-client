@@ -77,8 +77,8 @@ describe('registers a user', () => {
     client2.users.findAll(u => u.name == "tester").map(u => u.register());
 
     // disconnect
-    await waitABit(200);
     client1.disconnect();
+    await waitABit(200);
 
     // rename client1 while client1 is offline
     let userListUser1 = await client2.getRegisteredUserByName("tester");
