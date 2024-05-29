@@ -35,7 +35,7 @@ export class User {
   readonly session: number;
   name?: string;
   channelId = 0;
-  private _userId?: number; // null userid means the user is not registered
+  private _userId?: number; // undefined userid means the user is not registered
   mute = false;
   deaf = false;
   suppress = false;
@@ -59,10 +59,6 @@ export class User {
   }
 
   get userId(): number | undefined {
-    if (this._userId === undefined) {
-      return undefined;
-    }
-
     return this._userId;
   }
 
