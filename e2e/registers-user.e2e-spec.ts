@@ -50,7 +50,7 @@ describe('registers a user', () => {
     expect(client.user!.name === "TESTER_NEW_NAME2");
 
     // should work for any user, not just self
-    const userListUser = await client.getRegisteredUserWithName("TESTER_NEW_NAME2");
+    const userListUser = await client.getRegisteredUserByName("TESTER_NEW_NAME2");
     await userUnregister(client.socket!, userListUser.userId);
     expect(client.user!.userId).toBeFalsy()
   });

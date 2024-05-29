@@ -150,7 +150,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
   /**
    * Retrieves the UserList_User (registered user list entry) with the matching name
    */
-  async getRegisteredUserWithName(name: string): Promise<UserList_User> {
+  async getRegisteredUserByName(name: string): Promise<UserList_User> {
     if (!this.socket) {
       throw new ClientDisconnectedError();
     }
