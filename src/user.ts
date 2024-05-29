@@ -4,12 +4,20 @@ import { Channel } from './channel';
 import {
   ClientDisconnectedError,
   InsufficientPermissionsError,
-  NoRegisteredUserError,
+  UserNotRegisteredError,
   NoSuchChannelError,
 } from './errors';
-import { moveUserToChannel, setSelfDeaf, setSelfMute, userRegister, userRenameRegistered } from './commands';
+import {
+  MinusOneButUnsigned,
+  moveUserToChannel,
+  setSelfDeaf,
+  setSelfMute,
+  userRegister,
+  userRenameRegistered,
+} from './commands';
 import { Change } from './change';
-import { syncProperty, syncPropertyWithMapper } from './sync-property';
+import { syncProperty } from './sync-property';
+import { userUnregister } from '@/commands/user-rename-registered';
 
 type UserWritableProps = Pick<
   User,
@@ -27,7 +35,7 @@ export class User {
   readonly session: number;
   name?: string;
   channelId = 0;
-  userId?: number; // null userid means the user is not registered
+  private _userId?: number; // null userid means the user is not registered
   mute = false;
   deaf = false;
   suppress = false;
@@ -50,6 +58,19 @@ export class User {
     return this.client.channels.find(channel => channel.id === this.channelId)!;
   }
 
+  get userId(): number | undefined {
+    if (this._userId === undefined) {
+      return undefined;
+    }
+
+    return this._userId;
+  }
+
+  set userId(userId: number | undefined) {
+    // -1 is returned to signal successful user registration deletion
+    this._userId = userId === MinusOneButUnsigned ? undefined : userId;
+  }
+
   /**
    * @internal
    */
@@ -57,8 +78,7 @@ export class User {
     const changes: UserChanges = {
       ...syncProperty(this, 'name', userState.name),
       ...syncProperty(this, 'channelId', userState.channelId),
-      // -1 is returned to signal successful user registration deletion
-      ...syncPropertyWithMapper(this, 'userId', (v) => v === 4294967295 ? undefined : v , userState.userId),
+      ...syncProperty(this, 'userId', userState.userId),
       ...syncProperty(this, 'mute', userState.mute),
       ...syncProperty(this, 'deaf', userState.deaf),
       ...syncProperty(this, 'suppress', userState.suppress),
@@ -147,11 +167,11 @@ export class User {
       throw new ClientDisconnectedError();
     }
 
-    if (!this.userId) {
-      throw new NoRegisteredUserError();
+    if (this.userId === undefined) {
+      throw new UserNotRegisteredError(this.name);
     }
 
-    await userRenameRegistered(this.client.socket, this.userId, undefined);
+    await userUnregister(this.client.socket, this.userId);
     return this;
   }
 
@@ -164,8 +184,8 @@ export class User {
       throw new ClientDisconnectedError();
     }
 
-    if (!this.userId) {
-      throw new NoRegisteredUserError();
+    if (this.userId === undefined) {
+      throw new UserNotRegisteredError(this.name);
     }
 
     await userRenameRegistered(this.client.socket, this.userId, name);

@@ -7,5 +7,5 @@ export { setSelfDeaf } from './set-self-deaf';
 export { setSelfMute } from './set-self-mute';
 export { unlinkChannels } from './unlink-channels';
 export { userRegister } from './user-register';
-export { userRenameRegistered } from './user-rename-registered'
-export { getRegisteredUser } from './get-registered-user'
+export { userRenameRegistered, userUnregister, MinusOneButUnsigned } from './user-rename-registered'
+export { getRegisteredUserList } from './get-registered-user-list'

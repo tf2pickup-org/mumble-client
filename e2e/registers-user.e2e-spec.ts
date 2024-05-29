@@ -3,7 +3,7 @@ import { Client } from '@';
 import { waitABit } from './utils/wait-a-bit';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { getRegisteredUser, userRenameRegistered } from '@/commands';
+import { userUnregister } from '@/commands';
 
 describe('registers a user', () => {
   let client: Client;
@@ -33,7 +33,7 @@ describe('registers a user', () => {
 
   it('should register self and deregister', async () => {
     await client.user!.register();
-    expect(client.user!.userId).toBeTruthy()
+    expect(client.user!.userId).toBeTruthy();
 
     await client.user!.renameRegistered("TESTER_NEW_NAME");
     expect(client.user!.name === "TESTER_NEW_NAME");
@@ -49,8 +49,18 @@ describe('registers a user', () => {
     await client.user!.renameRegistered("TESTER_NEW_NAME2");
     expect(client.user!.name === "TESTER_NEW_NAME2");
 
-    const user = await getRegisteredUser(client.socket!, "TESTER_NEW_NAME2");
-    await userRenameRegistered(client.socket!, user.userId, undefined);
+    // should work for any user, not just self
+    const userListUser = await client.getRegisteredUserWithName("TESTER_NEW_NAME2");
+    await userUnregister(client.socket!, userListUser.userId);
     expect(client.user!.userId).toBeFalsy()
   });
+
+  // testing infrastructure needs two certs for this test to work
+  // it('should rename/deregister an offline user', async () => {
+  //   const userListUser = await client.getRegisteredUserWithName("admin");
+  //   await userRenameRegistered(client.socket!, userListUser.userId, "admin2");
+  //
+  //   // reset name
+  //   await userRenameRegistered(client.socket!, userListUser.userId, "admin");
+  // });
 });
