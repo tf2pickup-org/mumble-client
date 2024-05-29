@@ -185,12 +185,4 @@ describe('User', () => {
       });
     });
   });
-
-  describe('registration', () => {
-    describe('test', () => {
-      it('should work', async () => {
-
-      });
-    });
-  });
 });
