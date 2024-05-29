@@ -5,6 +5,7 @@ import { ClientDisconnectedError, NoSuchChannelError } from './errors';
 import { MumbleSocket } from './mumble-socket';
 import { Permissions } from './permissions';
 import { User } from './user';
+import { MinusOneButUnsigned } from '@/commands';
 
 jest.mock('./client');
 
@@ -61,6 +62,32 @@ describe('User', () => {
         channelId: {
           previousValue: 0,
           currentValue: 30,
+        },
+      });
+    });
+
+    it('should update userId to a value', () => {
+      const changes = user.syncState(
+        UserState.create({ userId: 5 }),
+      );
+      expect(user.userId).toEqual(5);
+      expect(changes).toEqual({
+        userId: {
+          previousValue: undefined,
+          currentValue: 5,
+        },
+      });
+    });
+
+    it('should update userId to undefined when the magic number is passed', () => {
+      const changes = user.syncState(
+        UserState.create({ userId: MinusOneButUnsigned }),
+      );
+      expect(user.userId).toEqual(undefined);
+      expect(changes).toEqual({
+        userId: {
+          previousValue: undefined,
+          currentValue: MinusOneButUnsigned,
         },
       });
     });
