@@ -17,8 +17,8 @@ dependencies:
 
 devDependencies:
   '@release-it/conventional-changelog':
-    specifier: 9.0.1
-    version: 9.0.1(release-it@17.10.0)
+    specifier: 9.0.2
+    version: 9.0.2(release-it@17.10.0)
   '@tsconfig/node16':
     specifier: 16.1.3
     version: 16.1.3
@@ -973,8 +973,8 @@ packages:
     resolution: {integrity: sha512-vHRFWtJJB/SiogWDF0ypoKfRIZ41Kq+G9cEFj6Qm1eQaAhJ1LDFvgZ7Ja4tb3iLOQhz0PaoPnnOijF1qmEqTxg==}
     dev: false
 
-  /@release-it/conventional-changelog@9.0.1(release-it@17.10.0):
-    resolution: {integrity: sha512-7vGLMLcj/MaQjktNPR0rI6fdFVvVDXpOqk/fVTaFSeMVd9vjpVGrvRg5+Ko82Z/dOsiLGLEMFMQ9Xu31YjvJ5g==}
+  /@release-it/conventional-changelog@9.0.2(release-it@17.10.0):
+    resolution: {integrity: sha512-10IF0E3QmGp67d3WDFekm8ESIhE08duy8dYI9UOFGbQDmhptxwoYbtxypzIel52+cxSDD6gEh/FVLhKlQmJqAA==}
     engines: {node: ^18.18.0 || ^20.9.0 || ^22.0.0}
     peerDependencies:
       release-it: ^17.0.0
