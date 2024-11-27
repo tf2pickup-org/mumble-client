@@ -2,8 +2,9 @@
   "extends": "ts-node/node16/tsconfig.json",
   "compilerOptions": {
     "incremental": true,
-    "target": "es2018",
-    "module": "commonjs",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -15,14 +16,10 @@
     "sourceMap": true,
     "declaration": true,
     "removeComments": true,
-    "moduleResolution": "node",
     "baseUrl": ".",
     "resolveJsonModule": true,
     "stripInternal": true,
-    "paths": {
-      "@": ["src"],
-      "@/*": ["src/*"]
-    }
+    "types": ["vitest/globals"]
   },
   "exclude": [
     "node_modules",

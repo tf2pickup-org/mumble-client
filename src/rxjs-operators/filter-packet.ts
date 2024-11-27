@@ -1,5 +1,5 @@
-import { PacketType } from '@/packet-type';
-import { packetType } from '@/packet-type-registry';
+import { PacketType } from '../packet-type';
+import { packetType } from '../packet-type-registry';
 import { MessageType } from '@protobuf-ts/runtime';
 import { filter, map, Observable } from 'rxjs';
 

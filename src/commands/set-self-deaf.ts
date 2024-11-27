@@ -1,7 +1,7 @@
-import { CommandTimeout } from '@/config';
-import { CommandTimedOutError } from '@/errors';
-import { MumbleSocket } from '@/mumble-socket';
-import { filterPacket } from '@/rxjs-operators/filter-packet';
+import { CommandTimeout } from '../config';
+import { CommandTimedOutError } from '../errors';
+import { MumbleSocket } from '../mumble-socket';
+import { filterPacket } from '../rxjs-operators/filter-packet';
 import { UserState } from '@tf2pickup-org/mumble-protocol';
 import { filter, lastValueFrom, map, take, throwError, timeout } from 'rxjs';
 

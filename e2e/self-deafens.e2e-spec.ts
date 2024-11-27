@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Client } from '@';
+import { Client } from '../src';
 import { waitABit } from './utils/wait-a-bit';
 
 describe('Sets self-deaf (e2e)', () => {

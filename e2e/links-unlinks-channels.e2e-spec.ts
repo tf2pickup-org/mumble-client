@@ -1,4 +1,4 @@
-import { Client } from '@';
+import { Client } from '../src';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { waitABit } from './utils/wait-a-bit';

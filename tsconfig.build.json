@@ -6,6 +6,6 @@
     "dist",
     "**/*spec.ts",
     "**/__mocks__",
-    "*jest.config.*"
+    "*vitest.config.*"
   ]
 }

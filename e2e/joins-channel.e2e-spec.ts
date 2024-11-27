@@ -1,4 +1,4 @@
-import { Client } from '@';
+import { Client } from '../src';
 import { waitABit } from './utils/wait-a-bit';
 
 describe('Joins a channel (e2e)', () => {
