@@ -5,22 +5,23 @@ import { ClientDisconnectedError, NoSuchChannelError } from './errors';
 import { MumbleSocket } from './mumble-socket';
 import { Permissions } from './permissions';
 import { User } from './user';
+import { MockedObject } from 'vitest';
 
-jest.mock('./client');
+vi.mock('./client');
 
 describe('User', () => {
   let user: User;
-  let client: jest.Mocked<Client>;
+  let client: MockedObject<Client>;
 
   beforeEach(() => {
     client = new Client({
       host: 'FAKE_HOST',
       port: 64738,
       username: 'FAKE_USER',
-    }) as jest.Mocked<Client>;
+    }) as MockedObject<Client>;
     client.socket = {} as MumbleSocket;
     client.channels = {
-      byId: jest.fn(),
+      byId: vi.fn(),
     } as unknown as ChannelManager;
     (client as { permissions: Map<number, Permissions> }).permissions =
       new Map();
@@ -146,9 +147,7 @@ describe('User', () => {
 
     describe('when the target channel does not exist', () => {
       beforeEach(() => {
-        (client.channels as jest.Mocked<ChannelManager>).byId.mockReturnValue(
-          undefined,
-        );
+        vi.mocked(client.channels).byId.mockReturnValue(undefined);
       });
 
       it('should throw', async () => {

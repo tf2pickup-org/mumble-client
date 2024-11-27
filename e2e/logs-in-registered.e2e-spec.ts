@@ -1,5 +1,5 @@
-import { Client } from '@';
-import { ConnectionRejectedError } from '@/errors';
+import { Client } from '../src';
+import { ConnectionRejectedError } from '../src/errors';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { waitABit } from './utils/wait-a-bit';

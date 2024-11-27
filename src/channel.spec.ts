@@ -6,30 +6,30 @@ import { createChannel, removeChannel } from './commands';
 import { MumbleSocket } from './mumble-socket';
 import { Permissions } from './permissions';
 
-jest.mock('./client');
-jest.mock('./commands', () => ({
-  fetchChannelPermissions: jest
+vi.mock('./client');
+vi.mock('./commands', () => ({
+  fetchChannelPermissions: vi
     .fn()
     .mockResolvedValue(PermissionQuery.create({ permissions: 0x1 | 0x40 })),
-  createChannel: jest.fn().mockResolvedValue(8),
-  removeChannel: jest.fn().mockResolvedValue(7),
+  createChannel: vi.fn().mockResolvedValue(8),
+  removeChannel: vi.fn().mockResolvedValue(7),
 }));
 
 describe('Channel', () => {
-  let client: jest.Mocked<Client>;
+  let client: Client;
 
   beforeEach(() => {
     client = new Client({
       host: 'FAKE_HOST',
       port: 64738,
       username: 'FAKE_USERNAME',
-    }) as jest.Mocked<Client>;
+    });
     client.socket = {} as MumbleSocket;
     client.channels = {
-      byId: jest.fn().mockResolvedValue({}),
-      byName: jest.fn().mockResolvedValue({}),
-      byPath: jest.fn().mockResolvedValue({}),
-      findAll: jest.fn().mockReturnValue([]),
+      byId: vi.fn().mockResolvedValue({}),
+      byName: vi.fn().mockResolvedValue({}),
+      byPath: vi.fn().mockResolvedValue({}),
+      findAll: vi.fn().mockReturnValue([]),
     } as unknown as ChannelManager;
     (client as { permissions: Map<number, Permissions> }).permissions =
       new Map();

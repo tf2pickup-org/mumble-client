@@ -1,7 +1,7 @@
-import { CommandTimeout } from '@/config';
-import { CommandTimedOutError, PermissionDeniedError } from '@/errors';
-import { MumbleSocket } from '@/mumble-socket';
-import { filterPacket } from '@/rxjs-operators/filter-packet';
+import { CommandTimeout } from '../config';
+import { CommandTimedOutError, PermissionDeniedError } from '../errors';
+import { MumbleSocket } from '../mumble-socket';
+import { filterPacket } from '../rxjs-operators/filter-packet';
 import { ChannelState, PermissionDenied } from '@tf2pickup-org/mumble-protocol';
 import {
   concatMap,

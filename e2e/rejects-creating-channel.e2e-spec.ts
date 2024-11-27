@@ -1,4 +1,4 @@
-import { Client } from '@';
+import { Client } from '../src';
 import { waitABit } from './utils/wait-a-bit';
 
 describe('Rejects creating channel when there are insufficient permissions (e2e)', () => {

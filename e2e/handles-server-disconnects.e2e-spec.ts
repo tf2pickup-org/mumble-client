@@ -1,7 +1,5 @@
-import { Client } from '@';
+import { Client } from '../src';
 import { waitABit } from './utils/wait-a-bit';
-
-jest.setTimeout(60 * 1000);
 
 describe('Handles server disconnects (e2e)', () => {
   let client1: Client;
@@ -32,7 +30,7 @@ describe('Handles server disconnects (e2e)', () => {
     client2.disconnect();
   });
 
-  it('should handle error', async () => {
+  it('should handle error', { timeout: 60 * 1000 }, async () => {
     let wasDisconnected = false;
     client1.on('disconnect', () => (wasDisconnected = true));
 

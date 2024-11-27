@@ -9,17 +9,18 @@ import { Subject } from 'rxjs';
 import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
 import { PacketType } from './packet-type';
+import { MockedObject } from 'vitest';
 
-jest.mock('./mumble-socket', () => ({
-  MumbleSocket: jest.fn().mockImplementation(() => ({
+vi.mock('./mumble-socket', () => ({
+  MumbleSocket: vi.fn().mockImplementation(() => ({
     packet: new Subject(),
-    send: jest.fn().mockResolvedValue({}),
-    end: jest.fn(),
+    send: vi.fn().mockResolvedValue({}),
+    end: vi.fn(),
   })),
 }));
 
-jest.mock('./tls-connect', () => ({
-  tlsConnect: jest.fn().mockImplementation(() => {
+vi.mock('./tls-connect', () => ({
+  tlsConnect: vi.fn().mockImplementation(() => {
     return Promise.resolve({});
   }),
 }));
@@ -40,11 +41,13 @@ describe(Client.name, () => {
   });
 
   describe('when connected', () => {
-    let socket: jest.Mocked<MumbleSocket> & { packet: Subject<PacketType> };
+    let socket: MockedObject<MumbleSocket> & {
+      packet: Subject<PacketType>;
+    };
 
     beforeEach(async () => {
       client.on('socketConnect', s => {
-        socket = s as jest.Mocked<MumbleSocket> & {
+        socket = vi.mocked(s) as MockedObject<MumbleSocket> & {
           packet: Subject<PacketType>;
         };
 
