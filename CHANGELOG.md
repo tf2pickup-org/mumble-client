@@ -1,5 +1,22 @@
 
 
+# [0.8.0](https://github.com/tf2pickup-org/mumble-client/compare/0.7.3...0.8.0) (2024-11-27)
+
+
+### Bug Fixes
+
+* **ci:** enable tests on renovate branches ([f23246b](https://github.com/tf2pickup-org/mumble-client/commit/f23246b03f9b8e62b0502f18c6f932c4f6643beb))
+* **deps:** update dependency @protobuf-ts/runtime to v2.9.4 ([#571](https://github.com/tf2pickup-org/mumble-client/issues/571)) ([fa88206](https://github.com/tf2pickup-org/mumble-client/commit/fa8820603a2427152a1f4b42645a1a5932fdf565))
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.3 ([#451](https://github.com/tf2pickup-org/mumble-client/issues/451)) ([7c46566](https://github.com/tf2pickup-org/mumble-client/commit/7c4656641b60e2735d4d3134175110f825bb62a2))
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.4 ([#510](https://github.com/tf2pickup-org/mumble-client/issues/510)) ([7911fd8](https://github.com/tf2pickup-org/mumble-client/commit/7911fd868a5a8936e3fc60223f0c0169dec85c6b))
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.5 ([#592](https://github.com/tf2pickup-org/mumble-client/issues/592)) ([1c6ed36](https://github.com/tf2pickup-org/mumble-client/commit/1c6ed36dade8ecb50e689dfa4ecb13364bf10873))
+
+
+### Features
+
+* migrate to esm ([#717](https://github.com/tf2pickup-org/mumble-client/issues/717)) ([f3c5174](https://github.com/tf2pickup-org/mumble-client/commit/f3c5174df2ffddf1ee45404c45bb43946e72126f))
+* use strongly-typed events ([#511](https://github.com/tf2pickup-org/mumble-client/issues/511)) ([439b575](https://github.com/tf2pickup-org/mumble-client/commit/439b5759741b702d8ed4acf5cd286f3e79b6cec9))
+
 ## [0.7.3](https://github.com/tf2pickup-org/mumble-client/compare/0.7.2...0.7.3) (2023-06-21)
 
 
