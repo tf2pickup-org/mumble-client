@@ -25,10 +25,12 @@
     "node_modules",
     "dist"
   ],
-  "types": ["jest"],
   "ts-node": {
     "transpileOnly": true,
     "files": true,
     "require": ["tsconfig-paths/register"]
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true,
   }
 }
