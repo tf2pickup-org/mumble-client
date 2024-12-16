@@ -1,5 +1,12 @@
 
 
+## [0.8.1](https://github.com/tf2pickup-org/mumble-client/compare/0.8.0...0.8.1) (2024-12-16)
+
+
+### Bug Fixes
+
+* **build:** resolve full paths in js imports ([#726](https://github.com/tf2pickup-org/mumble-client/issues/726)) ([d5df332](https://github.com/tf2pickup-org/mumble-client/commit/d5df332320ba2266d503bea0c17b087d23c50d36))
+
 # [0.8.0](https://github.com/tf2pickup-org/mumble-client/compare/0.7.3...0.8.0) (2024-11-27)
 
 
