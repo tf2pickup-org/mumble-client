@@ -42,6 +42,13 @@ enum Permission {
 }
 
 export class Permissions {
+  static superUser(): Permissions {
+    return new Permissions(
+      // https://github.com/mumble-voip/mumble/blob/edd4588c8ae03d785d59102e2435151a682ec51d/src/ACL.cpp#L106
+      Permission.All & ~(Permission.Speak | Permission.Whisper),
+    );
+  }
+
   constructor(public readonly permissions: number) {}
 
   get canJoinChannel(): boolean {

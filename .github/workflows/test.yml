@@ -68,6 +68,7 @@ jobs:
           -p 64738:64738/tcp \
           -p 64738:64738/udp \
           -e MUMBLE_CONFIG_AUTOBAN_ATTEMPTS=0 \
+          -e MUMBLE_SUPERUSER_PASSWORD=123456 \
           --volume ${{ github.workspace }}/e2e/mumble-data:/data \
           --user root \
           mumblevoip/mumble-server:latest

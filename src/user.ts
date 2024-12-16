@@ -26,6 +26,7 @@ export class User {
   readonly session: number;
   name?: string;
   channelId = 0;
+  userId?: number;
   mute = false;
   deaf = false;
   suppress = false;
@@ -55,6 +56,7 @@ export class User {
     const changes: UserChanges = {
       ...syncProperty(this, 'name', userState.name),
       ...syncProperty(this, 'channelId', userState.channelId),
+      ...syncProperty(this, 'userId', userState.userId),
       ...syncProperty(this, 'mute', userState.mute),
       ...syncProperty(this, 'deaf', userState.deaf),
       ...syncProperty(this, 'suppress', userState.suppress),
