@@ -1,5 +1,12 @@
 
 
+## [0.8.2](https://github.com/tf2pickup-org/mumble-client/compare/0.8.1...0.8.2) (2024-12-16)
+
+
+### Bug Fixes
+
+* handle permissions for the super-user ([#727](https://github.com/tf2pickup-org/mumble-client/issues/727)) ([c9549be](https://github.com/tf2pickup-org/mumble-client/commit/c9549bec1e92cacdaf1138c6edbb1f4b13967417))
+
 ## [0.8.1](https://github.com/tf2pickup-org/mumble-client/compare/0.8.0...0.8.1) (2024-12-16)
 
 
