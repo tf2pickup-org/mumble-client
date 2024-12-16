@@ -142,6 +142,10 @@ export class Channel {
    * @returns Permissions.
    */
   async getPermissions(): Promise<Permissions> {
+    if (this.client.user?.userId === 0) {
+      return Permissions.superUser();
+    }
+
     if (this.client.permissions.has(this.id)) {
       return this.client.permissions.get(this.id)!;
     }
