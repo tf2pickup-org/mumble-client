@@ -4,11 +4,20 @@ import { Channel } from './channel';
 import {
   ClientDisconnectedError,
   InsufficientPermissionsError,
+  UserNotRegisteredError,
   NoSuchChannelError,
 } from './errors';
-import { moveUserToChannel, setSelfDeaf, setSelfMute } from './commands';
+import {
+  MinusOneButUnsigned,
+  moveUserToChannel,
+  setSelfDeaf,
+  setSelfMute,
+  userRegister,
+  userRenameRegistered,
+} from './commands';
 import { Change } from './change';
 import { syncProperty } from './sync-property';
+import { userUnregister } from './commands/user-rename-registered';
 
 type UserWritableProps = Pick<
   User,
@@ -26,7 +35,7 @@ export class User {
   readonly session: number;
   name?: string;
   channelId = 0;
-  userId?: number;
+  private _userId?: number; // undefined userId means the user is not registered
   mute = false;
   deaf = false;
   suppress = false;
@@ -38,7 +47,6 @@ export class User {
     userState: UserState & { session: number },
   ) {
     this.session = userState.session;
-    this.name = userState.name;
     this.syncState(userState);
   }
 
@@ -47,6 +55,22 @@ export class User {
    */
   get channel(): Channel {
     return this.client.channels.find(channel => channel.id === this.channelId)!;
+  }
+
+  /**
+   * A registered userId; undefined for unregistered users.
+   */
+  get userId(): number | undefined {
+    return this._userId;
+  }
+
+  set userId(userId: number | undefined) {
+    // -1 is returned to signal successful user registration deletion
+    this._userId = userId === MinusOneButUnsigned ? undefined : userId;
+  }
+
+  get isRegistered(): boolean {
+    return this.userId !== undefined;
   }
 
   /**
@@ -120,6 +144,53 @@ export class User {
     }
 
     await setSelfDeaf(this.client.socket, this.session, selfDeaf);
+    return this;
+  }
+
+  /**
+   * Registers the user.
+   * @returns This user.
+   */
+  async register(): Promise<this> {
+    if (!this.client.socket) {
+      throw new ClientDisconnectedError();
+    }
+
+    await userRegister(this.client.socket, this.session);
+    return this;
+  }
+
+  /**
+   * De-registers the user if the user is registered.
+   * @returns This user.
+   */
+  async deregister(): Promise<this> {
+    if (!this.client.socket) {
+      throw new ClientDisconnectedError();
+    }
+
+    if (this.userId === undefined) {
+      throw new UserNotRegisteredError();
+    }
+
+    await userUnregister(this.client.socket, this.userId);
+    return this;
+  }
+
+  /**
+   * Renames a registered user.
+   * @returns This user.
+   */
+  async rename(name: string): Promise<this> {
+    if (!this.client.socket) {
+      throw new ClientDisconnectedError();
+    }
+
+    if (this.userId === undefined) {
+      throw new UserNotRegisteredError();
+    }
+
+    await userRenameRegistered(this.client.socket, this.userId, name);
     return this;
   }
 }
