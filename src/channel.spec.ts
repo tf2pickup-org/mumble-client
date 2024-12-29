@@ -2,18 +2,10 @@ import { ChannelState, PermissionQuery } from '@tf2pickup-org/mumble-protocol';
 import { Channel } from './channel';
 import { ChannelManager } from './channel-manager';
 import { Client } from './client';
-import { createChannel, removeChannel } from './commands';
 import { MumbleSocket } from './mumble-socket';
 import { Permissions } from './permissions';
 
 vi.mock('./client');
-vi.mock('./commands', () => ({
-  fetchChannelPermissions: vi
-    .fn()
-    .mockResolvedValue(PermissionQuery.create({ permissions: 0x1 | 0x40 })),
-  createChannel: vi.fn().mockResolvedValue(8),
-  removeChannel: vi.fn().mockResolvedValue(7),
-}));
 
 describe('Channel', () => {
   let client: Client;
@@ -85,46 +77,6 @@ describe('Channel', () => {
           currentValue: 10,
         },
       });
-    });
-  });
-
-  describe('createSubChannel()', () => {
-    let channel: Channel;
-
-    beforeEach(() => {
-      channel = new Channel(
-        client,
-        ChannelState.create({ channelId: 7 }) as ChannelState & {
-          channelId: number;
-        },
-      );
-    });
-
-    it('should attempt to create channel', async () => {
-      await channel.createSubChannel('SUBCHANNEL_NAME');
-      expect(createChannel).toHaveBeenCalledWith(
-        client.socket,
-        7,
-        'SUBCHANNEL_NAME',
-      );
-    });
-  });
-
-  describe('remove()', () => {
-    let channel: Channel;
-
-    beforeEach(() => {
-      channel = new Channel(
-        client,
-        ChannelState.create({ channelId: 7 }) as ChannelState & {
-          channelId: number;
-        },
-      );
-    });
-
-    it('should attempt to remove the channel', async () => {
-      await channel.remove();
-      expect(removeChannel).toHaveBeenCalledWith(client.socket, 7);
     });
   });
 });

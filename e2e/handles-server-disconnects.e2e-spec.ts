@@ -34,10 +34,10 @@ describe('Handles server disconnects (e2e)', () => {
     let wasDisconnected = false;
     client1.on('disconnect', () => (wasDisconnected = true));
 
-    await waitABit(5000);
+    await waitABit(1000);
 
     await client2.connect(); // will cause client1 to get disconnected
-    await waitABit(5000);
+    await waitABit(1000);
     expect(wasDisconnected).toBe(true);
   });
 });

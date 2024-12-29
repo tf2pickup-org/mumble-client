@@ -1,8 +1,10 @@
 import {
   Authenticate,
+  PermissionDenied,
   Ping,
   ServerConfig,
   ServerSync,
+  UserState,
   Version,
 } from '@tf2pickup-org/mumble-protocol';
 import { Subject } from 'rxjs';
@@ -10,6 +12,7 @@ import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
 import { PacketType } from './packet-type';
 import { MockedObject } from 'vitest';
+import { CommandTimedOutError, PermissionDeniedError } from './errors';
 
 vi.mock('./mumble-socket', () => ({
   MumbleSocket: vi.fn().mockImplementation(() => ({
@@ -122,6 +125,72 @@ describe(Client.name, () => {
         const socket = client.socket;
         client.disconnect();
         expect(socket?.end).toHaveBeenCalled();
+      });
+    });
+
+    describe('command()', () => {
+      let response: Promise<unknown>;
+
+      beforeEach(() => {
+        vi.useFakeTimers();
+
+        response = client.command('moveUserToChannel', {
+          sendPacket: [
+            UserState,
+            UserState.create({ session: 2, channelId: 77 }),
+          ],
+          expectPacket: [
+            UserState,
+            userState => userState.session === 2 && userState.channelId === 77,
+          ],
+        });
+      });
+
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it('should handle valid response', async () => {
+        socket.packet.next({
+          type: 9,
+          typeName: UserState.typeName,
+          payload: UserState.create({
+            session: 2,
+            channelId: 77,
+          }),
+        });
+        expect(socket.send).toHaveBeenCalledWith(
+          UserState,
+          UserState.create({ session: 2, channelId: 77 }),
+        );
+        expect(await response).toBeTruthy();
+      });
+
+      it('should handle timeout', async () => {
+        expect(socket.send).toHaveBeenCalledWith(
+          UserState,
+          UserState.create({ session: 2, channelId: 77 }),
+        );
+
+        vi.runAllTimers();
+        await expect(response).rejects.toThrow(CommandTimedOutError);
+      });
+
+      it('should handle denied permissions', async () => {
+        socket.packet.next({
+          type: 12,
+          typeName: PermissionDenied.typeName,
+          payload: PermissionDenied.create({
+            session: 2,
+          }),
+        });
+
+        expect(socket.send).toHaveBeenCalledWith(
+          UserState,
+          UserState.create({ session: 2, channelId: 77 }),
+        );
+
+        await expect(response).rejects.toThrow(PermissionDeniedError);
       });
     });
   });
