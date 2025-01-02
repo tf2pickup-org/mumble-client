@@ -60,6 +60,12 @@ const defaultOptions: Partial<ClientOptions> = {
   pingInterval: 10000,
 };
 
+interface ConnectedClient extends Client {
+  socket: MumbleSocket;
+  session: number;
+  user: User;
+}
+
 export class Client extends TypedEventEmitter<Events, Events> {
   channels: ChannelManager = new ChannelManager(this);
   users: UserManager = new UserManager(this);
@@ -92,17 +98,14 @@ export class Client extends TypedEventEmitter<Events, Events> {
   /**
    * @returns true if the client is connected; false otherwise.
    */
-  isConnected(): this is this & { user: User; socket: MumbleSocket } {
+  isConnected(): this is ConnectedClient {
     return !!this.socket;
   }
 
   /**
    * @throws ClientDisconnectedError if the client is not connected.
    */
-  assertConnected(): asserts this is this & {
-    user: User;
-    socket: MumbleSocket;
-  } {
+  assertConnected(): asserts this is ConnectedClient {
     if (!this.socket) {
       throw new ClientDisconnectedError();
     }
@@ -133,7 +136,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
     this.socket.packet
       .pipe(
         filterPacket(UserRemove),
-        filter(userRemove => userRemove.session === this.user?.session),
+        filter(userRemove => userRemove.session === this.session),
       )
       .subscribe(userRemove => {
         this.emit('disconnect', {
