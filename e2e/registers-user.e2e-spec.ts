@@ -1,28 +1,6 @@
 import { Client } from '../src';
+import { createCertificate } from './utils/create-certificate';
 import { waitABit } from './utils/wait-a-bit';
-import { createCertificate as createCertificateCb } from 'pem';
-
-interface MumbleCert {
-  key: string;
-  cert: Buffer;
-}
-
-const createMumbleCertificate = () =>
-  new Promise<MumbleCert>((resolve, reject) => {
-    createCertificateCb(
-      {
-        days: 1,
-        selfSigned: true,
-      },
-      (error, result) => {
-        if (error) {
-          reject(new Error(error));
-        } else {
-          resolve({ key: result.clientKey, cert: result.certificate });
-        }
-      },
-    );
-  });
 
 describe('registers a user', () => {
   let client1: Client;
@@ -35,7 +13,7 @@ describe('registers a user', () => {
       port: 64738,
       username: 'client1',
       rejectUnauthorized: false,
-      ...(await createMumbleCertificate()),
+      ...(await createCertificate()),
     });
 
     // client2 is unregistered
@@ -44,7 +22,7 @@ describe('registers a user', () => {
       port: 64738,
       username: 'client2',
       rejectUnauthorized: false,
-      ...(await createMumbleCertificate()),
+      ...(await createCertificate()),
     });
 
     await client1.connect();
@@ -53,8 +31,18 @@ describe('registers a user', () => {
   });
 
   afterAll(async () => {
-    await waitABit(1000);
+    client1.assertConnected();
+    if (client1.user.isRegistered) {
+      await client1.user.deregister();
+      expect(client1.user.isRegistered).toBe(false);
+    }
     client1.disconnect();
+
+    client2.assertConnected();
+    if (client2.user.isRegistered) {
+      await client2.user.deregister();
+      expect(client2.user.isRegistered).toBe(false);
+    }
     client2.disconnect();
   });
 

@@ -1,25 +1,18 @@
 import { Client } from '../src';
 import { ConnectionRejectedError } from '../src/errors';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 import { waitABit } from './utils/wait-a-bit';
+import { loadUserCertificate } from './utils/load-user-certificate';
 
 describe('Logs in with a certificate (e2e)', () => {
   let client: Client;
 
   beforeAll(async () => {
-    const key = (await readFile(join(__dirname, 'tester-key.pem'))).toString();
-    const cert = (
-      await readFile(join(__dirname, 'tester-cert.pem'))
-    ).toString();
-
     client = new Client({
       host: 'localhost',
       port: 64738,
       username: 'tester',
-      key,
-      cert,
       rejectUnauthorized: false,
+      ...(await loadUserCertificate()),
     });
     await client.connect();
     await waitABit(1000);
