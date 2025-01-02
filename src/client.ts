@@ -1,6 +1,7 @@
 import { tlsConnect } from './tls-connect';
 import { MumbleSocket } from './mumble-socket';
 import {
+  concatMap,
   delay,
   exhaustMap,
   filter,
@@ -12,15 +13,18 @@ import {
   take,
   tap,
   throwError,
+  timeout,
   zip,
 } from 'rxjs';
 import {
   Authenticate,
+  PermissionDenied,
   PermissionQuery,
   Ping,
   Reject,
   ServerConfig,
   ServerSync,
+  UserList,
   UserList_User,
   UserRemove,
   Version,
@@ -30,14 +34,25 @@ import { ChannelManager } from './channel-manager';
 import { UserManager } from './user-manager';
 import { encodeMumbleVersion } from './encode-mumble-version';
 import { ClientOptions } from './client-options';
-import { ClientDisconnectedError, ConnectionRejectedError } from './errors';
+import {
+  ClientDisconnectedError,
+  CommandTimedOutError,
+  ConnectionRejectedError,
+  PermissionDeniedError,
+} from './errors';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { platform, release } from 'os';
 import { Permissions } from './permissions';
 import { encodeMumbleVersionLegacy } from './encode-mumble-version-legacy';
 import { TypedEventEmitter } from './typed-event-emitter';
 import { Events } from './events';
-import { fetchRegisteredUsers } from './commands';
+import { MessageType } from '@protobuf-ts/runtime';
+import { CommandTimeout } from './config';
+
+interface CommandProps<Send extends object, Return extends object> {
+  expectPacket: [MessageType<Return>, (packet: Return) => boolean];
+  sendPacket: [MessageType<Send>, Send];
+}
 
 const defaultOptions: Partial<ClientOptions> = {
   port: 64738,
@@ -45,13 +60,19 @@ const defaultOptions: Partial<ClientOptions> = {
   pingInterval: 10000,
 };
 
+interface ConnectedClient extends Client {
+  socket: MumbleSocket;
+  session: number;
+  user: User;
+}
+
 export class Client extends TypedEventEmitter<Events, Events> {
   channels: ChannelManager = new ChannelManager(this);
   users: UserManager = new UserManager(this);
   serverVersion?: Version;
   serverConfig?: ServerConfig;
-  user?: User;
   socket?: MumbleSocket;
+  session?: number;
   welcomeText?: string;
   readonly options: ClientOptions;
 
@@ -61,6 +82,33 @@ export class Client extends TypedEventEmitter<Events, Events> {
   constructor(options: ClientOptions) {
     super();
     this.options = { ...defaultOptions, ...options };
+  }
+
+  /**
+   * The currently logged-in user.
+   */
+  get user() {
+    if (!this.session) {
+      return undefined;
+    }
+
+    return this.users.bySession(this.session);
+  }
+
+  /**
+   * @returns true if the client is connected; false otherwise.
+   */
+  isConnected(): this is ConnectedClient {
+    return !!this.socket;
+  }
+
+  /**
+   * @throws ClientDisconnectedError if the client is not connected.
+   */
+  assertConnected(): asserts this is ConnectedClient {
+    if (!this.socket) {
+      throw new ClientDisconnectedError();
+    }
   }
 
   /**
@@ -88,7 +136,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
     this.socket.packet
       .pipe(
         filterPacket(UserRemove),
-        filter(userRemove => userRemove.session === this.user?.session),
+        filter(userRemove => userRemove.session === this.session),
       )
       .subscribe(userRemove => {
         this.emit('disconnect', {
@@ -113,7 +161,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
           delay(1000),
           tap(([serverSync, serverConfig, version]) => {
             if (serverSync.session) {
-              this.user = this.users.bySession(serverSync.session);
+              this.session = serverSync.session;
             }
             this.welcomeText = serverSync.welcomeText;
             this.serverVersion = version;
@@ -148,12 +196,85 @@ export class Client extends TypedEventEmitter<Events, Events> {
     return this;
   }
 
-  async fetchRegisteredUsers(): Promise<UserList_User[]> {
-    if (!this.socket) {
-      throw new ClientDisconnectedError();
-    }
+  /**
+   * Wraps sending and receiving a packet in a convenient method.
+   * Handles denied permissions response as well as command timeout.
+   */
+  async command<Send extends object, Return extends object>(
+    name: string,
+    { sendPacket, expectPacket }: CommandProps<Send, Return>,
+  ) {
+    this.assertConnected();
+    const ret = lastValueFrom(
+      race(
+        this.socket.packet.pipe(
+          filterPacket(expectPacket[0]),
+          filter(expectPacket[1]),
+          take(1),
+          timeout({
+            first: CommandTimeout,
+            with: () => throwError(() => new CommandTimedOutError(name)),
+          }),
+        ),
+        this.socket.packet.pipe(
+          filterPacket(PermissionDenied),
+          filter(pd => pd.session === this.session),
+          take(1),
+          concatMap(pd => throwError(() => new PermissionDeniedError(pd))),
+        ),
+      ),
+    );
 
-    return (await fetchRegisteredUsers(this.socket)).users;
+    await this.socket.send(sendPacket[0], sendPacket[1]);
+    return ret;
+  }
+
+  /**
+   * Fetch the list of users registered with the server.
+   */
+  async fetchRegisteredUsers(): Promise<UserList_User[]> {
+    const ret = await this.command('fetchRegisteredUsers', {
+      sendPacket: [UserList, UserList.create()],
+      expectPacket: [UserList, () => true],
+    });
+    return ret.users;
+  }
+
+  /**
+   * Deregisters the user; the user does not have to be online.
+   */
+  async deregisterUser(userId: number): Promise<void> {
+    this.assertConnected();
+    await Promise.all([
+      this.command('deregisterUser', {
+        sendPacket: [
+          UserList,
+          UserList.create({ users: [{ userId, name: undefined }] }),
+        ],
+        expectPacket: [UserList, () => true],
+      }),
+      // FIXME
+      this.socket.send(UserList, UserList.create()),
+    ]);
+  }
+
+  /**
+   * Rename registered user; the user does not have to be online.
+   */
+  async renameRegisteredUser(userId: number, name: string): Promise<void> {
+    this.assertConnected();
+    await Promise.all([
+      this.command('renameRegisteredUser', {
+        sendPacket: [UserList, UserList.create({ users: [{ userId, name }] })],
+        expectPacket: [UserList, () => true],
+      }),
+      // FIXME
+      // we need to send another packet, so we can wait on the expected UserList packet
+      // we cannot just listen for a UserState packet, as the user we are renaming
+      // may be offline
+      // unfortunately, this re-sends the entire list
+      this.socket.send(UserList, UserList.create()),
+    ]);
   }
 
   /**

@@ -38,8 +38,9 @@ describe('Creates and removes channels (e2e)', () => {
       channelCreatedEventEmitted = true;
     });
 
-    expect(client.user?.channel).toBeTruthy();
-    const channel = client.user!.channel;
+    client.assertConnected();
+    expect(client.user.channel).toBeTruthy();
+    const channel = client.user.channel;
     expect(channel).toBeTruthy();
     const sub1 = await channel.createSubChannel('sub1');
     expect(sub1.parent).toEqual(channel.id);

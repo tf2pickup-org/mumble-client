@@ -1,23 +1,13 @@
-import { UserState } from '@tf2pickup-org/mumble-protocol';
+import { UserList, UserState } from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import { Channel } from './channel';
 import {
-  ClientDisconnectedError,
   InsufficientPermissionsError,
   UserNotRegisteredError,
   NoSuchChannelError,
 } from './errors';
-import {
-  MinusOneButUnsigned,
-  moveUserToChannel,
-  setSelfDeaf,
-  setSelfMute,
-  userRegister,
-  userRenameRegistered,
-} from './commands';
 import { Change } from './change';
 import { syncProperty } from './sync-property';
-import { userUnregister } from './commands/user-rename-registered';
 
 type UserWritableProps = Pick<
   User,
@@ -27,6 +17,12 @@ type UserWritableProps = Pick<
 export type UserChanges = {
   [P in keyof UserWritableProps]?: Change<User[P]>;
 };
+
+/**
+ * 2^32 - 1
+ * Returned by the murmur server as the userId upon successful deregistration
+ */
+export const MinusOneButUnsigned = 0xffffffff;
 
 /**
  * Represents a single user connected to the server.
@@ -96,10 +92,6 @@ export class User {
    * @returns This user.
    */
   async moveToChannel(channelId: number): Promise<this> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
-
     if (this.channelId === channelId) {
       return this;
     }
@@ -113,7 +105,18 @@ export class User {
       throw new InsufficientPermissionsError();
     }
 
-    await moveUserToChannel(this.client.socket, this.session, channelId);
+    await this.client.command('moveUserToChannel', {
+      sendPacket: [
+        UserState,
+        UserState.create({ session: this.session, channelId }),
+      ],
+      expectPacket: [
+        UserState,
+        userState =>
+          userState.session === this.session &&
+          userState.channelId === channelId,
+      ],
+    });
     return this;
   }
 
@@ -124,11 +127,14 @@ export class User {
    * @returns This user.
    */
   async setSelfMute(selfMute: boolean): Promise<this> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
+    await this.client.command('setSelfMute', {
+      sendPacket: [
+        UserState,
+        UserState.create({ session: this.session, selfMute }),
+      ],
+      expectPacket: [UserState, ({ session }) => session === this.session],
+    });
 
-    await setSelfMute(this.client.socket, this.session, selfMute);
     return this;
   }
 
@@ -139,11 +145,13 @@ export class User {
    * @returns This user.
    */
   async setSelfDeaf(selfDeaf: boolean): Promise<this> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
-
-    await setSelfDeaf(this.client.socket, this.session, selfDeaf);
+    await this.client.command('setSelfDeaf', {
+      sendPacket: [
+        UserState,
+        UserState.create({ session: this.session, selfDeaf }),
+      ],
+      expectPacket: [UserState, ({ session }) => session === this.session],
+    });
     return this;
   }
 
@@ -152,11 +160,14 @@ export class User {
    * @returns This user.
    */
   async register(): Promise<this> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
+    await this.client.command('registerUser', {
+      sendPacket: [
+        UserState,
+        UserState.create({ session: this.session, userId: 0 }),
+      ],
+      expectPacket: [UserState, ({ session }) => session === this.session],
+    });
 
-    await userRegister(this.client.socket, this.session);
     return this;
   }
 
@@ -165,15 +176,11 @@ export class User {
    * @returns This user.
    */
   async deregister(): Promise<this> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
-
     if (this.userId === undefined) {
       throw new UserNotRegisteredError();
     }
 
-    await userUnregister(this.client.socket, this.userId);
+    await this.client.deregisterUser(this.userId);
     return this;
   }
 
@@ -182,15 +189,11 @@ export class User {
    * @returns This user.
    */
   async rename(name: string): Promise<this> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
-
     if (this.userId === undefined) {
       throw new UserNotRegisteredError();
     }
 
-    await userRenameRegistered(this.client.socket, this.userId, name);
+    await this.client.renameRegisteredUser(this.userId, name);
     return this;
   }
 }

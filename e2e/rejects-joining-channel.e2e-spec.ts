@@ -21,9 +21,11 @@ describe('Rejects moving to a channel when there are insufficient permissions (e
   });
 
   it('should throw an error when attempting to join a channel', async () => {
+    client.assertConnected();
+
     // channel 'three' has all permissions denied for all users
     const three = client.channels.byName('three');
     expect(three).toBeTruthy();
-    await expect(client.user?.moveToChannel(three!.id)).rejects.toThrow();
+    await expect(client.user.moveToChannel(three!.id)).rejects.toThrow();
   });
 });

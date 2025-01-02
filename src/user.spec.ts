@@ -4,8 +4,7 @@ import { Client } from './client';
 import { ClientDisconnectedError, NoSuchChannelError } from './errors';
 import { MumbleSocket } from './mumble-socket';
 import { Permissions } from './permissions';
-import { User } from './user';
-import { MinusOneButUnsigned } from './commands';
+import { MinusOneButUnsigned, User } from './user';
 
 vi.mock('./client');
 
@@ -25,6 +24,11 @@ describe('User', () => {
     } as unknown as ChannelManager;
     (client as { permissions: Map<number, Permissions> }).permissions =
       new Map();
+    client.assertConnected = vi.fn().mockImplementation(() => {
+      if (!client.socket) {
+        throw new ClientDisconnectedError();
+      }
+    });
   });
 
   beforeEach(() => {
@@ -147,18 +151,6 @@ describe('User', () => {
   });
 
   describe('moveToChannel()', () => {
-    describe('when the client is disconnected', () => {
-      beforeEach(() => {
-        client.socket = undefined;
-      });
-
-      it('should throw', async () => {
-        await expect(user.moveToChannel(30)).rejects.toThrow(
-          ClientDisconnectedError,
-        );
-      });
-    });
-
     describe('when the user is already on desired channel', () => {
       beforeEach(() => {
         user.syncState(UserState.create({ channelId: 42 }));

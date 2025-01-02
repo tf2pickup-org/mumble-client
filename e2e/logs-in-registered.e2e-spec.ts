@@ -31,7 +31,8 @@ describe('Logs in with a certificate (e2e)', () => {
   });
 
   it('should grab a registered username', async () => {
-    expect(client.user?.name).toEqual('registered-tester');
+    client.assertConnected();
+    expect(client.user.name).toEqual('registered-tester');
   });
 
   it('should reject connections gracefully', async () => {

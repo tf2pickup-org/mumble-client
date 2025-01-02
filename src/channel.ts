@@ -1,18 +1,11 @@
-import { ChannelState } from '@tf2pickup-org/mumble-protocol';
+import {
+  ChannelRemove,
+  ChannelState,
+  PermissionQuery,
+} from '@tf2pickup-org/mumble-protocol';
 import { Change } from './change';
 import { Client } from './client';
-import {
-  createChannel,
-  fetchChannelPermissions,
-  linkChannels,
-  removeChannel,
-  unlinkChannels,
-} from './commands';
-import {
-  ClientDisconnectedError,
-  InsufficientPermissionsError,
-  NoSuchChannelError,
-} from './errors';
+import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
 import { Permissions } from './permissions';
 import { User } from './user';
 import { syncProperty } from './sync-property';
@@ -106,17 +99,23 @@ export class Channel {
    * @returns The newly created channel.
    */
   async createSubChannel(name: string): Promise<Channel> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
-
     const permissions = await this.getPermissions();
     if (!permissions.canCreateChannel) {
       throw new InsufficientPermissionsError();
     }
 
-    const newChannelId = await createChannel(this.client.socket, this.id, name);
-    return this.client.channels.byId(newChannelId)!;
+    const ret = await this.client.command('createChannel', {
+      sendPacket: [
+        ChannelState,
+        ChannelState.create({ parent: this.id, name }),
+      ],
+      expectPacket: [
+        ChannelState,
+        channelState =>
+          channelState.parent === this.id && channelState.name === name,
+      ],
+    });
+    return this.client.channels.byId(ret.channelId!)!;
   }
 
   /**
@@ -124,16 +123,15 @@ export class Channel {
    * @returns This channel.
    */
   async remove(): Promise<this> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
-
     const permissions = await this.getPermissions();
     if (!permissions.canRemoveChannel) {
       throw new InsufficientPermissionsError();
     }
 
-    await removeChannel(this.client.socket, this.id);
+    await this.client.command('removeChannel', {
+      sendPacket: [ChannelRemove, ChannelRemove.create({ channelId: this.id })],
+      expectPacket: [ChannelRemove, ({ channelId }) => channelId === this.id],
+    });
     return this;
   }
 
@@ -150,14 +148,14 @@ export class Channel {
       return this.client.permissions.get(this.id)!;
     }
 
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
-
-    return new Permissions(
-      (await fetchChannelPermissions(this.client.socket, this.id))
-        .permissions ?? 0,
-    );
+    const ret = await this.client.command('fetchChannelPermissions', {
+      sendPacket: [
+        PermissionQuery,
+        PermissionQuery.create({ channelId: this.id }),
+      ],
+      expectPacket: [PermissionQuery, ({ channelId }) => channelId === this.id],
+    });
+    return new Permissions(ret.permissions ?? 0);
   }
 
   /**
@@ -166,10 +164,6 @@ export class Channel {
    * @returns This channel.
    */
   async link(otherChannel: Channel | number): Promise<this> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
-
     if (!(await this.getPermissions()).canLinkChannel) {
       throw new InsufficientPermissionsError();
     }
@@ -188,7 +182,16 @@ export class Channel {
       throw new InsufficientPermissionsError();
     }
 
-    await linkChannels(this.client.socket, this.id, targetChannel.id);
+    await this.client.command('linkChannels', {
+      sendPacket: [
+        ChannelState,
+        ChannelState.create({
+          channelId: this.id,
+          linksAdd: [targetChannel.id],
+        }),
+      ],
+      expectPacket: [ChannelState, ({ channelId }) => channelId === this.id],
+    });
     return this;
   }
 
@@ -198,10 +201,6 @@ export class Channel {
    * @returns This channel.
    */
   async unlink(otherChannel: Channel | number): Promise<this> {
-    if (!this.client.socket) {
-      throw new ClientDisconnectedError();
-    }
-
     if (!(await this.getPermissions()).canLinkChannel) {
       throw new InsufficientPermissionsError();
     }
@@ -220,7 +219,16 @@ export class Channel {
       throw new InsufficientPermissionsError();
     }
 
-    await unlinkChannels(this.client.socket, this.id, targetChannel.id);
+    await this.client.command('unlinkChannels', {
+      sendPacket: [
+        ChannelState,
+        ChannelState.create({
+          channelId: this.id,
+          linksRemove: [targetChannel.id],
+        }),
+      ],
+      expectPacket: [ChannelState, ({ channelId }) => channelId === this.id],
+    });
     return this;
   }
 }

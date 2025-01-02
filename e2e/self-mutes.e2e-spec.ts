@@ -22,8 +22,8 @@ describe('Sets self-mute (e2e)', () => {
   });
 
   it('should set self mute', async () => {
-    expect(client.user).toBeTruthy();
-    await client.user!.setSelfMute(true);
-    expect(client.user!.selfMute).toBe(true);
+    client.assertConnected();
+    await client.user.setSelfMute(true);
+    expect(client.user.selfMute).toBe(true);
   });
 });
