@@ -12,11 +12,11 @@ describe('Rejects removing channel when there are insufficient permissions (e2e)
       rejectUnauthorized: false,
     });
     await client.connect();
-    await waitABit(1000);
+    await waitABit(100);
   });
 
   afterAll(async () => {
-    await waitABit(1000);
+    await waitABit(100);
     client.disconnect();
   });
 

@@ -1,31 +1,24 @@
 import { Client } from '../src';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 import { waitABit } from './utils/wait-a-bit';
+import { loadUserCertificate } from './utils/load-user-certificate';
 
 describe('Links and unlinks channels (e2e)', () => {
   let client: Client;
 
   beforeAll(async () => {
-    const key = (await readFile(join(__dirname, 'tester-key.pem'))).toString();
-    const cert = (
-      await readFile(join(__dirname, 'tester-cert.pem'))
-    ).toString();
-
     client = new Client({
       host: 'localhost',
       port: 64738,
       username: 'tester',
-      key,
-      cert,
       rejectUnauthorized: false,
+      ...(await loadUserCertificate()),
     });
     await client.connect();
-    await waitABit(1000);
+    await waitABit(100);
   });
 
   afterAll(async () => {
-    await waitABit(1000);
+    await waitABit(100);
     client.disconnect();
   });
 
@@ -40,7 +33,7 @@ describe('Links and unlinks channels (e2e)', () => {
     await expect(one.link(two)).resolves.not.toThrow();
     expect(one.linkedChannels.map(l => l.id)).toEqual([two.id]);
 
-    await waitABit(1000);
+    await waitABit(100);
 
     await expect(one.unlink(two)).resolves.not.toThrow();
     expect(one.linkedChannels).toEqual([]);

@@ -2,7 +2,6 @@ import { tlsConnect } from './tls-connect';
 import { MumbleSocket } from './mumble-socket';
 import {
   concatMap,
-  delay,
   exhaustMap,
   filter,
   interval,
@@ -151,14 +150,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
           this.socket.packet.pipe(filterPacket(ServerSync), take(1)),
           this.socket.packet.pipe(filterPacket(ServerConfig), take(1)),
           this.socket.packet.pipe(filterPacket(Version), take(1)),
-          this.socket.packet.pipe(filterPacket(Ping), take(1)),
         ).pipe(
-          // Add one second delay before resolving the promise for good.
-          // The issue is, in case of rejected connect, the mumble server will
-          // send all the same packets (version, serverConfig, etc.) and send the
-          // Reject packet at the very end.
-          // FIXME Find a way to detect rejected connection without adding a delay
-          delay(1000),
           tap(([serverSync, serverConfig, version]) => {
             if (serverSync.session) {
               this.session = serverSync.session;

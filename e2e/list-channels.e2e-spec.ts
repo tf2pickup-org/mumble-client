@@ -12,11 +12,11 @@ describe('List channels (e2e)', () => {
       rejectUnauthorized: false,
     });
     await client.connect();
-    await waitABit(1000);
+    await waitABit(100);
   });
 
   afterAll(async () => {
-    await waitABit(1000);
+    await waitABit(100);
     client.disconnect();
   });
 

@@ -1,33 +1,26 @@
 import { Channel, Client } from '../src';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 import { waitABit } from './utils/wait-a-bit';
+import { loadUserCertificate } from './utils/load-user-certificate';
 
 describe('Creates and removes channels (e2e)', () => {
   let client: Client;
 
   beforeAll(async () => {
-    const key = (await readFile(join(__dirname, 'tester-key.pem'))).toString();
-    const cert = (
-      await readFile(join(__dirname, 'tester-cert.pem'))
-    ).toString();
-
     client = new Client({
       host: 'localhost',
       port: 64738,
       username: 'tester',
-      key,
-      cert,
       rejectUnauthorized: false,
+      ...(await loadUserCertificate()),
     });
     await client.connect();
-    await waitABit(1000);
+    await waitABit(100);
 
     await client.user?.moveToChannel(client.channels.byName('one')!.id);
   });
 
   afterAll(async () => {
-    await waitABit(1000);
+    await waitABit(100);
     client.disconnect();
   });
 
