@@ -1,4 +1,17 @@
+# Changelog
 
+# [0.9.0](https://github.com/tf2pickup-org/mumble-client/compare/0.8.2...0.9.0) (2025-01-02)
+
+
+### Bug Fixes
+
+* add Client.isConnected() and Client.assertConnected() methods; remove commands module ([#734](https://github.com/tf2pickup-org/mumble-client/issues/734)) ([1215232](https://github.com/tf2pickup-org/mumble-client/commit/121523259f86737599501fac2a4b8182b6679bf1))
+* remove connection delay ([#735](https://github.com/tf2pickup-org/mumble-client/issues/735)) ([e70bf92](https://github.com/tf2pickup-org/mumble-client/commit/e70bf928b3ba977f4348eb4b0f1dbfceb01dd139))
+
+
+### Features
+
+* add user registration commands ([#732](https://github.com/tf2pickup-org/mumble-client/issues/732)) ([0bbecae](https://github.com/tf2pickup-org/mumble-client/commit/0bbecaea617866ac8dd979facbd92d22f4cbe6da))
 
 ## [0.8.2](https://github.com/tf2pickup-org/mumble-client/compare/0.8.1...0.8.2) (2024-12-16)
 
