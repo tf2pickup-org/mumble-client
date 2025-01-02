@@ -14,10 +14,29 @@
   </a>
 </p>
 
-## Quick-start
-
 ### Installation
 
 ```bash
 $ npm i @tf2pickup-org/mumble-client
+```
+
+### Usage
+
+#### Connect to a mumble server
+
+```typescript
+import { Client } from '@tf2pickup-org/mumble-client';
+
+const client = new Client({
+  host: 'mumble://example.com',
+  port: 64738,
+  username: 'me',
+});
+await client.connect();
+
+console.log(client.welcomeText);
+
+if (client.user) {
+  console.log(`logged in as ${client.user.name}`);
+}
 ```
