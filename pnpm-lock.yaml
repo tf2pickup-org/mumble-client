@@ -12,8 +12,8 @@ importers:
         specifier: 2.9.4
         version: 2.9.4
       '@tf2pickup-org/mumble-protocol':
-        specifier: 1.0.5
-        version: 1.0.5
+        specifier: 1.0.6
+        version: 1.0.6
       rxjs:
         specifier: 7.8.1
         version: 7.8.1
@@ -768,8 +768,8 @@ packages:
   '@sinonjs/fake-timers@10.3.0':
     resolution: {integrity: sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==}
 
-  '@tf2pickup-org/mumble-protocol@1.0.5':
-    resolution: {integrity: sha512-nqFc6QskL6+w+A6w3j2Pa5na7Xy9Yij6bM0RUtnL+5t59QAFrBSHASHbdS0Yhdb9xhAApTrwcxob590oQhwy2g==}
+  '@tf2pickup-org/mumble-protocol@1.0.6':
+    resolution: {integrity: sha512-qqtOaSf1DbjFi4el7EmqEr9s+8W6sw0otWIqDW+8N7ikvY/yazpII971/WMXHc2ZnoBdVfr0oiJGCiPgOPn5Xg==}
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
@@ -3853,7 +3853,7 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@tf2pickup-org/mumble-protocol@1.0.5':
+  '@tf2pickup-org/mumble-protocol@1.0.6':
     dependencies:
       '@protobuf-ts/runtime': 2.9.4
 
