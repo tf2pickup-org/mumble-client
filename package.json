@@ -39,7 +39,7 @@
   "devDependencies": {
     "@release-it/conventional-changelog": "9.0.4",
     "@tsconfig/node16": "16.1.3",
-    "@types/node": "22.10.4",
+    "@types/node": "22.10.5",
     "@types/pem": "1.14.4",
     "@typescript-eslint/eslint-plugin": "8.19.0",
     "@typescript-eslint/parser": "8.19.0",
