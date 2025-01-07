@@ -1,5 +1,18 @@
 # Changelog
 
+# [0.10.0](https://github.com/tf2pickup-org/mumble-client/compare/0.9.0...0.10.0) (2025-01-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.6 ([#737](https://github.com/tf2pickup-org/mumble-client/issues/737)) ([8c0f9cd](https://github.com/tf2pickup-org/mumble-client/commit/8c0f9cd0a5600f3e8fae99a1c77d893b4712ab1e))
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.8 ([#739](https://github.com/tf2pickup-org/mumble-client/issues/739)) ([923e50b](https://github.com/tf2pickup-org/mumble-client/commit/923e50b253133cc4b5732fb10595d4a8401f6296))
+
+
+### Features
+
+* edit ACLs initial ([#742](https://github.com/tf2pickup-org/mumble-client/issues/742)) ([b48afe8](https://github.com/tf2pickup-org/mumble-client/commit/b48afe84db18030fa2f283a7e3c82d1faa8939b7))
+
 # [0.9.0](https://github.com/tf2pickup-org/mumble-client/compare/0.8.2...0.9.0) (2025-01-02)
 
 
