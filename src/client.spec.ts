@@ -4,6 +4,7 @@ import {
   Ping,
   ServerConfig,
   ServerSync,
+  UserList,
   UserState,
   Version,
 } from '@tf2pickup-org/mumble-protocol';
@@ -192,6 +193,26 @@ describe(Client.name, () => {
         );
 
         await expect(response).rejects.toThrow(PermissionDeniedError);
+      });
+
+      it('should send many packets', async () => {
+        const response = client.command('deregisterUser', {
+          sendPackets: [
+            [UserList, UserList.create({ users: [{ userId: 24 }] })],
+            [UserList, UserList.create()],
+          ],
+          expectPacket: [UserList, () => true],
+        });
+        socket.packet.next({
+          type: 18,
+          typeName: UserList.typeName,
+          payload: UserList.create(),
+        });
+        await response;
+        expect(socket.send).toHaveBeenCalledWith(UserList, {
+          users: [{ userId: 24 }],
+        });
+        expect(socket.send).toHaveBeenCalledWith(UserList, { users: [] });
       });
     });
   });
