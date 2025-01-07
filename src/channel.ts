@@ -1,4 +1,5 @@
 import {
+  ACL,
   ChannelRemove,
   ChannelState,
   PermissionQuery,
@@ -230,5 +231,36 @@ export class Channel {
       expectPacket: [ChannelState, ({ channelId }) => channelId === this.id],
     });
     return this;
+  }
+
+  async fetchAcl(): Promise<ACL> {
+    const acl = await this.client.command('fetchAcl', {
+      sendPacket: [
+        ACL,
+        ACL.create({
+          channelId: this.id,
+          query: true,
+        }),
+      ],
+      expectPacket: [ACL, ({ channelId }) => channelId === this.id],
+    });
+    return acl;
+  }
+
+  async saveAcl(acl: ACL) {
+    this.client.assertConnected();
+    await Promise.all([
+      this.client.command('saveAcl', {
+        sendPacket: [ACL, ACL.create({ ...acl, channelId: this.id })],
+        expectPacket: [ACL, ({ channelId }) => channelId === this.id],
+      }),
+      this.client.socket.send(
+        ACL,
+        ACL.create({
+          channelId: this.id,
+          query: true,
+        }),
+      ),
+    ]);
   }
 }
