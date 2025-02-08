@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.1](https://github.com/tf2pickup-org/mumble-client/compare/0.11.0...0.11.1) (2025-02-08)
+
+
+### Reverts
+
+* publish to jsr.io ([#773](https://github.com/tf2pickup-org/mumble-client/issues/773)) ([2146526](https://github.com/tf2pickup-org/mumble-client/commit/21465264c76824a928a7c72431d6fb079abd2644))
+
 # [0.11.0](https://github.com/tf2pickup-org/mumble-client/compare/0.10.0...0.11.0) (2025-02-08)
 
 
