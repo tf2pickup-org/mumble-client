@@ -1,5 +1,19 @@
 # Changelog
 
+# [0.11.0](https://github.com/tf2pickup-org/mumble-client/compare/0.10.0...0.11.0) (2025-02-08)
+
+
+### Bug Fixes
+
+* **build:** add exports field ([#772](https://github.com/tf2pickup-org/mumble-client/issues/772)) ([7a2036b](https://github.com/tf2pickup-org/mumble-client/commit/7a2036be8dd0a8fc7347542b28b19731dfcbdd63))
+
+
+### Features
+
+* add Client.self ([#744](https://github.com/tf2pickup-org/mumble-client/issues/744)) ([a27454f](https://github.com/tf2pickup-org/mumble-client/commit/a27454feabfe6122b120bd8816aacb402afbdbe2))
+* add UserManager.byName() ([#745](https://github.com/tf2pickup-org/mumble-client/issues/745)) ([ebe9f4d](https://github.com/tf2pickup-org/mumble-client/commit/ebe9f4d73f7af0af2471e63f5ee6018d68ceee44))
+* **build:** publish to jsr.io ([#773](https://github.com/tf2pickup-org/mumble-client/issues/773)) ([1bfa9cb](https://github.com/tf2pickup-org/mumble-client/commit/1bfa9cb0c05ff85bb082e4bf8e3550465b401333))
+
 # [0.10.0](https://github.com/tf2pickup-org/mumble-client/compare/0.9.0...0.10.0) (2025-01-07)
 
 
