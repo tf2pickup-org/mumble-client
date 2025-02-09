@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/tf2pickup-org/mumble-client/compare/0.11.1...0.11.2) (2025-02-09)
+
+
+### Bug Fixes
+
+* **build:** fix "exports" field ([2fb579a](https://github.com/tf2pickup-org/mumble-client/commit/2fb579a2a143be51fa221005b434451837c13b15))
+
 ## [0.11.1](https://github.com/tf2pickup-org/mumble-client/compare/0.11.0...0.11.1) (2025-02-08)
 
 
