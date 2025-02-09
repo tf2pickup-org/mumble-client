@@ -17,7 +17,7 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "exports": "./src/index.ts",
+  "exports": "./dist/index.js",
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
     "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
