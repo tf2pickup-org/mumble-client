@@ -20,7 +20,7 @@
 $ npm i @tf2pickup-org/mumble-client
 ```
 
-### Usage
+### Examples
 
 #### Connect to a mumble server
 
@@ -34,9 +34,26 @@ const client = new Client({
 });
 await client.connect();
 
-console.log(client.welcomeText);
-
-if (client.user) {
-  console.log(`logged in as ${client.user.name}`);
+if (client.isConnected) {
+  console.log(client.welcomeText);
+  console.log(`logged in as ${client.self.name}`);
 }
+```
+
+#### List all channels
+
+```typescript
+import { type Channel } from '@tf2pickup-org/mumble-client';
+
+function printChannel(channel: Channel, level = 0) {
+  if (channel.name) {
+    console.log(channel.name.padStart(channel.name.length + level));
+  }
+
+  for (const subChannel of channel.subChannels) {
+    printChannel(subChannel, level + 1);
+  }
+}
+
+printChannel(client.channels.root);
 ```
