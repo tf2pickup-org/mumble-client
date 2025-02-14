@@ -1,5 +1,6 @@
 import { Channel, ChannelChanges } from './channel';
 import { MumbleSocket } from './mumble-socket';
+import { SpeakingStateChange } from './speaking-state-change';
 import { User, UserChanges } from './user';
 
 // FIXME This _has_ to be type alias instead of interface.
@@ -16,4 +17,6 @@ export type Events = {
   userCreate: (user: User) => void;
   userUpdate: (user: User, changes: UserChanges) => void;
   userRemove: (user: User) => void;
+
+  speakingStateChange: (stateChange: SpeakingStateChange) => void;
 };

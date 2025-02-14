@@ -17,6 +17,7 @@ import { CommandTimedOutError, PermissionDeniedError } from './errors';
 vi.mock('./mumble-socket', () => ({
   MumbleSocket: vi.fn().mockImplementation(() => ({
     packet: new Subject(),
+    audioPacket: new Subject(),
     send: vi.fn().mockResolvedValue({}),
     end: vi.fn(),
   })),

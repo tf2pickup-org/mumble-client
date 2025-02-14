@@ -4,14 +4,20 @@ import { packetForType, packetType } from './packet-type-registry';
 import { MessageType } from '@protobuf-ts/runtime';
 import { UDPTunnel } from '@tf2pickup-org/mumble-protocol';
 import { PacketType } from './packet-type';
+import { readVarint } from './read-varint';
 
 interface MumbleSocketReader {
   length: number;
   callback: (data: Buffer) => void;
 }
 
+interface AudioPacket {
+  source: number; // Session ID of the source user
+}
+
 export class MumbleSocket {
-  private _packet = new Subject<PacketType>();
+  private readonly _packet = new Subject<PacketType>();
+  private readonly _audioPacket = new Subject<AudioPacket>();
   private buffers: Buffer[] = [];
   private length = 0;
   private readers: MumbleSocketReader[] = [];
@@ -23,6 +29,10 @@ export class MumbleSocket {
 
   get packet(): Observable<PacketType> {
     return this._packet.asObservable();
+  }
+
+  get audioPacket(): Observable<AudioPacket> {
+    return this._audioPacket.asObservable();
   }
 
   read(length: number, callback: MumbleSocketReader['callback']): void {
@@ -121,7 +131,7 @@ export class MumbleSocket {
       if (message) {
         switch (message.typeName) {
           case UDPTunnel.typeName:
-            // ignore
+            this.decodeAudio(data);
             break;
 
           default:
@@ -137,5 +147,18 @@ export class MumbleSocket {
 
       this.readPrefix();
     });
+  }
+
+  private decodeAudio(packet: Buffer) {
+    // https://github.com/mumble-voip/mumble/blob/master/docs/dev/network-protocol/voice_data.md#packet-format
+    const target = 0b000111111 & packet[0];
+    // 0 is normal talking
+    if (target !== 0) {
+      return;
+    }
+
+    // https://github.com/mumble-voip/mumble/blob/master/docs/dev/network-protocol/voice_data.md#encoded-audio-data-packet
+    const { value } = readVarint(packet.subarray(1));
+    this._audioPacket.next({ source: value as number });
   }
 }
