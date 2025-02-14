@@ -1,5 +1,13 @@
 # Changelog
 
+# [0.12.0](https://github.com/tf2pickup-org/mumble-client/compare/0.11.2...0.12.0) (2025-02-14)
+
+
+### Features
+
+* add ChannelManager.root ([#778](https://github.com/tf2pickup-org/mumble-client/issues/778)) ([123d962](https://github.com/tf2pickup-org/mumble-client/commit/123d962b3acab3dc26f38b28a6b6a7b2092c2a62))
+* initial audio decoding support ([#782](https://github.com/tf2pickup-org/mumble-client/issues/782)) ([9e8e9ad](https://github.com/tf2pickup-org/mumble-client/commit/9e8e9adc74f3880c3c8eb37bb3b1240f7b18cc8d))
+
 ## [0.11.2](https://github.com/tf2pickup-org/mumble-client/compare/0.11.1...0.11.2) (2025-02-09)
 
 
