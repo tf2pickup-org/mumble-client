@@ -9,7 +9,7 @@ import { MumbleSocket } from './mumble-socket';
  * A manager of channels.
  */
 export class ChannelManager {
-  private _channels = new Map<number, Channel>();
+  private readonly _channels = new Map<number, Channel>();
 
   constructor(public readonly client: Client) {
     this.client.on('socketConnect', (socket: MumbleSocket) => {
@@ -29,6 +29,10 @@ export class ChannelManager {
         )
         .subscribe();
     });
+  }
+
+  get root() {
+    return this.byId(0);
   }
 
   /**
