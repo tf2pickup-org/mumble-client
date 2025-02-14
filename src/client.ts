@@ -2,8 +2,10 @@ import { tlsConnect } from './tls-connect';
 import { MumbleSocket } from './mumble-socket';
 import {
   concatMap,
+  debounceTime,
   exhaustMap,
   filter,
+  groupBy,
   interval,
   lastValueFrom,
   map,
@@ -126,6 +128,28 @@ export class Client extends TypedEventEmitter<Events, Events> {
     this.socket = new MumbleSocket(
       await tlsConnect(this.options.host, this.options.port, this.options),
     );
+    this.socket.audioPacket
+      .pipe(groupBy(packet => packet.source))
+      .subscribe(group => {
+        const user = this.users.bySession(group.key);
+        if (!user) {
+          console.warn(`uknown session: ${group.key}`);
+          return;
+        }
+
+        let speaking = false;
+
+        group.pipe(filter(() => speaking === false)).subscribe(() => {
+          speaking = true;
+          this.emit('speakingStateChange', { user, speaking });
+        });
+
+        // if no packet comes for 40 milliseconds, the user stopped talking
+        group.pipe(debounceTime(40)).subscribe(() => {
+          speaking = false;
+          this.emit('speakingStateChange', { user, speaking });
+        });
+      });
     this.emit('socketConnect', this.socket);
 
     this.socket.packet
