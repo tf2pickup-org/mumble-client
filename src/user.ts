@@ -31,7 +31,7 @@ export class User {
   readonly session: number;
   name?: string;
   channelId = 0;
-  private _userId?: number | undefined; // undefined userId means the user is not registered
+  private _userId: number | undefined; // undefined userId means the user is not registered
   mute = false;
   deaf = false;
   suppress = false;
