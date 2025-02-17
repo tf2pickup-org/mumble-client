@@ -24,6 +24,9 @@ importers:
       '@tsconfig/node16':
         specifier: 16.1.3
         version: 16.1.3
+      '@tsconfig/strictest':
+        specifier: ^2.0.5
+        version: 2.0.5
       '@types/node':
         specifier: 22.13.4
         version: 22.13.4
@@ -869,6 +872,9 @@ packages:
 
   '@tsconfig/node16@16.1.3':
     resolution: {integrity: sha512-9nTOUBn+EMKO6rtSZJk+DcqsfgtlERGT9XPJ5PRj/HNENPCBY1yu/JEj5wT6GLtbCLBO2k46SeXDaY0pjMqypw==}
+
+  '@tsconfig/strictest@2.0.5':
+    resolution: {integrity: sha512-ec4tjL2Rr0pkZ5hww65c+EEPYwxOi4Ryv+0MtjeaSQRJyq322Q27eOQiFbuNgw2hpL4hB1/W/HBGk3VKS43osg==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -4068,6 +4074,8 @@ snapshots:
   '@tsconfig/node16@1.0.4': {}
 
   '@tsconfig/node16@16.1.3': {}
+
+  '@tsconfig/strictest@2.0.5': {}
 
   '@types/babel__core@7.20.5':
     dependencies:

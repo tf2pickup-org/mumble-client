@@ -133,7 +133,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
       .subscribe(group => {
         const user = this.users.bySession(group.key);
         if (!user) {
-          console.warn(`uknown session: ${group.key}`);
+          console.warn(`unknown session: ${group.key}`);
           return;
         }
 
@@ -172,9 +172,9 @@ export class Client extends TypedEventEmitter<Events, Events> {
       )
       .subscribe(userRemove => {
         this.emit('disconnect', {
-          reason: userRemove.reason,
+          reason: userRemove.reason ?? 'unknown reason',
         });
-        this.socket = undefined;
+        delete this.socket;
       });
 
     const initialize: Promise<this> = lastValueFrom(
@@ -188,7 +188,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
             if (serverSync.session) {
               this.session = serverSync.session;
             }
-            this.welcomeText = serverSync.welcomeText;
+            this.welcomeText = serverSync.welcomeText ?? '';
             this.serverVersion = version;
             this.serverConfig = serverConfig;
             this.emit('connect');
@@ -217,7 +217,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
   disconnect(): this {
     this.emit('disconnect');
     this.socket?.end();
-    this.socket = undefined;
+    delete this.socket;
     return this;
   }
 
@@ -272,10 +272,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
     this.assertConnected();
     await Promise.all([
       this.command('deregisterUser', {
-        sendPacket: [
-          UserList,
-          UserList.create({ users: [{ userId, name: undefined }] }),
-        ],
+        sendPacket: [UserList, UserList.create({ users: [{ userId }] })],
         expectPacket: [UserList, () => true],
       }),
       // FIXME
@@ -314,7 +311,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
     return await this.socket?.send(
       Version,
       Version.create({
-        release: this.options.clientName,
+        release: this.options.clientName ?? '',
         versionV1: encodeMumbleVersionLegacy(version),
         versionV2: encodeMumbleVersion(version),
         os: platform(),
@@ -331,8 +328,8 @@ export class Client extends TypedEventEmitter<Events, Events> {
       Authenticate,
       Authenticate.create({
         username: this.options.username,
-        password: this.options.password,
-        tokens: this.options.tokens,
+        ...(this.options.password ? { password: this.options.password } : {}),
+        tokens: this.options.tokens ?? [],
         opus: true,
       }),
     );

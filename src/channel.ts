@@ -35,8 +35,8 @@ export class Channel {
     channelState: ChannelState & { channelId: number },
   ) {
     this.id = channelState.channelId;
-    this.name = channelState.name;
-    this.parent = channelState.parent;
+    this.name = channelState.name ?? '';
+    this.parent = channelState.parent ?? 0;
     this.links = [...channelState.links];
     this.temporary = channelState.temporary ?? false;
   }
@@ -141,7 +141,7 @@ export class Channel {
    * @returns Permissions.
    */
   async getPermissions(): Promise<Permissions> {
-    if (this.client.user?.userId === 0) {
+    if (this.client.self?.userId === 0) {
       return Permissions.superUser();
     }
 

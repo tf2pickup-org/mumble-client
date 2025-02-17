@@ -1,5 +1,5 @@
 {
-  "extends": "ts-node/node16/tsconfig.json",
+  "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
     "incremental": true,
     "target": "esnext",
@@ -7,10 +7,6 @@
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
     "skipLibCheck": true,
     "outDir": "dist",
     "sourceMap": true,
@@ -21,16 +17,13 @@
     "stripInternal": true,
     "types": ["vitest/globals"]
   },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
+  "exclude": ["node_modules", "dist"],
   "ts-node": {
     "transpileOnly": true,
     "files": true,
     "require": ["tsconfig-paths/register"]
   },
   "tsc-alias": {
-    "resolveFullPaths": true,
+    "resolveFullPaths": true
   }
 }
