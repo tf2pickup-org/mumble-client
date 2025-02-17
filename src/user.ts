@@ -1,4 +1,4 @@
-import { UserList, UserState } from '@tf2pickup-org/mumble-protocol';
+import { UserState } from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import { Channel } from './channel';
 import {

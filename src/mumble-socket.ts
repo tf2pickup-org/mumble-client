@@ -23,7 +23,9 @@ export class MumbleSocket {
   private readers: MumbleSocketReader[] = [];
 
   constructor(private readonly socket: TLSSocket) {
-    this.socket.on('data', (data: Buffer) => this.receiveData(data));
+    this.socket.on('data', (data: Buffer) => {
+      this.receiveData(data);
+    });
     this.readPrefix();
   }
 

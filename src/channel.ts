@@ -91,7 +91,7 @@ export class Channel {
   get linkedChannels(): Channel[] {
     return this.links
       .map(ch => this.client.channels.byId(ch))
-      .filter(ch => ch !== undefined) as Channel[];
+      .filter(ch => ch !== undefined);
   }
 
   /**

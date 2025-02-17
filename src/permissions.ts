@@ -22,6 +22,7 @@ enum Permission {
   SelfRegister = 0x80000,
   ResetUserContent = 0x100000,
 
+  // eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
   All = Write +
     Traverse +
     Enter +

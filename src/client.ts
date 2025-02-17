@@ -139,7 +139,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
 
         let speaking = false;
 
-        group.pipe(filter(() => speaking === false)).subscribe(() => {
+        group.pipe(filter(() => !speaking)).subscribe(() => {
           speaking = true;
           this.emit('speakingStateChange', { user, speaking });
         });
@@ -349,6 +349,8 @@ export class Client extends TypedEventEmitter<Events, Events> {
     const subscription = interval(this.options.pingInterval)
       .pipe(exhaustMap(() => this.ping()))
       .subscribe();
-    this.on('disconnect', () => subscription.unsubscribe());
+    this.on('disconnect', () => {
+      subscription.unsubscribe();
+    });
   }
 }

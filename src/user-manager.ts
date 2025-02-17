@@ -1,5 +1,4 @@
 import { UserRemove, UserState } from '@tf2pickup-org/mumble-protocol';
-import { tap } from 'rxjs';
 import { Client } from './client';
 import { filterPacket } from './rxjs-operators/filter-packet';
 import { MumbleSocket } from './mumble-socket';
@@ -15,19 +14,13 @@ export class UserManager {
     this.client.on('socketConnect', (socket: MumbleSocket) => {
       this._users.clear();
 
-      socket.packet
-        .pipe(
-          filterPacket(UserState),
-          tap(userState => this.syncUser(userState)),
-        )
-        .subscribe();
+      socket.packet.pipe(filterPacket(UserState)).subscribe(userState => {
+        this.syncUser(userState);
+      });
 
-      socket.packet
-        .pipe(
-          filterPacket(UserRemove),
-          tap(userRemove => this.removeUser(userRemove)),
-        )
-        .subscribe();
+      socket.packet.pipe(filterPacket(UserRemove)).subscribe(userRemove => {
+        this.removeUser(userRemove);
+      });
     });
   }
 
