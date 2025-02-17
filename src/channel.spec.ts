@@ -73,7 +73,7 @@ describe('Channel', () => {
       expect(channel.parent).toEqual(10);
       expect(changes).toEqual({
         parent: {
-          previousValue: undefined,
+          previousValue: 0,
           currentValue: 10,
         },
       });
