@@ -18,14 +18,18 @@ export class ChannelManager {
       socket.packet
         .pipe(
           filterPacket(ChannelState),
-          tap(channelState => this.syncChannelState(channelState)),
+          tap(channelState => {
+            this.syncChannelState(channelState);
+          }),
         )
         .subscribe();
 
       socket.packet
         .pipe(
           filterPacket(ChannelRemove),
-          tap(channelRemove => this.removeChannel(channelRemove)),
+          tap(channelRemove => {
+            this.removeChannel(channelRemove);
+          }),
         )
         .subscribe();
     });
@@ -53,6 +57,7 @@ export class ChannelManager {
         return channel;
       }
     }
+    return undefined;
   }
 
   /**
@@ -70,6 +75,7 @@ export class ChannelManager {
           return channel;
         }
       }
+      return undefined;
     };
 
     let lastParent = this.byId(0);
@@ -78,7 +84,7 @@ export class ChannelManager {
         return undefined;
       }
 
-      lastParent = byNameAndParent(element, lastParent?.id);
+      lastParent = byNameAndParent(element, lastParent.id);
     }
 
     return lastParent;

@@ -23,7 +23,9 @@ export class MumbleSocket {
   private readers: MumbleSocketReader[] = [];
 
   constructor(private readonly socket: TLSSocket) {
-    this.socket.on('data', (data: Buffer) => this.receiveData(data));
+    this.socket.on('data', (data: Buffer) => {
+      this.receiveData(data);
+    });
     this.readPrefix();
   }
 
@@ -89,7 +91,7 @@ export class MumbleSocket {
       return;
     }
 
-    const reader = this.readers[0];
+    const reader = this.readers[0]!;
     if (this.length < reader.length) {
       return;
     }
@@ -98,7 +100,7 @@ export class MumbleSocket {
     let written = 0;
 
     while (written < reader.length) {
-      const received = this.buffers[0];
+      const received = this.buffers[0]!;
       const remaining = reader.length - written;
       if (received.length <= remaining) {
         received.copy(buffer, written);
@@ -108,7 +110,7 @@ export class MumbleSocket {
       } else {
         received.copy(buffer, written, 0, remaining);
         written += remaining;
-        this.buffers[0] = received.slice(remaining);
+        this.buffers[0] = received.subarray(remaining);
         this.length -= remaining;
       }
     }
@@ -150,8 +152,12 @@ export class MumbleSocket {
   }
 
   private decodeAudio(packet: Buffer) {
+    if (packet.length < 1) {
+      return;
+    }
+
     // https://github.com/mumble-voip/mumble/blob/master/docs/dev/network-protocol/voice_data.md#packet-format
-    const target = 0b000111111 & packet[0];
+    const target = 0b000111111 & packet[0]!;
     // 0 is normal talking
     if (target !== 0) {
       return;

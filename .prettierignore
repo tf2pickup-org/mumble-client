@@ -1,0 +1,8 @@
+node_modules
+/dist
+CHANGELOG.md
+
+# Ignore files for PNPM, NPM and YARN
+package.json
+pnpm-lock.yaml
+

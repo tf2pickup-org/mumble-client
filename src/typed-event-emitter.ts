@@ -24,28 +24,28 @@ export abstract class TypedEventEmitter<
   extends EventEmitter
   implements TypedEventBroadcaster<EmitEvents>
 {
-  on<EventName extends EventNames<ListenEvents>>(
+  override on<EventName extends EventNames<ListenEvents>>(
     eventName: EventName,
     listener: ListenEvents[EventName],
   ): this {
     return super.on(eventName, listener);
   }
 
-  once<EventName extends EventNames<ListenEvents>>(
+  override once<EventName extends EventNames<ListenEvents>>(
     eventName: EventName,
     listener: ListenEvents[EventName],
   ): this {
     return super.once(eventName, listener);
   }
 
-  emit<EventName extends EventNames<EmitEvents>>(
+  override emit<EventName extends EventNames<EmitEvents>>(
     eventName: EventName,
     ...args: EventParams<EmitEvents, EventName>
   ): boolean {
     return super.emit(eventName, ...args);
   }
 
-  listeners<EventName extends EventNames<ListenEvents>>(
+  override listeners<EventName extends EventNames<ListenEvents>>(
     event: EventName,
   ): ListenEvents[EventName][] {
     return super.listeners(event) as ListenEvents[EventName][];

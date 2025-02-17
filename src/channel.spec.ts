@@ -1,4 +1,4 @@
-import { ChannelState, PermissionQuery } from '@tf2pickup-org/mumble-protocol';
+import { ChannelState } from '@tf2pickup-org/mumble-protocol';
 import { Channel } from './channel';
 import { ChannelManager } from './channel-manager';
 import { Client } from './client';
@@ -73,7 +73,7 @@ describe('Channel', () => {
       expect(channel.parent).toEqual(10);
       expect(changes).toEqual({
         parent: {
-          previousValue: undefined,
+          previousValue: 0,
           currentValue: 10,
         },
       });

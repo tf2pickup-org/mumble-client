@@ -1,4 +1,4 @@
-import { UserList, UserState } from '@tf2pickup-org/mumble-protocol';
+import { UserState } from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import { Channel } from './channel';
 import {
@@ -31,7 +31,7 @@ export class User {
   readonly session: number;
   name?: string;
   channelId = 0;
-  private _userId?: number; // undefined userId means the user is not registered
+  private _userId: number | undefined; // undefined userId means the user is not registered
   mute = false;
   deaf = false;
   suppress = false;
