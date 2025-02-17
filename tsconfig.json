@@ -10,7 +10,6 @@
     "skipLibCheck": true,
     "outDir": "dist",
     "sourceMap": true,
-    "declaration": true,
     "removeComments": true,
     "baseUrl": ".",
     "resolveJsonModule": true,
