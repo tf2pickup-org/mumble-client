@@ -1,4 +1,3 @@
-Mumble.proto
 vitest.config.ts
 renovate.json
 
@@ -18,3 +17,11 @@ lerna-debug.log*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# source
+.github
+.vscode
+e2e
+src
+eslint.config.js
+renovate.json

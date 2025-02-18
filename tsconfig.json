@@ -14,14 +14,10 @@
     "baseUrl": ".",
     "resolveJsonModule": true,
     "stripInternal": true,
+    "declaration": true,
     "types": ["vitest/globals"]
   },
-  "exclude": ["node_modules", "dist"],
-  "ts-node": {
-    "transpileOnly": true,
-    "files": true,
-    "require": ["tsconfig-paths/register"]
-  },
+  "exclude": ["node_modules", "dist", "coverage"],
   "tsc-alias": {
     "resolveFullPaths": true
   }
