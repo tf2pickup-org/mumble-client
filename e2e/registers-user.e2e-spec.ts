@@ -37,7 +37,6 @@ describe('registers a user', () => {
       expect(client1.user.isRegistered).toBe(false);
     }
     client1.disconnect();
-
     client2.assertConnected();
     if (client2.user.isRegistered) {
       await client2.user.deregister();
