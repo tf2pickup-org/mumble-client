@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.12.1](https://github.com/tf2pickup-org/mumble-client/compare/0.12.0...0.12.1) (2025-02-18)
+
+
+### Bug Fixes
+
+* add support for sending more packets in a single command ([#743](https://github.com/tf2pickup-org/mumble-client/issues/743)) ([8804002](https://github.com/tf2pickup-org/mumble-client/commit/880400261b292c22e05c1ed717c85df94cb9e130))
+* **build:** add @tsconfig/strictest and update to eslint v9 ([#783](https://github.com/tf2pickup-org/mumble-client/issues/783)) ([5d2f836](https://github.com/tf2pickup-org/mumble-client/commit/5d2f83603c6ac496eadcc3282d8a38a903a5eb8d))
+
 # [0.12.0](https://github.com/tf2pickup-org/mumble-client/compare/0.11.2...0.12.0) (2025-02-14)
 
 
