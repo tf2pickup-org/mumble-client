@@ -2,10 +2,12 @@
   "extends": "./tsconfig.json",
   "exclude": [
     "node_modules",
-    "e2e",
     "dist",
+    "coverage",
+    "e2e",
     "**/*spec.ts",
     "**/__mocks__",
-    "*vitest.config.*"
+    "*vitest.config.*",
+    "eslint.config.js"
   ]
 }
