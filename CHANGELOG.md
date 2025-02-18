@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.2](https://github.com/tf2pickup-org/mumble-client/compare/0.12.1...0.12.2) (2025-02-18)
+
+
+### Bug Fixes
+
+* **build:** fix package build ([#785](https://github.com/tf2pickup-org/mumble-client/issues/785)) ([65176dc](https://github.com/tf2pickup-org/mumble-client/commit/65176dcf76bf7c4cd6e27c36cc7afd1a267c524a))
+
 ## [0.12.1](https://github.com/tf2pickup-org/mumble-client/compare/0.12.0...0.12.1) (2025-02-18)
 
 
