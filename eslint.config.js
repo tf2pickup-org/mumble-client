@@ -1,7 +1,8 @@
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
 
-export default ts.config(
+/** @type import('typescript-eslint').ConfigArray */
+const config = ts.config(
   js.configs.recommended,
   ts.configs.strictTypeChecked,
   ts.configs.stylisticTypeChecked,
@@ -32,3 +33,5 @@ export default ts.config(
     },
   },
 );
+
+export default config;
