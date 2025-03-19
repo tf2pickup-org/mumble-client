@@ -34,7 +34,7 @@
     "bot"
   ],
   "dependencies": {
-    "@protobuf-ts/runtime": "2.9.5",
+    "@protobuf-ts/runtime": "2.9.6",
     "@tf2pickup-org/mumble-protocol": "1.0.8",
     "rxjs": "7.8.2"
   },
