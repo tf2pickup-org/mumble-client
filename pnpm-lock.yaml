@@ -12,8 +12,8 @@ importers:
         specifier: 2.9.6
         version: 2.9.6
       '@tf2pickup-org/mumble-protocol':
-        specifier: 1.0.8
-        version: 1.0.8
+        specifier: 1.0.9
+        version: 1.0.9
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
@@ -463,9 +463,6 @@ packages:
     resolution: {integrity: sha512-UA91GwWPhFExt3IizW6bOeY/pQ0BkuNwKjk9iQW9KqxluGCrg4VenZ0/L+2Y0+ZOtme72EVvg6v0zo3AMQRCeA==}
     engines: {node: '>=12'}
 
-  '@protobuf-ts/runtime@2.9.4':
-    resolution: {integrity: sha512-vHRFWtJJB/SiogWDF0ypoKfRIZ41Kq+G9cEFj6Qm1eQaAhJ1LDFvgZ7Ja4tb3iLOQhz0PaoPnnOijF1qmEqTxg==}
-
   '@protobuf-ts/runtime@2.9.6':
     resolution: {integrity: sha512-C0CfpKx4n4LBbUrajOdRj2BTbd3qBoK0SiKWLq7RgCoU6xiN4wesBMFHUOBp3fFzKeZwgU8Q2KtzaqzIvPLRXg==}
 
@@ -576,8 +573,8 @@ packages:
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
 
-  '@tf2pickup-org/mumble-protocol@1.0.8':
-    resolution: {integrity: sha512-+tNExBudEewj4jt1fDBmggktChjsfQ9AC1hvK7e+f20ScLCJvjE73KeHcuz2eXHQ72ygs4UyssvSirhtXWbi9g==}
+  '@tf2pickup-org/mumble-protocol@1.0.9':
+    resolution: {integrity: sha512-gFNVqOevpyJWaJ5nhch7R6pJbr3SvOI1rq9b+K7AROFpw9u2ypPqbWxQTpxHjcutbC9wBNURlxzcgeKEP44zxA==}
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
@@ -2627,8 +2624,6 @@ snapshots:
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
 
-  '@protobuf-ts/runtime@2.9.4': {}
-
   '@protobuf-ts/runtime@2.9.6': {}
 
   '@release-it/conventional-changelog@10.0.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)(release-it@18.1.2(@types/node@22.13.10)(typescript@5.8.2))':
@@ -2703,9 +2698,9 @@ snapshots:
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
-  '@tf2pickup-org/mumble-protocol@1.0.8':
+  '@tf2pickup-org/mumble-protocol@1.0.9':
     dependencies:
-      '@protobuf-ts/runtime': 2.9.4
+      '@protobuf-ts/runtime': 2.9.6
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
