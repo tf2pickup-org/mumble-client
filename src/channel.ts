@@ -248,7 +248,7 @@ export class Channel {
   }
 
   async saveAcl(acl: ACL) {
-    this.client.command('saveAcl', {
+    await this.client.command('saveAcl', {
       sendPackets: [
         [ACL, ACL.create({ ...acl, channelId: this.id })],
         [
