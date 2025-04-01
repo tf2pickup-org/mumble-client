@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.12.3](https://github.com/tf2pickup-org/mumble-client/compare/0.12.2...0.12.3) (2025-04-01)
+
+
+### Bug Fixes
+
+* **build:** fix linting ([#813](https://github.com/tf2pickup-org/mumble-client/issues/813)) ([9b7cb59](https://github.com/tf2pickup-org/mumble-client/commit/9b7cb593ca1732538e0d936507165f3263d243c2))
+* **deps:** update dependency @protobuf-ts/runtime to v2.9.5 ([#803](https://github.com/tf2pickup-org/mumble-client/issues/803)) ([c4db0e6](https://github.com/tf2pickup-org/mumble-client/commit/c4db0e65e3a15d2e95448c5510604c04dcfb4a8f))
+* **deps:** update dependency @protobuf-ts/runtime to v2.9.6 ([#807](https://github.com/tf2pickup-org/mumble-client/issues/807)) ([f143b3e](https://github.com/tf2pickup-org/mumble-client/commit/f143b3ec680a88ad171739a224141d3a7f02c9a0))
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.9 ([#814](https://github.com/tf2pickup-org/mumble-client/issues/814)) ([225db48](https://github.com/tf2pickup-org/mumble-client/commit/225db4880a544e121b91eebb9be049e11fb7c6d7))
+* **deps:** update dependency rxjs to v7.8.2 ([#791](https://github.com/tf2pickup-org/mumble-client/issues/791)) ([913b85d](https://github.com/tf2pickup-org/mumble-client/commit/913b85d1008e463131e780177f1807387b67727b))
+* remove permission enum ([#788](https://github.com/tf2pickup-org/mumble-client/issues/788)) ([f950199](https://github.com/tf2pickup-org/mumble-client/commit/f9501990dce5c2d463ed8a64d5d14bfcf96d326a))
+
 ## [0.12.2](https://github.com/tf2pickup-org/mumble-client/compare/0.12.1...0.12.2) (2025-02-18)
 
 
