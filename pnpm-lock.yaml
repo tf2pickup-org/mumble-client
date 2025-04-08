@@ -46,8 +46,8 @@ importers:
         specifier: 18.1.2
         version: 18.1.2(@types/node@22.14.0)(typescript@5.8.3)
       tsc-alias:
-        specifier: 1.8.13
-        version: 1.8.13
+        specifier: 1.8.14
+        version: 1.8.14
       tsconfig-paths:
         specifier: 4.2.0
         version: 4.2.0
@@ -1205,6 +1205,9 @@ packages:
     resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
     engines: {node: '>=18'}
 
+  get-tsconfig@4.10.0:
+    resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
+
   get-uri@6.0.2:
     resolution: {integrity: sha512-5KLucCJobh8vBY1K07EFV4+cPZH3mrV9YeAruUseCQKHB58SGjjT2l9/eA9LD082IiuMjSlFJEcdJ27TXvbZNw==}
     engines: {node: '>= 14'}
@@ -1847,6 +1850,9 @@ packages:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
 
+  resolve-pkg-maps@1.0.0:
+    resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
+
   resolve@1.22.8:
     resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
     hasBin: true
@@ -2057,8 +2063,8 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4'
 
-  tsc-alias@1.8.13:
-    resolution: {integrity: sha512-hpuglrm2DoHZE62L8ntYqRNiSQ7J8kvIxEsajzY/QfGOm7EcdhgG5asqoWYi2E2KX0SqUuhOTnV8Ry8D/TnsEA==}
+  tsc-alias@1.8.14:
+    resolution: {integrity: sha512-abPL5KpLkZCR06QkgyOBaswNPgNL/Ub/am16tvQ0kTsmPx3FEhBOAsvIPUU8OkYrLv0JlzJEaJ1r6XkJBIQvYg==}
     engines: {node: '>=16.20.2'}
     hasBin: true
 
@@ -3413,6 +3419,10 @@ snapshots:
       '@sec-ant/readable-stream': 0.4.1
       is-stream: 4.0.1
 
+  get-tsconfig@4.10.0:
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+
   get-uri@6.0.2:
     dependencies:
       basic-ftp: 5.0.4
@@ -4063,6 +4073,8 @@ snapshots:
 
   resolve-from@4.0.0: {}
 
+  resolve-pkg-maps@1.0.0: {}
+
   resolve@1.22.8:
     dependencies:
       is-core-module: 2.13.1
@@ -4251,10 +4263,11 @@ snapshots:
     dependencies:
       typescript: 5.8.3
 
-  tsc-alias@1.8.13:
+  tsc-alias@1.8.14:
     dependencies:
       chokidar: 3.5.3
       commander: 9.5.0
+      get-tsconfig: 4.10.0
       globby: 11.1.0
       mylas: 2.1.13
       normalize-path: 3.0.0
