@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@protobuf-ts/runtime':
-        specifier: 2.9.6
-        version: 2.9.6
+        specifier: 2.10.0
+        version: 2.10.0
       '@tf2pickup-org/mumble-protocol':
         specifier: 1.0.9
         version: 1.0.9
@@ -491,6 +491,9 @@ packages:
   '@phun-ky/typeof@1.2.5':
     resolution: {integrity: sha512-hlymcHDbmYiRGutF/xWd3tpB57O3XfIbr9J4Blvqhb2rIJ1bfzn4CIS2gT1zy+QUm2Z+tgGkX6qNy1K+yFLd1g==}
     engines: {node: ^20.9.0 || >=22.0.0, npm: '>=10.8.2'}
+
+  '@protobuf-ts/runtime@2.10.0':
+    resolution: {integrity: sha512-ypYwGg9Pn3W/2lZ7/HW60hONGuSdzphvOY8Dq7LeNttymDe0y3LaTUUMRpuGqOT6FfrWEMnfQbyqU8AAreo8wA==}
 
   '@protobuf-ts/runtime@2.9.6':
     resolution: {integrity: sha512-C0CfpKx4n4LBbUrajOdRj2BTbd3qBoK0SiKWLq7RgCoU6xiN4wesBMFHUOBp3fFzKeZwgU8Q2KtzaqzIvPLRXg==}
@@ -2475,6 +2478,8 @@ snapshots:
       '@octokit/openapi-types': 25.0.0
 
   '@phun-ky/typeof@1.2.5': {}
+
+  '@protobuf-ts/runtime@2.10.0': {}
 
   '@protobuf-ts/runtime@2.9.6': {}
 
