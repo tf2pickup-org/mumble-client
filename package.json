@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "@protobuf-ts/runtime": "2.10.0",
-    "@tf2pickup-org/mumble-protocol": "1.0.9",
+    "@tf2pickup-org/mumble-protocol": "1.0.10",
     "rxjs": "7.8.2"
   },
   "devDependencies": {
