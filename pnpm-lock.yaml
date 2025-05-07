@@ -12,8 +12,8 @@ importers:
         specifier: 2.10.0
         version: 2.10.0
       '@tf2pickup-org/mumble-protocol':
-        specifier: 1.0.9
-        version: 1.0.9
+        specifier: 1.0.10
+        version: 1.0.10
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
@@ -495,9 +495,6 @@ packages:
   '@protobuf-ts/runtime@2.10.0':
     resolution: {integrity: sha512-ypYwGg9Pn3W/2lZ7/HW60hONGuSdzphvOY8Dq7LeNttymDe0y3LaTUUMRpuGqOT6FfrWEMnfQbyqU8AAreo8wA==}
 
-  '@protobuf-ts/runtime@2.9.6':
-    resolution: {integrity: sha512-C0CfpKx4n4LBbUrajOdRj2BTbd3qBoK0SiKWLq7RgCoU6xiN4wesBMFHUOBp3fFzKeZwgU8Q2KtzaqzIvPLRXg==}
-
   '@release-it/conventional-changelog@10.0.1':
     resolution: {integrity: sha512-Qp+eyMGCPyq5xiWoNK91cWVIR/6HD1QAUNeG6pV2G4kxotWl81k/KDQqDNvrNVmr9+zDp53jI7pVVYQp6mi4zA==}
     engines: {node: ^20.9.0 || >=22.0.0}
@@ -594,8 +591,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@tf2pickup-org/mumble-protocol@1.0.9':
-    resolution: {integrity: sha512-gFNVqOevpyJWaJ5nhch7R6pJbr3SvOI1rq9b+K7AROFpw9u2ypPqbWxQTpxHjcutbC9wBNURlxzcgeKEP44zxA==}
+  '@tf2pickup-org/mumble-protocol@1.0.10':
+    resolution: {integrity: sha512-5wt+7dCcXLLFrzw2Rr2+EZrvDBlR0/nmA9zX1SRv9Y/sntliSrfxAS8wL5ADyrlsKMCpaOpv7osacfLIZQEetQ==}
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
@@ -2469,8 +2466,6 @@ snapshots:
 
   '@protobuf-ts/runtime@2.10.0': {}
 
-  '@protobuf-ts/runtime@2.9.6': {}
-
   '@release-it/conventional-changelog@10.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)(release-it@19.0.2(@types/node@22.15.3))':
     dependencies:
       concat-stream: 2.0.0
@@ -2537,9 +2532,9 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.27.4':
     optional: true
 
-  '@tf2pickup-org/mumble-protocol@1.0.9':
+  '@tf2pickup-org/mumble-protocol@1.0.10':
     dependencies:
-      '@protobuf-ts/runtime': 2.9.6
+      '@protobuf-ts/runtime': 2.10.0
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
