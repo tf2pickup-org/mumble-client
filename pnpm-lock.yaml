@@ -12,8 +12,8 @@ importers:
         specifier: 2.11.1
         version: 2.11.1
       '@tf2pickup-org/mumble-protocol':
-        specifier: 1.0.10
-        version: 1.0.10
+        specifier: 1.0.11
+        version: 1.0.11
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
@@ -492,9 +492,6 @@ packages:
     resolution: {integrity: sha512-7J6ca1tK0duM2BgVB+CuFMh3idlIVASOP2QvOCbNWDc6JnvjtKa9nufPoJQQ4xrwBonwgT1TIhRRcEtzdVgWsA==}
     engines: {node: ^20.9.0 || >=22.0.0, npm: '>=10.8.2'}
 
-  '@protobuf-ts/runtime@2.10.0':
-    resolution: {integrity: sha512-ypYwGg9Pn3W/2lZ7/HW60hONGuSdzphvOY8Dq7LeNttymDe0y3LaTUUMRpuGqOT6FfrWEMnfQbyqU8AAreo8wA==}
-
   '@protobuf-ts/runtime@2.11.1':
     resolution: {integrity: sha512-KuDaT1IfHkugM2pyz+FwiY80ejWrkH1pAtOBOZFuR6SXEFTsnb/jiQWQ1rCIrcKx2BtyxnxW6BWwsVSA/Ie+WQ==}
 
@@ -594,8 +591,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@tf2pickup-org/mumble-protocol@1.0.10':
-    resolution: {integrity: sha512-5wt+7dCcXLLFrzw2Rr2+EZrvDBlR0/nmA9zX1SRv9Y/sntliSrfxAS8wL5ADyrlsKMCpaOpv7osacfLIZQEetQ==}
+  '@tf2pickup-org/mumble-protocol@1.0.11':
+    resolution: {integrity: sha512-aBclO2r1WGnh+FO445mlJdVRW8Zes7K4Agu6WbsSkWlTq2yt/f0m6ufFKAgJ9jifBKGbcK9wVEY71OTmwZfD5g==}
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
@@ -2504,8 +2501,6 @@ snapshots:
 
   '@phun-ky/typeof@1.2.8': {}
 
-  '@protobuf-ts/runtime@2.10.0': {}
-
   '@protobuf-ts/runtime@2.11.1': {}
 
   '@release-it/conventional-changelog@10.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)(release-it@19.0.3(@types/node@22.15.32))':
@@ -2574,9 +2569,9 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.27.4':
     optional: true
 
-  '@tf2pickup-org/mumble-protocol@1.0.10':
+  '@tf2pickup-org/mumble-protocol@1.0.11':
     dependencies:
-      '@protobuf-ts/runtime': 2.10.0
+      '@protobuf-ts/runtime': 2.11.1
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
