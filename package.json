@@ -46,7 +46,7 @@
     "@types/pem": "1.14.4",
     "eslint": "9.39.1",
     "pem": "1.14.8",
-    "prettier": "3.7.1",
+    "prettier": "3.7.2",
     "release-it": "19.0.6",
     "tsc-alias": "1.8.16",
     "tsconfig-paths": "4.2.0",
