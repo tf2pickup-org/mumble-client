@@ -15,7 +15,7 @@
     "resolveJsonModule": true,
     "stripInternal": true,
     "declaration": true,
-    "types": ["vitest/globals"]
+    "types": ["node", "vitest/globals"]
   },
   "exclude": ["node_modules", "dist", "coverage"],
   "tsc-alias": {
