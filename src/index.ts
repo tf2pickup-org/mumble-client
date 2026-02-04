@@ -6,4 +6,5 @@ export { type PacketType } from './packet-type';
 export { Permissions } from './permissions';
 export { UserManager } from './user-manager';
 export { User } from './user';
+export { AudioCodec, type FullAudioPacket } from './mumble-socket';
 export * from './errors';
