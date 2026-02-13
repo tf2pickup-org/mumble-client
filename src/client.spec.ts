@@ -218,4 +218,96 @@ describe(Client.name, () => {
       });
     });
   });
+
+  describe('pinger', () => {
+    let socket: MockedObject<MumbleSocket> & {
+      packet: Subject<PacketType>;
+    };
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      client.disconnect();
+      vi.useRealTimers();
+    });
+
+    const connectClient = async () => {
+      client.on('socketConnect', s => {
+        socket = vi.mocked(s) as MockedObject<MumbleSocket> & {
+          packet: Subject<PacketType>;
+        };
+
+        socket.send.mockImplementation(type => {
+          switch (type.typeName) {
+            case Authenticate.typeName:
+              socket.packet.next({
+                type: 0,
+                typeName: Version.typeName,
+                payload: Version.create({
+                  versionV1: 66790,
+                  versionV2: BigInt(66790),
+                  release: '1.4.230',
+                  os: 'Linux',
+                  osVersion: 'Ubuntu 20.04.4 LTS [x64]',
+                }),
+              });
+              socket.packet.next({
+                type: 5,
+                typeName: ServerSync.typeName,
+                payload: ServerSync.create({
+                  session: 2,
+                  maxBandwidth: 558000,
+                  welcomeText: '',
+                  permissions: BigInt(134744846),
+                }),
+              });
+              socket.packet.next({
+                type: 24,
+                typeName: ServerConfig.typeName,
+                payload: ServerConfig.create({
+                  allowHtml: true,
+                  messageLength: 5000,
+                  imageMessageLength: 131072,
+                  maxUsers: 100,
+                }),
+              });
+              break;
+
+            case Ping.typeName:
+              break;
+          }
+
+          return Promise.resolve();
+        });
+      });
+      return client.connect();
+    };
+
+    it('should emit error when ping fails', async () => {
+      await connectClient();
+
+      const pingError = new Error('socket not writable');
+      socket.send.mockRejectedValue(pingError);
+
+      const errorHandler = vi.fn();
+      client.on('error', errorHandler);
+
+      await vi.advanceTimersByTimeAsync(10001);
+
+      expect(errorHandler).toHaveBeenCalledWith(pingError);
+    });
+
+    it('should stop pinging after disconnect', async () => {
+      await connectClient();
+
+      socket.send.mockClear();
+      client.disconnect();
+
+      await vi.advanceTimersByTimeAsync(10001);
+
+      expect(socket.send).not.toHaveBeenCalled();
+    });
+  });
 });
