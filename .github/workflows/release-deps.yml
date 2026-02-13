@@ -1,0 +1,66 @@
+name: Release on dependency updates
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Every Monday at 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check for dependency updates
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          since=$(date -d '7 days ago' --iso-8601=seconds)
+          commits=$(gh api \
+            "repos/${{ github.repository }}/commits?sha=master&since=$since" \
+            --jq '.[].commit.message' \
+          )
+
+          if echo "$commits" | grep -qP '^fix\(deps\):'; then
+            echo "has_updates=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_updates=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository
+        if: steps.check.outputs.has_updates == 'true'
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        if: steps.check.outputs.has_updates == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        if: steps.check.outputs.has_updates == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      - name: Install dependencies
+        if: steps.check.outputs.has_updates == 'true'
+        run: pnpm install
+
+      - name: Configure git
+        if: steps.check.outputs.has_updates == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create release
+        if: steps.check.outputs.has_updates == 'true'
+        run: pnpm release --ci --increment patch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
