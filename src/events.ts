@@ -9,6 +9,7 @@ export type Events = {
   socketConnect: (socket: MumbleSocket) => void;
   connect: () => void;
   disconnect: (payload?: { reason?: string }) => void;
+  error: (error: unknown) => void;
 
   channelCreate: (channel: Channel) => void;
   channelUpdate: (channel: Channel, changes: ChannelChanges) => void;
