@@ -363,7 +363,10 @@ export class Client extends TypedEventEmitter<Events, Events> {
    */
   private startPinger() {
     const disconnect$ = new Subject<void>();
-    this.on('disconnect', () => disconnect$.next());
+    this.on('disconnect', () => {
+      disconnect$.next();
+      disconnect$.complete();
+    });
 
     interval(this.options.pingInterval)
       .pipe(
