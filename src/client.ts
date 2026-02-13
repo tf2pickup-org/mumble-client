@@ -10,8 +10,10 @@ import {
   lastValueFrom,
   map,
   race,
+  Subject,
   switchMap,
   take,
+  takeUntil,
   tap,
   throwError,
   timeout,
@@ -360,11 +362,18 @@ export class Client extends TypedEventEmitter<Events, Events> {
    * @internal
    */
   private startPinger() {
-    const subscription = interval(this.options.pingInterval)
-      .pipe(exhaustMap(() => this.ping()))
+    const disconnect$ = new Subject<void>();
+    this.on('disconnect', () => disconnect$.next());
+
+    interval(this.options.pingInterval)
+      .pipe(
+        takeUntil(disconnect$),
+        exhaustMap(() =>
+          this.ping().catch(error => {
+            this.emit('error', error);
+          }),
+        ),
+      )
       .subscribe();
-    this.on('disconnect', () => {
-      subscription.unsubscribe();
-    });
   }
 }
