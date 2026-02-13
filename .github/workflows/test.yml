@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x, 24.x]
+        node-version: [20.x, 22.x, 24.x]
 
     steps:
       - name: Checkout repository
@@ -49,7 +49,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x, 24.x]
+        node-version: [20.x, 22.x, 24.x]
 
     steps:
       - name: Checkout repository
@@ -94,7 +94,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x, 24.x]
+        node-version: [20.x, 22.x, 24.x]
 
     steps:
       - name: Checkout repository
