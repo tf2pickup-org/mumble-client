@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.12.5](https://github.com/tf2pickup-org/mumble-client/compare/0.12.4...0.12.5) (2026-02-13)
+
 ## [0.12.4](https://github.com/tf2pickup-org/mumble-client/compare/0.12.3...0.12.4) (2026-02-13)
 
 
