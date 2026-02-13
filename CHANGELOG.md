@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.12.4](https://github.com/tf2pickup-org/mumble-client/compare/0.12.3...0.12.4) (2026-02-13)
+
+
+### Bug Fixes
+
+* **build:** add missing types ([#988](https://github.com/tf2pickup-org/mumble-client/issues/988)) ([40b48f6](https://github.com/tf2pickup-org/mumble-client/commit/40b48f679ae9de4349ca7ac93df2397b160808dc))
+* **deps:** update dependency @protobuf-ts/runtime to v2.10.0 ([#836](https://github.com/tf2pickup-org/mumble-client/issues/836)) ([f9f7ecb](https://github.com/tf2pickup-org/mumble-client/commit/f9f7ecb400a59798b739947d90d27fe09e60561b))
+* **deps:** update dependency @protobuf-ts/runtime to v2.11.0 ([#850](https://github.com/tf2pickup-org/mumble-client/issues/850)) ([10b5b84](https://github.com/tf2pickup-org/mumble-client/commit/10b5b8415a2419c39e69eb7f94454aa17d495318))
+* **deps:** update dependency @protobuf-ts/runtime to v2.11.1 ([#865](https://github.com/tf2pickup-org/mumble-client/issues/865)) ([923a773](https://github.com/tf2pickup-org/mumble-client/commit/923a77323501c8e5d85233b3e88a11db52019c54))
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.10 ([#842](https://github.com/tf2pickup-org/mumble-client/issues/842)) ([8d80be5](https://github.com/tf2pickup-org/mumble-client/commit/8d80be50e1ef0d3e865d4e25ec3c8d25b32d910a))
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.11 ([#867](https://github.com/tf2pickup-org/mumble-client/issues/867)) ([24bddd7](https://github.com/tf2pickup-org/mumble-client/commit/24bddd7b4dfa8d35863ded8c295a74d9e209b9c1))
+
 ## [0.12.3](https://github.com/tf2pickup-org/mumble-client/compare/0.12.2...0.12.3) (2025-04-01)
 
 
