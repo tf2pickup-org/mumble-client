@@ -12,8 +12,8 @@ importers:
         specifier: 2.11.1
         version: 2.11.1
       '@tf2pickup-org/mumble-protocol':
-        specifier: 1.0.11
-        version: 1.0.11
+        specifier: 1.0.12
+        version: 1.0.12
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
@@ -651,8 +651,8 @@ packages:
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
-  '@tf2pickup-org/mumble-protocol@1.0.11':
-    resolution: {integrity: sha512-aBclO2r1WGnh+FO445mlJdVRW8Zes7K4Agu6WbsSkWlTq2yt/f0m6ufFKAgJ9jifBKGbcK9wVEY71OTmwZfD5g==}
+  '@tf2pickup-org/mumble-protocol@1.0.12':
+    resolution: {integrity: sha512-6Jx2aPcRc8AMDRFheW6GK+JEBVusfFZ3X/5q1Gze4H1tgmBvyTGbAqUYZtCTiYQQSSp8DXCANa/YKpfuAcuKvA==}
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
@@ -2458,7 +2458,7 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@tf2pickup-org/mumble-protocol@1.0.11':
+  '@tf2pickup-org/mumble-protocol@1.0.12':
     dependencies:
       '@protobuf-ts/runtime': 2.11.1
 
