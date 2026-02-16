@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.12.6](https://github.com/tf2pickup-org/mumble-client/compare/0.12.5...0.12.6) (2026-02-16)
+
+
+### Bug Fixes
+
+* **ci:** use PAT to bypass branch protection in release workflow ([d284c11](https://github.com/tf2pickup-org/mumble-client/commit/d284c11ac057347bb56ce9dcabafd0ee85789290))
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.12 ([#990](https://github.com/tf2pickup-org/mumble-client/issues/990)) ([527580f](https://github.com/tf2pickup-org/mumble-client/commit/527580f6a10b91de9cf611ebed32fb99bb5b352a))
+* handle ping errors gracefully when socket is disconnected ([#991](https://github.com/tf2pickup-org/mumble-client/issues/991)) ([8243258](https://github.com/tf2pickup-org/mumble-client/commit/824325854c1f8c796f84baacc755258fd13cd6f7))
+
 ## [0.12.5](https://github.com/tf2pickup-org/mumble-client/compare/0.12.4...0.12.5) (2026-02-13)
 
 ## [0.12.4](https://github.com/tf2pickup-org/mumble-client/compare/0.12.3...0.12.4) (2026-02-13)
