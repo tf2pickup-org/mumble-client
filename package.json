@@ -44,7 +44,7 @@
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "24.10.13",
     "@types/pem": "1.14.4",
-    "eslint": "10.0.1",
+    "eslint": "10.0.2",
     "pem": "1.14.8",
     "prettier": "3.8.1",
     "release-it": "19.2.4",
