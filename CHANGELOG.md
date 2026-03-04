@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.13.0](https://github.com/tf2pickup-org/mumble-client/compare/0.12.6...0.13.0) (2026-03-04)
+
+
+### Features
+
+* add full audio packet extraction and sending capabilities ([#993](https://github.com/tf2pickup-org/mumble-client/issues/993)) ([db6058d](https://github.com/tf2pickup-org/mumble-client/commit/db6058dcc39b3cecb106c525353bde2ab44b3139)), closes [#982](https://github.com/tf2pickup-org/mumble-client/issues/982)
+
 ## [0.12.6](https://github.com/tf2pickup-org/mumble-client/compare/0.12.5...0.12.6) (2026-02-16)
 
 
