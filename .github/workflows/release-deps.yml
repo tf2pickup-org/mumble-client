@@ -41,7 +41,7 @@ jobs:
         if: steps.check.outputs.has_updates == 'true'
         uses: pnpm/action-setup@v6
         with:
-          version: 10
+          version: 11
 
       - name: Setup Node.js
         if: steps.check.outputs.has_updates == 'true'
