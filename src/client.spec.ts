@@ -13,7 +13,11 @@ import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
 import { PacketType } from './packet-type';
 import { MockedObject } from 'vitest';
-import { CommandTimedOutError, PermissionDeniedError } from './errors';
+import {
+  ClientDisconnectedError,
+  CommandTimedOutError,
+  PermissionDeniedError,
+} from './errors';
 
 vi.mock('./mumble-socket', () => ({
   MumbleSocket: vi.fn().mockImplementation(function () {
@@ -121,6 +125,22 @@ describe(Client.name, () => {
 
   it('should create client', () => {
     expect(client).toBeTruthy();
+  });
+
+  it('should reject when the server closes the connection during the handshake', async () => {
+    client.on('socketConnect', s => {
+      const socket = vi.mocked(s) as MockSocket;
+      socket.send.mockImplementation(type => {
+        // server drops the TLS connection instead of sending a Reject packet
+        // (mumble 1.6.x behavior on failed superuser auth)
+        if (type.typeName === Authenticate.typeName) {
+          socket.packet.complete();
+        }
+        return Promise.resolve();
+      });
+    });
+
+    await expect(client.connect()).rejects.toThrow(ClientDisconnectedError);
   });
 
   describe('when connected', () => {

@@ -54,6 +54,13 @@ export class MumbleSocket {
     this.socket.on('data', (data: Buffer) => {
       this.receiveData(data);
     });
+    // 'close' fires after both 'end' and 'error'; completing the subjects
+    // lets pending lastValueFrom() calls reject instead of hanging forever
+    this.socket.on('close', () => {
+      this._packet.complete();
+      this._audioPacket.complete();
+      this._fullAudioPacket.complete();
+    });
     this.readPrefix();
   }
 
