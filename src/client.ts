@@ -16,6 +16,7 @@ import {
   takeUntil,
   tap,
   throwError,
+  throwIfEmpty,
   timeout,
   zip,
 } from 'rxjs';
@@ -215,6 +216,11 @@ export class Client extends TypedEventEmitter<Events, Events> {
             throwError(() => new ConnectionRejectedError(reject)),
           ),
         ),
+      ).pipe(
+        // the packet observable completes when the server closes the
+        // connection without sending a Reject packet (e.g. mumble 1.6.x on
+        // failed superuser auth)
+        throwIfEmpty(() => new ClientDisconnectedError()),
       ),
     );
 
