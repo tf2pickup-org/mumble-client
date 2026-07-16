@@ -51,7 +51,7 @@
     "pem": "1.14.8",
     "prettier": "3.9.5",
     "release-it": "20.2.1",
-    "tsc-alias": "1.9.0",
+    "tsc-alias": "1.9.1",
     "tsconfig-paths": "4.2.0",
     "typescript": "7.0.2",
     "typescript-eslint": "^8.24.0",
