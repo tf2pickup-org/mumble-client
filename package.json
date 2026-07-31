@@ -50,7 +50,7 @@
     "eslint": "10.8.0",
     "pem": "1.14.8",
     "prettier": "3.9.6",
-    "release-it": "21.0.0",
+    "release-it": "21.0.1",
     "tsc-alias": "1.9.1",
     "tsconfig-paths": "4.2.0",
     "typescript": "7.0.2",
