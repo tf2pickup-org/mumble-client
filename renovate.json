@@ -10,6 +10,7 @@
       "automerge": true
     }
   ],
+  "minimumReleaseAge": "1 day",
   "automergeType": "branch",
   "labels": ["renovate"],
   "semanticCommits": "enabled"
