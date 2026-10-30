@@ -8,7 +8,7 @@ This document covers the full audio data extraction and sending capabilities of 
 import { Client, AudioCodec, FullAudioPacket } from '@tf2pickup-org/mumble-client';
 
 const client = new Client({
-  host: 'mumble://example.com',
+  host: 'example.com',
   port: 64738,
   username: 'audio-bot',
 });
@@ -28,6 +28,16 @@ if (client.isConnected()) {
     processAudio(packet.audioData, packet.codec);
   });
 }
+```
+
+Each `connect()` opens a new socket, so subscribe again after reconnecting:
+
+```typescript
+client.on('connect', () => {
+  client.socket?.fullAudioPacket.subscribe(packet => {
+    processAudio(packet.audioData, packet.codec);
+  });
+});
 
 async function processAudio(encodedAudio: Buffer, codec: AudioCodec) {
   if (codec === AudioCodec.Opus) {
@@ -68,7 +78,7 @@ import { Client, AudioCodec, FullAudioPacket } from '@tf2pickup-org/mumble-clien
 
 async function createVoiceChatBot() {
   const client = new Client({
-    host: 'mumble://example.com',
+    host: 'example.com',
     port: 64738,
     username: 'voice-assistant',
   });
