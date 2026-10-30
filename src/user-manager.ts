@@ -1,7 +1,5 @@
 import { UserRemove, UserState } from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
-import { filterPacket } from './rxjs-operators/filter-packet';
-import { MumbleSocket } from './mumble-socket';
 import { User } from './user';
 
 /**
@@ -10,19 +8,7 @@ import { User } from './user';
 export class UserManager {
   private _users = new Map<number, User>();
 
-  constructor(public readonly client: Client) {
-    this.client.on('socketConnect', (socket: MumbleSocket) => {
-      this._users.clear();
-
-      socket.packet.pipe(filterPacket(UserState)).subscribe(userState => {
-        this.syncUser(userState);
-      });
-
-      socket.packet.pipe(filterPacket(UserRemove)).subscribe(userRemove => {
-        this.removeUser(userRemove);
-      });
-    });
-  }
+  constructor(public readonly client: Client) {}
 
   /**
    * Finds a user by their session id.
@@ -49,7 +35,14 @@ export class UserManager {
   /**
    * @internal
    */
-  private syncUser(userState: UserState) {
+  clear() {
+    this._users.clear();
+  }
+
+  /**
+   * @internal
+   */
+  syncUser(userState: UserState) {
     if (userState.session === undefined) {
       return;
     }
@@ -84,7 +77,7 @@ export class UserManager {
   /**
    * @internal
    */
-  private removeUser(userRemove: UserRemove) {
+  removeUser(userRemove: UserRemove) {
     const user = this.bySession(userRemove.session);
     if (user) {
       this._users.delete(userRemove.session);

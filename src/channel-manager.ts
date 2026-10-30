@@ -1,9 +1,6 @@
 import { ChannelRemove, ChannelState } from '@tf2pickup-org/mumble-protocol';
-import { tap } from 'rxjs';
 import { Channel } from './channel';
 import { Client } from './client';
-import { filterPacket } from './rxjs-operators/filter-packet';
-import { MumbleSocket } from './mumble-socket';
 
 /**
  * A manager of channels.
@@ -11,29 +8,7 @@ import { MumbleSocket } from './mumble-socket';
 export class ChannelManager {
   private readonly _channels = new Map<number, Channel>();
 
-  constructor(public readonly client: Client) {
-    this.client.on('socketConnect', (socket: MumbleSocket) => {
-      this._channels.clear();
-
-      socket.packet
-        .pipe(
-          filterPacket(ChannelState),
-          tap(channelState => {
-            this.syncChannelState(channelState);
-          }),
-        )
-        .subscribe();
-
-      socket.packet
-        .pipe(
-          filterPacket(ChannelRemove),
-          tap(channelRemove => {
-            this.removeChannel(channelRemove);
-          }),
-        )
-        .subscribe();
-    });
-  }
+  constructor(public readonly client: Client) {}
 
   get root() {
     return this.byId(0);
@@ -111,7 +86,14 @@ export class ChannelManager {
   /**
    * @internal
    */
-  private syncChannelState(channelState: ChannelState) {
+  clear() {
+    this._channels.clear();
+  }
+
+  /**
+   * @internal
+   */
+  syncChannelState(channelState: ChannelState) {
     if (channelState.channelId === undefined) {
       return;
     }
@@ -146,7 +128,7 @@ export class ChannelManager {
   /**
    * @internal
    */
-  private removeChannel(channelRemove: ChannelRemove) {
+  removeChannel(channelRemove: ChannelRemove) {
     const channel = this.byId(channelRemove.channelId);
     if (channel) {
       this._channels.delete(channelRemove.channelId);
