@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.13.1](https://github.com/tf2pickup-org/mumble-client/compare/0.13.0...0.13.1) (2026-10-30)
+
+### Bug Fixes
+
+* address TypeScript 6 and pnpm v11 breaking changes ([aff3d67](https://github.com/tf2pickup-org/mumble-client/commit/aff3d67f9de62a3556afa7001eaaadf5c366631f))
+* prepare for pnpm v11 and drop EOL Node 20 ([99bdd05](https://github.com/tf2pickup-org/mumble-client/commit/99bdd05ad7f5613af73178b00eddfeb9c7506ae9))
+* reject connect() when the server drops the connection ([#1044](https://github.com/tf2pickup-org/mumble-client/issues/1044)) ([d60d4dd](https://github.com/tf2pickup-org/mumble-client/commit/d60d4ddcaa3c5cf231f4e9906c072a1750262cc6))
+
 # [0.13.0](https://github.com/tf2pickup-org/mumble-client/compare/0.12.6...0.13.0) (2026-03-04)
 
 

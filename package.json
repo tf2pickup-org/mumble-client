@@ -1,6 +1,6 @@
 {
   "name": "@tf2pickup-org/mumble-client",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "A simple bot for managing mumble servers",
   "license": "MIT",
   "type": "module",
@@ -39,7 +39,9 @@
     "rxjs": "7.8.2"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",
