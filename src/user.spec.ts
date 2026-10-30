@@ -1,9 +1,7 @@
 import { UserState } from '@tf2pickup-org/mumble-protocol';
 import { ChannelManager } from './channel-manager';
 import { Client } from './client';
-import { ClientDisconnectedError, NoSuchChannelError } from './errors';
-import { MumbleSocket } from './mumble-socket';
-import { Permissions } from './permissions';
+import { NoSuchChannelError } from './errors';
 import { MinusOneButUnsigned, User } from './user';
 
 vi.mock('./client');
@@ -18,17 +16,9 @@ describe('User', () => {
       port: 64738,
       username: 'FAKE_USERNAME',
     });
-    client.socket = {} as MumbleSocket;
     client.channels = {
       byId: vi.fn(),
     } as unknown as ChannelManager;
-    (client as { permissions: Map<number, Permissions> }).permissions =
-      new Map();
-    client.assertConnected = vi.fn().mockImplementation(() => {
-      if (!client.socket) {
-        throw new ClientDisconnectedError();
-      }
-    });
   });
 
   beforeEach(() => {

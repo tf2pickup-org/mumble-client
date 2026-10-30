@@ -2,8 +2,6 @@ import { ChannelState } from '@tf2pickup-org/mumble-protocol';
 import { Channel } from './channel';
 import { ChannelManager } from './channel-manager';
 import { Client } from './client';
-import { MumbleSocket } from './mumble-socket';
-import { Permissions } from './permissions';
 
 vi.mock('./client');
 
@@ -16,15 +14,12 @@ describe('Channel', () => {
       port: 64738,
       username: 'FAKE_USERNAME',
     });
-    client.socket = {} as MumbleSocket;
     client.channels = {
       byId: vi.fn().mockResolvedValue({}),
       byName: vi.fn().mockResolvedValue({}),
       byPath: vi.fn().mockResolvedValue({}),
       findAll: vi.fn().mockReturnValue([]),
     } as unknown as ChannelManager;
-    (client as { permissions: Map<number, Permissions> }).permissions =
-      new Map();
   });
 
   it('should assign properties', () => {

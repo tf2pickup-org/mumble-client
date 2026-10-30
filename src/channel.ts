@@ -145,8 +145,9 @@ export class Channel {
       return Permissions.superUser();
     }
 
-    if (this.client.permissions.has(this.id)) {
-      return this.client.permissions.get(this.id)!;
+    const cached = this.client.cachedPermissions(this.id);
+    if (cached) {
+      return cached;
     }
 
     const ret = await this.client.command('fetchChannelPermissions', {
