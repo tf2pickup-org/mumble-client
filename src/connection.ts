@@ -31,7 +31,7 @@ import {
   Version,
 } from '@tf2pickup-org/mumble-protocol';
 import { MessageType } from '@protobuf-ts/runtime';
-import { platform, release } from 'os';
+import { platform, release } from 'node:os';
 import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
 import { Permissions } from './permissions';
