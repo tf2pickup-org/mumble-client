@@ -225,9 +225,9 @@ client.on('disconnect', payload => {
 ```typescript
 import {
   Client,
+  ClientDisconnectedError,
   ConnectionRejectedError,
   PermissionDeniedError,
-  NoSuchChannelError,
 } from '@tf2pickup-org/mumble-client';
 
 try {
@@ -235,8 +235,18 @@ try {
 } catch (error) {
   if (error instanceof ConnectionRejectedError) {
     console.error('Connection rejected by server');
+  } else if (error instanceof ClientDisconnectedError) {
+    // the server dropped the connection during the handshake,
+    // or another connect() call superseded this one
+    console.error('Connection lost');
   }
 }
+
+// background errors, e.g. a failed keep-alive ping; without a listener
+// Node.js throws on an 'error' event
+client.on('error', error => {
+  console.error('Client error:', error);
+});
 
 try {
   await client.channels.root.createSubChannel('test');
@@ -258,10 +268,13 @@ The main entry point. Connects to the server and provides access to channels, us
 | `channels` | `ChannelManager` instance for finding channels |
 | `users` | `UserManager` instance for finding users |
 | `self` | The currently logged-in `User` |
+| `session` | Session ID of the currently logged-in user |
 | `welcomeText` | Server welcome message |
 | `serverVersion` | Server version info |
-| `connect()` | Connect to the Mumble server |
-| `disconnect()` | Disconnect from the server |
+| `serverConfig` | Server configuration (max users, message length, …) |
+| `socket` | The underlying socket, for [audio](AUDIO_EXAMPLE.md); `undefined` when disconnected |
+| `connect()` | Connect to the Mumble server; if already connected, disconnects first |
+| `disconnect()` | Disconnect from the server; does nothing when not connected |
 | `isConnected()` | Returns `true` if connected |
 | `fetchRegisteredUsers()` | Fetch all registered users |
 | `deregisterUser(userId)` | Deregister a user by ID |
@@ -338,7 +351,8 @@ The main entry point. Connects to the server and provides access to channels, us
 | Event | Payload | Description |
 |---|---|---|
 | `connect` | — | Client connected successfully |
-| `disconnect` | `{ reason?: string }` | Client disconnected |
+| `disconnect` | `{ reason: string }?` | Client disconnected; emitted once per connection. `reason` is the server's (e.g. when kicked) or `'connection closed'` when the server dropped the connection; no payload after `disconnect()` or a reconnect |
+| `error` | `unknown` | A background error, e.g. a failed keep-alive ping |
 | `channelCreate` | `Channel` | A channel was created |
 | `channelUpdate` | `Channel, ChannelChanges` | A channel was updated |
 | `channelRemove` | `Channel` | A channel was removed |
