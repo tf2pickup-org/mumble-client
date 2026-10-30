@@ -1,5 +1,17 @@
 # Changelog
 
+# [0.14.0](https://github.com/tf2pickup-org/mumble-client/compare/0.13.1...0.14.0) (2026-10-30)
+
+### Features
+
+* give each server connection one module with a single teardown ([#1107](https://github.com/tf2pickup-org/mumble-client/issues/1107))
+
+### BREAKING CHANGES
+
+* the 'socketConnect' event and the public
+  Client.permissions map are removed. Client.socket, session,
+  serverVersion, serverConfig and welcomeText are now read-only getters.
+
 ## [0.13.1](https://github.com/tf2pickup-org/mumble-client/compare/0.13.0...0.13.1) (2026-10-30)
 
 ### Bug Fixes
