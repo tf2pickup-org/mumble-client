@@ -35,17 +35,34 @@ Each `connect()` opens a new socket, so subscribe again after reconnecting:
 ```typescript
 client.on('connect', () => {
   client.socket?.fullAudioPacket.subscribe(packet => {
-    processAudio(packet.audioData, packet.codec);
+    processAudio(packet);
   });
 });
+```
 
-async function processAudio(encodedAudio: Buffer, codec: AudioCodec) {
-  if (codec === AudioCodec.Opus) {
-    const text = await transcribeOpus(encodedAudio);
+Each packet carries a single frame, usually 20ms of audio, not a whole utterance. To process what a user said, collect their frames until the packet with `hasTerminator`:
+
+```typescript
+const utterances = new Map<number, Buffer[]>(); // session -> Opus frames
+
+async function processAudio(packet: FullAudioPacket) {
+  if (packet.codec !== AudioCodec.Opus) {
+    return;
+  }
+
+  const frames = utterances.get(packet.source) ?? [];
+  frames.push(packet.audioData);
+  utterances.set(packet.source, frames);
+
+  if (packet.hasTerminator) {
+    utterances.delete(packet.source);
+    const text = await transcribeOpus(frames);
     console.log('Transcribed:', text);
   }
 }
 ```
+
+A client that disconnects mid-sentence never sends the terminator, so a long-running bot should also flush or drop frames after a few seconds without packets.
 
 ## Sending Audio
 
@@ -91,14 +108,21 @@ async function createVoiceChatBot() {
 
   const socket = client.socket;
 
+  const utterances = new Map<number, Buffer[]>(); // session -> Opus frames
+
   socket.fullAudioPacket.subscribe(async (packet: FullAudioPacket) => {
     if (packet.codec !== AudioCodec.Opus) {
       console.warn('Only Opus codec supported');
       return;
     }
 
+    const frames = utterances.get(packet.source) ?? [];
+    frames.push(packet.audioData);
+    utterances.set(packet.source, frames);
+
     if (packet.hasTerminator) {
-      const text = await transcribeAudio(packet.audioData);
+      utterances.delete(packet.source);
+      const text = await transcribeAudio(frames);
       console.log('User said:', text);
 
       const responseText = await generateResponse(text);
@@ -121,7 +145,7 @@ async function createVoiceChatBot() {
   console.log('Voice chat bot ready!');
 }
 
-async function transcribeAudio(opus: Buffer): Promise<string> {
+async function transcribeAudio(opusFrames: Buffer[]): Promise<string> {
   return 'transcribed text';
 }
 
