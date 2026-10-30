@@ -97,6 +97,18 @@ describe(Client.name, () => {
       await client.connect();
       expect(client.listenerCount('disconnect')).toBe(listeners);
     });
+
+    it('should let a connect() from a disconnect listener win', async () => {
+      let inner: Promise<Client> | undefined;
+      client.once('disconnect', () => {
+        inner = client.connect();
+      });
+      const outer = client.connect();
+      await expect(outer).rejects.toThrow(ClientDisconnectedError);
+      await inner;
+      expect(client.socket).toBe(sockets[1]);
+      expect(sockets).toHaveLength(2);
+    });
   });
 
   it('should reject a handshake superseded by another connect()', async () => {

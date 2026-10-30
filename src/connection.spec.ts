@@ -87,6 +87,13 @@ describe(Connection.name, () => {
       await expect(handshake).rejects.toThrow(ClientDisconnectedError);
       expect(disconnectEmits()).toHaveLength(0);
     });
+
+    it('should reject when torn down after the server synced', async () => {
+      const handshake = connection.handshake();
+      connection.teardown();
+      await expect(handshake).rejects.toThrow(ClientDisconnectedError);
+      expect(host.emit).not.toHaveBeenCalledWith('connect');
+    });
   });
 
   describe('when connected', () => {

@@ -196,6 +196,11 @@ export class Connection {
       throw error;
     }
 
+    // torn down after the server synced, but before this continuation ran
+    if (this.isEnded) {
+      throw new ClientDisconnectedError();
+    }
+
     if (serverSync.session) {
       this.session = serverSync.session;
     }

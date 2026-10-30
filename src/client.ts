@@ -102,8 +102,10 @@ export class Client extends TypedEventEmitter<Events, Events> {
    * If the client is already connected, it disconnects first.
    */
   async connect(): Promise<this> {
-    this.connection?.teardown();
+    // taken before teardown, so that a connect() called from a 'disconnect'
+    // listener supersedes this one
     const attempt = ++this.connectAttempt;
+    this.connection?.teardown();
     const tlsSocket = await tlsConnect(
       this.options.host,
       this.options.port,
