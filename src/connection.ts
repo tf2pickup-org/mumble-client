@@ -26,6 +26,7 @@ import {
   Reject,
   ServerConfig,
   ServerSync,
+  TextMessage,
   UserRemove,
   UserState,
   Version,
@@ -122,6 +123,18 @@ export class Connection {
           new Permissions(permissionQuery.permissions ?? 0),
         );
       });
+    packet.pipe(filterPacket(TextMessage)).subscribe(textMessage => {
+      host.emit('textMessage', {
+        sender:
+          textMessage.actor === undefined
+            ? undefined
+            : host.users.bySession(textMessage.actor),
+        message: textMessage.message,
+        isPrivate:
+          this.session !== undefined &&
+          textMessage.session.includes(this.session),
+      });
+    });
     // the packet observable completes when the server closes the connection
     socket.packet.subscribe({
       complete: () => this.teardown('connection closed'),

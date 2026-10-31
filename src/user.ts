@@ -1,4 +1,4 @@
-import { UserState } from '@tf2pickup-org/mumble-protocol';
+import { UserState, UserStats } from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import { Channel } from './channel';
 import {
@@ -11,7 +11,14 @@ import { syncProperty } from './sync-property';
 
 type UserWritableProps = Pick<
   User,
-  'name' | 'channelId' | 'mute' | 'deaf' | 'suppress' | 'selfMute' | 'selfDeaf'
+  | 'name'
+  | 'channelId'
+  | 'mute'
+  | 'deaf'
+  | 'suppress'
+  | 'selfMute'
+  | 'selfDeaf'
+  | 'hash'
 >;
 
 export type UserChanges = {
@@ -37,6 +44,10 @@ export class User {
   suppress = false;
   selfMute = false;
   selfDeaf = false;
+  /**
+   * SHA1 hash of the user's certificate; undefined if they connected without one.
+   */
+  hash?: string;
 
   constructor(
     private readonly client: Client,
@@ -82,6 +93,7 @@ export class User {
       ...syncProperty(this, 'suppress', userState.suppress),
       ...syncProperty(this, 'selfMute', userState.selfMute),
       ...syncProperty(this, 'selfDeaf', userState.selfDeaf),
+      ...syncProperty(this, 'hash', userState.hash),
     };
     return changes;
   }
@@ -101,7 +113,15 @@ export class User {
       throw new NoSuchChannelError(channelId);
     }
 
-    if (!(await channel.getPermissions()).canJoinChannel) {
+    // mirrors the server: moving yourself needs Enter or Move on the target;
+    // moving someone else needs Move on their current channel, plus Move on
+    // the target or the user's own Enter there, which only the server knows
+    if (this.session === this.client.session) {
+      const permissions = await channel.getPermissions();
+      if (!permissions.canJoinChannel && !permissions.canMove) {
+        throw new InsufficientPermissionsError();
+      }
+    } else if (!(await this.channel.getPermissions()).canMove) {
       throw new InsufficientPermissionsError();
     }
 
@@ -196,4 +216,47 @@ export class User {
     await this.client.renameRegisteredUser(this.userId, name);
     return this;
   }
+
+  /**
+   * Fetch the user's IP address. The server sends it only if the client has
+   * the Ban permission on the root channel, or if the user is the client itself.
+   * @returns The address (IPv4 addresses in dotted notation), or undefined.
+   */
+  async fetchAddress(): Promise<string | undefined> {
+    const stats = await this.client.command('fetchUserStats', {
+      sendPacket: [UserStats, UserStats.create({ session: this.session })],
+      expectPacket: [UserStats, ({ session }) => session === this.session],
+    });
+    return stats.address?.length ? formatAddress(stats.address) : undefined;
+  }
+
+  /**
+   * Send a private text message to the user.
+   * @param message The message; the server accepts HTML.
+   * @returns This user.
+   */
+  async sendMessage(message: string): Promise<this> {
+    await this.client.sendTextMessage({ session: [this.session] }, message);
+    return this;
+  }
+}
+
+/**
+ * Formats the 16-byte address the server sends.
+ * @internal
+ */
+export function formatAddress(address: Uint8Array): string {
+  const isV4Mapped =
+    address.subarray(0, 10).every(b => b === 0) &&
+    address[10] === 0xff &&
+    address[11] === 0xff;
+  if (isV4Mapped) {
+    return Array.from(address.subarray(12)).join('.');
+  }
+
+  // ponytail: not zero-compressed; normalize before comparing with other sources
+  const view = new DataView(address.buffer, address.byteOffset, 16);
+  return Array.from({ length: 8 }, (_, i) =>
+    view.getUint16(i * 2).toString(16),
+  ).join(':');
 }

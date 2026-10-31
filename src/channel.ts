@@ -263,4 +263,14 @@ export class Channel {
       expectPacket: [ACL, ({ channelId }) => channelId === this.id],
     });
   }
+
+  /**
+   * Send a text message to this channel.
+   * @param message The message; the server accepts HTML.
+   * @returns This channel.
+   */
+  async sendMessage(message: string): Promise<this> {
+    await this.client.sendTextMessage({ channelId: [this.id] }, message);
+    return this;
+  }
 }

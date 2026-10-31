@@ -19,6 +19,7 @@
 - Connect to any Mumble server over TLS
 - Manage channels: create, remove, link/unlink, fetch ACLs
 - Manage users: move, mute/deafen, register/deregister, rename
+- Send and receive private text messages; read certificate hashes and client IP addresses
 - Query channel permissions
 - Event-driven architecture with full TypeScript support
 - Automatic keep-alive pinging
@@ -162,6 +163,25 @@ await client.renameRegisteredUser(userId, 'NewName');
 
 // deregister a user (does not need to be online)
 await client.deregisterUser(userId);
+```
+
+### Text messages, certificate hashes and addresses
+
+```typescript
+client.on('textMessage', async ({ sender, message, isPrivate }) => {
+  if (sender && isPrivate) {
+    await sender.sendMessage(`you said: ${message}`);
+  }
+});
+
+// message everyone in a channel
+await client.channels.byName('Lobby')?.sendMessage('hello');
+
+// SHA1 hash of the user's certificate, sent for every user
+console.log(user.hash);
+
+// IP address; needs the Ban permission on the root channel
+console.log(await user.fetchAddress());
 ```
 
 ### Check channel permissions

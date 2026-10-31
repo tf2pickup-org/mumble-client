@@ -18,4 +18,14 @@ export type Events = {
   userRemove: (user: User) => void;
 
   speakingStateChange: (stateChange: SpeakingStateChange) => void;
+
+  /**
+   * A text message sent to the client, or to a channel it can hear.
+   * isPrivate is true when the message was sent directly to the client.
+   */
+  textMessage: (payload: {
+    sender: User | undefined;
+    message: string;
+    isPrivate: boolean;
+  }) => void;
 };

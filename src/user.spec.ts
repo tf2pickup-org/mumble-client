@@ -1,8 +1,10 @@
-import { UserState } from '@tf2pickup-org/mumble-protocol';
+import { UserState, UserStats } from '@tf2pickup-org/mumble-protocol';
 import { ChannelManager } from './channel-manager';
 import { Client } from './client';
-import { NoSuchChannelError } from './errors';
-import { MinusOneButUnsigned, User } from './user';
+import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
+import { Channel } from './channel';
+import { Permissions } from './permissions';
+import { formatAddress, MinusOneButUnsigned, User } from './user';
 
 vi.mock('./client');
 
@@ -18,6 +20,7 @@ describe('User', () => {
     });
     client.channels = {
       byId: vi.fn(),
+      find: vi.fn(),
     } as unknown as ChannelManager;
   });
 
@@ -138,6 +141,35 @@ describe('User', () => {
         },
       });
     });
+
+    it('should update hash', () => {
+      const changes = user.syncState(UserState.create({ hash: 'abc' }));
+      expect(user.hash).toEqual('abc');
+      expect(changes).toEqual({
+        hash: {
+          previousValue: undefined,
+          currentValue: 'abc',
+        },
+      });
+    });
+  });
+
+  describe('fetchAddress()', () => {
+    it('should return undefined when the server omits the address', async () => {
+      vi.mocked(client.command).mockResolvedValue(UserStats.create());
+      await expect(user.fetchAddress()).resolves.toBeUndefined();
+    });
+
+    it('should format the address', async () => {
+      vi.mocked(client.command).mockResolvedValue(
+        UserStats.create({
+          address: new Uint8Array([
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 1, 2, 3, 4,
+          ]),
+        }),
+      );
+      await expect(user.fetchAddress()).resolves.toEqual('1.2.3.4');
+    });
   });
 
   describe('moveToChannel()', () => {
@@ -148,6 +180,51 @@ describe('User', () => {
 
       it('should do nothing', async () => {
         await expect(user.moveToChannel(42)).resolves.not.toThrow();
+      });
+    });
+
+    describe('when permissions are checked', () => {
+      const withPermissions = (permissions: number) =>
+        ({
+          getPermissions: vi
+            .fn()
+            .mockResolvedValue(new Permissions(permissions)),
+        }) as unknown as Channel;
+      const enter = 0x4;
+      const move = 0x20;
+
+      beforeEach(() => {
+        vi.mocked(client.command).mockResolvedValue(UserState.create());
+      });
+
+      it('should let the client move itself with Move but no Enter', async () => {
+        vi.spyOn(client, 'session', 'get').mockReturnValue(42);
+        vi.mocked(client.channels).byId.mockReturnValue(withPermissions(move));
+        await expect(user.moveToChannel(7)).resolves.toBe(user);
+      });
+
+      it('should reject moving itself without Enter or Move', async () => {
+        vi.spyOn(client, 'session', 'get').mockReturnValue(42);
+        vi.mocked(client.channels).byId.mockReturnValue(withPermissions(0));
+        await expect(user.moveToChannel(7)).rejects.toThrow(
+          InsufficientPermissionsError,
+        );
+      });
+
+      it('should move another user with Move on their channel only', async () => {
+        vi.spyOn(client, 'session', 'get').mockReturnValue(1);
+        vi.mocked(client.channels).byId.mockReturnValue(withPermissions(0));
+        vi.mocked(client.channels).find.mockReturnValue(withPermissions(move));
+        await expect(user.moveToChannel(7)).resolves.toBe(user);
+      });
+
+      it('should reject moving another user without Move on their channel', async () => {
+        vi.spyOn(client, 'session', 'get').mockReturnValue(1);
+        vi.mocked(client.channels).byId.mockReturnValue(withPermissions(enter));
+        vi.mocked(client.channels).find.mockReturnValue(withPermissions(enter));
+        await expect(user.moveToChannel(7)).rejects.toThrow(
+          InsufficientPermissionsError,
+        );
       });
     });
 
@@ -162,5 +239,14 @@ describe('User', () => {
         );
       });
     });
+  });
+});
+
+describe(formatAddress.name, () => {
+  it('should format an IPv6 address', () => {
+    const address = new Uint8Array(16);
+    address.set([0x20, 0x01, 0x0d, 0xb8]);
+    address[15] = 1;
+    expect(formatAddress(address)).toEqual('2001:db8:0:0:0:0:0:1');
   });
 });

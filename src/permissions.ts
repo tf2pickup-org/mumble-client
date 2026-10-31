@@ -76,4 +76,21 @@ export class Permissions {
     // https://github.com/mumble-voip/mumble/blob/2fc30044b764c78f00315e8525bc34eb41c5a4da/src/mumble/MainWindow.cpp#L1717
     return !!(this.permissions & (register | write));
   }
+
+  // the server treats Write as granting every permission but Speak and Whisper
+  get canWrite(): boolean {
+    return !!(this.permissions & write);
+  }
+
+  get canMove(): boolean {
+    return !!(this.permissions & (move | write));
+  }
+
+  get canBan(): boolean {
+    return !!(this.permissions & (ban | write));
+  }
+
+  get canSendTextMessage(): boolean {
+    return !!(this.permissions & (textMessage | write));
+  }
 }
