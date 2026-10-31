@@ -1,8 +1,12 @@
-import { PermissionQuery } from '@tf2pickup-org/mumble-protocol';
+import {
+  PermissionDenied,
+  PermissionQuery,
+  TextMessage,
+} from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
 import { FakeMumbleSocket } from './__mocks__/fake-mumble-socket';
-import { ClientDisconnectedError } from './errors';
+import { ClientDisconnectedError, PermissionDeniedError } from './errors';
 
 vi.mock('./mumble-socket');
 
@@ -58,6 +62,24 @@ describe(Client.name, () => {
       expect(client.socket).toBe(sockets[0]);
       expect(client.session).toBe(2);
       expect(events).toEqual(['connect']);
+    });
+
+    it('should send a text message', async () => {
+      await client.sendTextMessage({ channelId: [5] }, 'hello');
+      expect(sockets[0]!.send).toHaveBeenCalledWith(
+        TextMessage,
+        TextMessage.create({ channelId: [5], message: 'hello' }),
+      );
+    });
+
+    it('should reject a denied text message', async () => {
+      sockets[0]!.respondToPing = false;
+      const sent = client.sendTextMessage({ session: [3] }, 'hello');
+      sockets[0]!.receive(
+        PermissionDenied,
+        PermissionDenied.create({ session: 2, permission: 0x200 }),
+      );
+      await expect(sent).rejects.toThrow(PermissionDeniedError);
     });
 
     it('should end the socket on disconnect()', () => {

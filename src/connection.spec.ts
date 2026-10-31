@@ -3,6 +3,7 @@ import {
   PermissionQuery,
   Ping,
   Reject,
+  TextMessage,
   UserList,
   UserRemove,
   UserState,
@@ -148,6 +149,29 @@ describe(Connection.name, () => {
         PermissionQuery.create({ channelId: 5, permissions: 0x1 }),
       );
       expect(connection.permissions.get(5)?.permissions).toBe(0x1);
+    });
+
+    it('should emit text messages', () => {
+      socket.receive(UserState, UserState.create({ session: 3, name: 'bob' }));
+      socket.receive(
+        TextMessage,
+        TextMessage.create({ actor: 3, session: [2], message: 'hi' }),
+      );
+      socket.receive(
+        TextMessage,
+        TextMessage.create({ channelId: [0], message: 'hello all' }),
+      );
+      const emits = host.emit.mock.calls.filter(([e]) => e === 'textMessage');
+      expect(emits).toEqual([
+        [
+          'textMessage',
+          { sender: host.users.bySession(3), message: 'hi', isPrivate: true },
+        ],
+        [
+          'textMessage',
+          { sender: undefined, message: 'hello all', isPrivate: false },
+        ],
+      ]);
     });
 
     describe('command()', () => {

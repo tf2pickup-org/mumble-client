@@ -1,7 +1,9 @@
 import { tlsConnect } from './tls-connect';
 import { MumbleSocket } from './mumble-socket';
 import {
+  Ping,
   ServerConfig,
+  TextMessage,
   UserList,
   UserList_User,
   Version,
@@ -181,6 +183,26 @@ export class Client extends TypedEventEmitter<Events, Events> {
         [UserList, UserList.create()],
       ],
       expectPacket: [UserList, () => true],
+    });
+  }
+
+  /**
+   * Send a text message to the given users or channels.
+   * @internal
+   */
+  async sendTextMessage(
+    target: { session: number[] } | { channelId: number[] },
+    message: string,
+  ): Promise<void> {
+    await this.command('sendTextMessage', {
+      sendPackets: [
+        [TextMessage, TextMessage.create({ ...target, message })],
+        // the server does not acknowledge text messages; its Ping reply comes
+        // after a PermissionDenied for the message, if there is one
+        // ponytail: a reply to the periodic ping can resolve this early
+        [Ping, Ping.create()],
+      ],
+      expectPacket: [Ping, () => true],
     });
   }
 
