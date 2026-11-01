@@ -292,7 +292,8 @@ The main entry point. Connects to the server and provides access to channels, us
 | `welcomeText` | Server welcome message |
 | `serverVersion` | Server version info |
 | `serverConfig` | Server configuration (max users, message length, …) |
-| `socket` | The underlying socket, for [audio](AUDIO_EXAMPLE.md); `undefined` when disconnected |
+| `socket` | The underlying socket; `undefined` when disconnected |
+| `sendAudio(options)` | Send one audio frame; see [audio](AUDIO_EXAMPLE.md) |
 | `connect()` | Connect to the Mumble server; if already connected, disconnects first |
 | `disconnect()` | Disconnect from the server; does nothing when not connected |
 | `isConnected()` | Returns `true` if connected |
@@ -380,6 +381,7 @@ The main entry point. Connects to the server and provides access to channels, us
 | `userUpdate` | `User, UserChanges` | A user's state changed |
 | `userRemove` | `User` | A user disconnected |
 | `speakingStateChange` | `{ user: User, speaking: boolean }` | A user started/stopped speaking |
+| `audio` | `FullAudioPacket` | One audio frame from another user; see [audio](AUDIO_EXAMPLE.md) |
 
 ### `ClientOptions`
 

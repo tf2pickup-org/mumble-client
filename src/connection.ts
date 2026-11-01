@@ -16,7 +16,7 @@ import {
 import { MessageType } from '@protobuf-ts/runtime';
 import { platform, release } from 'node:os';
 import { Client } from './client';
-import { MumbleSocket } from './mumble-socket';
+import { FullAudioPacket, MumbleSocket } from './mumble-socket';
 import { Permissions } from './permissions';
 import { PacketType, payloadOf } from './packet-type';
 import { User } from './user';
@@ -84,6 +84,7 @@ export class Connection {
     host.users.clear();
     socket.on('packet', this.onPacket);
     socket.on('audioPacket', this.onAudioPacket);
+    socket.on('fullAudioPacket', this.onFullAudioPacket);
     socket.on('close', this.onClose);
   }
 
@@ -195,6 +196,7 @@ export class Connection {
     this.ended.abort();
     this.socket.off('packet', this.onPacket);
     this.socket.off('audioPacket', this.onAudioPacket);
+    this.socket.off('fullAudioPacket', this.onFullAudioPacket);
     this.socket.off('close', this.onClose);
     clearInterval(this.pinger);
     for (const session of this.speaking.keys()) {
@@ -391,6 +393,9 @@ export class Connection {
     const timer = setTimeout(() => this.stopSpeaking(source), 40);
     this.speaking.set(source, { user, timer });
   };
+
+  private readonly onFullAudioPacket = (packet: FullAudioPacket) =>
+    this.host.emit('audio', packet);
 
   private stopSpeaking(session: number) {
     const speaking = this.speaking.get(session);
