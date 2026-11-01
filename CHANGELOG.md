@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.15.1](https://github.com/tf2pickup-org/mumble-client/compare/0.15.0...0.15.1) (2026-11-01)
+
+### Bug Fixes
+
+* drop all cached permissions when the server flushes them ([#1117](https://github.com/tf2pickup-org/mumble-client/issues/1117)) ([36ff851](https://github.com/tf2pickup-org/mumble-client/commit/36ff85152c6731ca5f4ec34ace694d160de294a9))
+
 # [0.15.0](https://github.com/tf2pickup-org/mumble-client/compare/0.14.0...0.15.0) (2026-11-01)
 
 ### Bug Fixes
