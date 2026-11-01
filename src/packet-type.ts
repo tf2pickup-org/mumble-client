@@ -1,3 +1,5 @@
+import { MessageType } from '@protobuf-ts/runtime';
+
 export interface PacketType {
   /**
    * Packet type number, as described in the protocol specification.
@@ -11,9 +13,10 @@ export interface PacketType {
    *
    * Usage:
    * ```ts
-   * socket.packet.pipe(
-   *   filter(packet => packet.typeName === SyncChannel.typeName),
-   * ).subscribe(syncChannel => console.log(syncChannel));
+   * socket.on('packet', packet => {
+   *   const channelState = payloadOf(packet, ChannelState);
+   *   if (channelState) console.log(channelState);
+   * });
    * ```
    */
   typeName: string;
@@ -22,4 +25,14 @@ export interface PacketType {
    * The parsed packet payload.
    */
   payload: unknown;
+}
+
+/**
+ * Returns the packet's payload if the packet is of the given type.
+ */
+export function payloadOf<T extends object>(
+  packet: PacketType,
+  type: MessageType<T>,
+): T | undefined {
+  return packet.typeName === type.typeName ? (packet.payload as T) : undefined;
 }

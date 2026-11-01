@@ -6,7 +6,7 @@ import {
   Version,
 } from '@tf2pickup-org/mumble-protocol';
 import { MessageType } from '@protobuf-ts/runtime';
-import { Subject } from 'rxjs';
+import { EventEmitter } from 'node:events';
 import { MumbleSocket } from '../mumble-socket';
 import { PacketType } from '../packet-type';
 import { packetType } from '../packet-type-registry';
@@ -15,10 +15,7 @@ import { packetType } from '../packet-type-registry';
  * A MumbleSocket stand-in that answers the handshake like a real server
  * (session 2) and lets tests push packets in.
  */
-export class FakeMumbleSocket {
-  readonly packet = new Subject<PacketType>();
-  readonly audioPacket = new Subject<{ source: number }>();
-  readonly fullAudioPacket = new Subject<never>();
+export class FakeMumbleSocket extends EventEmitter {
   respondToHandshake = true;
   respondToPing = true;
 
@@ -35,18 +32,17 @@ export class FakeMumbleSocket {
   readonly end = vi.fn();
 
   receive<T extends object>(type: MessageType<T>, payload: T) {
-    this.packet.next({
+    const packet: PacketType = {
       type: packetType(type)!,
       typeName: type.typeName,
       payload,
-    });
+    };
+    this.emit('packet', packet);
   }
 
   /** Simulates the server closing the TLS connection. */
   close() {
-    this.packet.complete();
-    this.audioPacket.complete();
-    this.fullAudioPacket.complete();
+    this.emit('close');
   }
 
   asMumbleSocket(): MumbleSocket {

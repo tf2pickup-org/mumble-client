@@ -1,22 +1,4 @@
 import {
-  concatMap,
-  debounceTime,
-  exhaustMap,
-  filter,
-  groupBy,
-  interval,
-  lastValueFrom,
-  race,
-  Subject,
-  switchMap,
-  take,
-  takeUntil,
-  throwError,
-  throwIfEmpty,
-  timeout,
-  zip,
-} from 'rxjs';
-import {
   Authenticate,
   ChannelRemove,
   ChannelState,
@@ -36,7 +18,8 @@ import { platform, release } from 'node:os';
 import { Client } from './client';
 import { MumbleSocket } from './mumble-socket';
 import { Permissions } from './permissions';
-import { filterPacket } from './rxjs-operators/filter-packet';
+import { PacketType, payloadOf } from './packet-type';
+import { User } from './user';
 import { encodeMumbleVersion } from './encode-mumble-version';
 import { encodeMumbleVersionLegacy } from './encode-mumble-version-legacy';
 import {
@@ -85,95 +68,27 @@ export class Connection {
   // Channel permission cache
   readonly permissions = new Map<number, Permissions>();
 
-  private readonly ended = new Subject<void>();
-  private isEnded = false;
+  private readonly ended = new AbortController();
+  private readonly speaking = new Map<
+    number,
+    { user: User; timer: NodeJS.Timeout }
+  >();
+  private pinger?: NodeJS.Timeout;
   private isReady = false;
 
   constructor(
     readonly socket: MumbleSocket,
     private readonly host: ConnectionHost,
   ) {
-    const packet = socket.packet.pipe(takeUntil(this.ended));
     host.channels.clear();
     host.users.clear();
-
-    packet.pipe(filterPacket(ChannelState)).subscribe(channelState => {
-      host.channels.syncChannelState(channelState);
-    });
-    packet.pipe(filterPacket(ChannelRemove)).subscribe(channelRemove => {
-      host.channels.removeChannel(channelRemove);
-    });
-    packet.pipe(filterPacket(UserState)).subscribe(userState => {
-      host.users.syncUser(userState);
-    });
-    packet.pipe(filterPacket(UserRemove)).subscribe(userRemove => {
-      host.users.removeUser(userRemove);
-      if (userRemove.session === this.session) {
-        this.teardown(userRemove.reason ?? 'unknown reason');
-      }
-    });
-    packet
-      .pipe(
-        filterPacket(PermissionQuery),
-        filter(permissionQuery => permissionQuery.channelId !== undefined),
-      )
-      .subscribe(permissionQuery => {
-        // the server sends a flush when ACLs change, for one channel only; every other
-        // cached entry may be stale too
-        if (permissionQuery.flush) {
-          this.permissions.clear();
-        }
-        this.permissions.set(
-          permissionQuery.channelId!,
-          new Permissions(permissionQuery.permissions ?? 0),
-        );
-      });
-    packet.pipe(filterPacket(TextMessage)).subscribe(textMessage => {
-      host.emit('textMessage', {
-        sender:
-          textMessage.actor === undefined
-            ? undefined
-            : host.users.bySession(textMessage.actor),
-        message: textMessage.message,
-        isPrivate:
-          this.session !== undefined &&
-          textMessage.session.includes(this.session),
-      });
-    });
-    // the packet observable completes when the server closes the connection
-    socket.packet.subscribe({
-      complete: () => this.teardown('connection closed'),
-    });
-
-    socket.audioPacket
-      .pipe(
-        takeUntil(this.ended),
-        groupBy(packet => packet.source),
-      )
-      .subscribe(group => {
-        const user = host.users.bySession(group.key);
-        if (!user) {
-          console.warn(`unknown session: ${group.key}`);
-          return;
-        }
-
-        let speaking = false;
-
-        group.pipe(filter(() => !speaking)).subscribe(() => {
-          speaking = true;
-          host.emit('speakingStateChange', { user, speaking });
-        });
-
-        // if no packet comes for 40 milliseconds, the user stopped talking
-        group.pipe(debounceTime(40)).subscribe(() => {
-          speaking = false;
-          host.emit('speakingStateChange', { user, speaking });
-        });
-      });
+    socket.on('packet', this.onPacket);
+    socket.on('audioPacket', this.onAudioPacket);
+    socket.on('close', this.onClose);
   }
 
   get isOpen(): boolean {
-    return !this.isEnded;
+    return !this.ended.signal.aborted;
   }
 
   /**
@@ -181,29 +96,23 @@ export class Connection {
    * Tears the connection down if the handshake fails.
    */
   async handshake(): Promise<void> {
-    const synced = lastValueFrom(
-      race(
-        zip(
-          this.socket.packet.pipe(filterPacket(ServerSync), take(1)),
-          this.socket.packet.pipe(filterPacket(ServerConfig), take(1)),
-          this.socket.packet.pipe(filterPacket(Version), take(1)),
-        ),
-        this.socket.packet.pipe(
-          filterPacket(Reject),
-          switchMap(reject =>
-            throwError(() => new ConnectionRejectedError(reject)),
-          ),
-        ),
-      ).pipe(
-        takeUntil(this.ended),
-        // completes without a value when the connection ends first, e.g. when
-        // the server drops it without a Reject packet (mumble 1.6.x on failed
-        // superuser auth)
-        throwIfEmpty(() => new ClientDisconnectedError()),
-      ),
-    );
+    let serverSync: ServerSync | undefined;
+    let serverConfig: ServerConfig | undefined;
+    let version: Version | undefined;
+    const synced = this.waitFor(packet => {
+      serverSync ??= payloadOf(packet, ServerSync);
+      serverConfig ??= payloadOf(packet, ServerConfig);
+      version ??= payloadOf(packet, Version);
+      const reject = payloadOf(packet, Reject);
+      if (reject) {
+        return new ConnectionRejectedError(reject);
+      }
 
-    let serverSync: ServerSync, serverConfig: ServerConfig, version: Version;
+      return serverSync && serverConfig && version
+        ? { value: [serverSync, serverConfig, version] as const }
+        : undefined;
+    });
+
     try {
       [[serverSync, serverConfig, version]] = await Promise.all([
         synced,
@@ -215,7 +124,7 @@ export class Connection {
     }
 
     // torn down after the server synced, but before this continuation ran
-    if (this.isEnded) {
+    if (!this.isOpen) {
       throw new ClientDisconnectedError();
     }
 
@@ -239,31 +148,26 @@ export class Connection {
     Return extends object,
     SendMore extends object[] = [],
   >(name: string, props: CommandProps<Send, Return, SendMore>) {
-    if (this.isEnded) {
+    if (!this.isOpen) {
       throw new ClientDisconnectedError();
     }
 
-    const ret = lastValueFrom(
-      race(
-        this.socket.packet.pipe(
-          filterPacket(props.expectPacket[0]),
-          filter(props.expectPacket[1]),
-          take(1),
-          timeout({
-            first: CommandTimeout,
-            with: () => throwError(() => new CommandTimedOutError(name)),
-          }),
-        ),
-        this.socket.packet.pipe(
-          filterPacket(PermissionDenied),
-          filter(pd => pd.session === this.session),
-          take(1),
-          concatMap(pd => throwError(() => new PermissionDeniedError(pd))),
-        ),
-      ).pipe(
-        takeUntil(this.ended),
-        throwIfEmpty(() => new ClientDisconnectedError()),
-      ),
+    const [expectedType, isExpected] = props.expectPacket;
+    const ret = this.waitFor(
+      packet => {
+        const expected = payloadOf(packet, expectedType);
+        if (expected && isExpected(expected)) {
+          return { value: expected };
+        }
+
+        const permissionDenied = payloadOf(packet, PermissionDenied);
+        if (permissionDenied && permissionDenied.session === this.session) {
+          return new PermissionDeniedError(permissionDenied);
+        }
+
+        return undefined;
+      },
+      { ms: CommandTimeout, error: () => new CommandTimedOutError(name) },
     );
 
     const send = async () => {
@@ -284,13 +188,18 @@ export class Connection {
    * has completed.
    */
   teardown(reason?: string) {
-    if (this.isEnded) {
+    if (!this.isOpen) {
       return;
     }
 
-    this.isEnded = true;
-    this.ended.next();
-    this.ended.complete();
+    this.ended.abort();
+    this.socket.off('packet', this.onPacket);
+    this.socket.off('audioPacket', this.onAudioPacket);
+    this.socket.off('close', this.onClose);
+    clearInterval(this.pinger);
+    for (const session of this.speaking.keys()) {
+      this.stopSpeaking(session);
+    }
     if (this.isReady) {
       this.host.emit(
         'disconnect',
@@ -336,15 +245,158 @@ export class Connection {
   }
 
   private startPinger() {
-    interval(this.host.options.pingInterval)
-      .pipe(
-        takeUntil(this.ended),
-        exhaustMap(() =>
-          this.ping().catch(error => {
-            this.host.emit('error', error);
-          }),
-        ),
-      )
-      .subscribe();
+    let pinging = false;
+    this.pinger = setInterval(() => {
+      // skip the tick while the previous ping is still being sent
+      if (pinging) {
+        return;
+      }
+
+      pinging = true;
+      this.ping()
+        .catch(error => {
+          this.host.emit('error', error);
+        })
+        .finally(() => {
+          pinging = false;
+        });
+    }, this.host.options.pingInterval);
   }
+
+  /**
+   * Resolves with the value `match` returns for a packet, or rejects with the
+   * error it returns. Rejects when the connection ends or the timeout passes.
+   */
+  private waitFor<T>(
+    match: (packet: PacketType) => { value: T } | Error | undefined,
+    timeout?: { ms: number; error: () => Error },
+  ): Promise<T> {
+    return new Promise((resolve, reject) => {
+      const done = () => {
+        this.socket.off('packet', onPacket);
+        this.ended.signal.removeEventListener('abort', onEnded);
+        clearTimeout(timer);
+      };
+      const onPacket = (packet: PacketType) => {
+        const result = match(packet);
+        if (result === undefined) {
+          return;
+        }
+
+        done();
+        if (result instanceof Error) {
+          reject(result);
+        } else {
+          resolve(result.value);
+        }
+      };
+      const onEnded = () => {
+        done();
+        reject(new ClientDisconnectedError());
+      };
+      const timer =
+        timeout &&
+        setTimeout(() => {
+          done();
+          reject(timeout.error());
+        }, timeout.ms);
+
+      if (!this.isOpen) {
+        onEnded();
+        return;
+      }
+
+      this.socket.on('packet', onPacket);
+      this.ended.signal.addEventListener('abort', onEnded);
+    });
+  }
+
+  private readonly onPacket = (packet: PacketType) => {
+    const { channels, users } = this.host;
+
+    const channelState = payloadOf(packet, ChannelState);
+    if (channelState) {
+      channels.syncChannelState(channelState);
+    }
+
+    const channelRemove = payloadOf(packet, ChannelRemove);
+    if (channelRemove) {
+      channels.removeChannel(channelRemove);
+    }
+
+    const userState = payloadOf(packet, UserState);
+    if (userState) {
+      users.syncUser(userState);
+    }
+
+    const userRemove = payloadOf(packet, UserRemove);
+    if (userRemove) {
+      users.removeUser(userRemove);
+      if (userRemove.session === this.session) {
+        this.teardown(userRemove.reason ?? 'unknown reason');
+      }
+    }
+
+    const permissionQuery = payloadOf(packet, PermissionQuery);
+    if (permissionQuery?.channelId !== undefined) {
+      // the server sends a flush when ACLs change, for one channel only; every other
+      // cached entry may be stale too
+      if (permissionQuery.flush) {
+        this.permissions.clear();
+      }
+      this.permissions.set(
+        permissionQuery.channelId,
+        new Permissions(permissionQuery.permissions ?? 0),
+      );
+    }
+
+    const textMessage = payloadOf(packet, TextMessage);
+    if (textMessage) {
+      this.host.emit('textMessage', {
+        sender:
+          textMessage.actor === undefined
+            ? undefined
+            : users.bySession(textMessage.actor),
+        message: textMessage.message,
+        isPrivate:
+          this.session !== undefined &&
+          textMessage.session.includes(this.session),
+      });
+    }
+  };
+
+  private readonly onAudioPacket = ({ source }: { source: number }) => {
+    const speaking = this.speaking.get(source);
+    if (speaking) {
+      speaking.timer.refresh();
+      return;
+    }
+
+    const user = this.host.users.bySession(source);
+    if (!user) {
+      console.warn(`unknown session: ${source}`);
+      return;
+    }
+
+    this.host.emit('speakingStateChange', { user, speaking: true });
+    // if no packet comes for 40 milliseconds, the user stopped talking
+    const timer = setTimeout(() => this.stopSpeaking(source), 40);
+    this.speaking.set(source, { user, timer });
+  };
+
+  private stopSpeaking(session: number) {
+    const speaking = this.speaking.get(session);
+    if (!speaking) {
+      return;
+    }
+
+    clearTimeout(speaking.timer);
+    this.speaking.delete(session);
+    this.host.emit('speakingStateChange', {
+      user: speaking.user,
+      speaking: false,
+    });
+  }
+
+  private readonly onClose = () => this.teardown('connection closed');
 }

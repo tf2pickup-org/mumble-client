@@ -1,4 +1,3 @@
-import { Observable, Subject } from 'rxjs';
 import { TLSSocket } from 'tls';
 import { packetForType, packetType } from './packet-type-registry';
 import { MessageType } from '@protobuf-ts/runtime';
@@ -6,6 +5,7 @@ import { UDPTunnel } from '@tf2pickup-org/mumble-protocol';
 import { PacketType } from './packet-type';
 import { readVarint } from './read-varint';
 import { writeVarint } from './write-varint';
+import { TypedEventEmitter } from './typed-event-emitter';
 
 interface MumbleSocketReader {
   length: number;
@@ -41,39 +41,31 @@ export interface SendAudioOptions {
   isTerminator?: boolean;
 }
 
-export class MumbleSocket {
-  private readonly _packet = new Subject<PacketType>();
-  private readonly _audioPacket = new Subject<AudioPacket>();
-  private readonly _fullAudioPacket = new Subject<FullAudioPacket>();
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type MumbleSocketEvents = {
+  packet: (packet: PacketType) => void;
+  audioPacket: (packet: AudioPacket) => void;
+  fullAudioPacket: (packet: FullAudioPacket) => void;
+  close: () => void;
+};
+
+export class MumbleSocket extends TypedEventEmitter<
+  MumbleSocketEvents,
+  MumbleSocketEvents
+> {
   private buffers: Buffer[] = [];
   private length = 0;
   private readers: MumbleSocketReader[] = [];
   private audioSequence = 0;
 
   constructor(private readonly socket: TLSSocket) {
+    super();
     this.socket.on('data', (data: Buffer) => {
       this.receiveData(data);
     });
-    // 'close' fires after both 'end' and 'error'; completing the subjects
-    // lets pending lastValueFrom() calls reject instead of hanging forever
-    this.socket.on('close', () => {
-      this._packet.complete();
-      this._audioPacket.complete();
-      this._fullAudioPacket.complete();
-    });
+    // 'close' fires after both 'end' and 'error'
+    this.socket.on('close', () => this.emit('close'));
     this.readPrefix();
-  }
-
-  get packet(): Observable<PacketType> {
-    return this._packet.asObservable();
-  }
-
-  get audioPacket(): Observable<AudioPacket> {
-    return this._audioPacket.asObservable();
-  }
-
-  get fullAudioPacket(): Observable<FullAudioPacket> {
-    return this._fullAudioPacket.asObservable();
   }
 
   read(length: number, callback: MumbleSocketReader['callback']): void {
@@ -215,7 +207,7 @@ export class MumbleSocket {
             break;
 
           default:
-            this._packet.next({
+            this.emit('packet', {
               type,
               typeName: message.typeName,
               payload: message.fromBinary(data),
@@ -251,7 +243,7 @@ export class MumbleSocket {
     offset += sessionResult.length;
 
     // Emit legacy packet for backward compatibility
-    this._audioPacket.next({ source });
+    this.emit('audioPacket', { source });
 
     // Only parse full audio for normal talking (target 0)
     if (target !== 0) {
@@ -306,6 +298,6 @@ export class MumbleSocket {
       audioData = Buffer.concat(frames);
     }
 
-    this._fullAudioPacket.next({ source, target, codec, sequence, audioData, hasTerminator });
+    this.emit('fullAudioPacket', { source, target, codec, sequence, audioData, hasTerminator });
   }
 }
