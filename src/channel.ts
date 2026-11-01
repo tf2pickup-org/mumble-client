@@ -25,9 +25,9 @@ export type ChannelChanges = {
  */
 export class Channel {
   readonly id: number;
-  name?: string;
-  parent?: number;
-  temporary: boolean;
+  readonly name?: string;
+  readonly parent?: number;
+  readonly temporary: boolean;
   private links: number[] = [];
 
   constructor(

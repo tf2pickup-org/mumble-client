@@ -9,10 +9,11 @@ import {
 import { Change } from './change';
 import { syncProperty } from './sync-property';
 
-type UserWritableProps = Pick<
+type UserChangeableProps = Pick<
   User,
   | 'name'
   | 'channelId'
+  | 'userId'
   | 'mute'
   | 'deaf'
   | 'suppress'
@@ -22,7 +23,7 @@ type UserWritableProps = Pick<
 >;
 
 export type UserChanges = {
-  [P in keyof UserWritableProps]?: Change<User[P]>;
+  -readonly [P in keyof UserChangeableProps]?: Change<User[P]>;
 };
 
 /**
@@ -36,18 +37,18 @@ export const MinusOneButUnsigned = 0xffffffff;
  */
 export class User {
   readonly session: number;
-  name?: string;
-  channelId = 0;
+  readonly name?: string;
+  readonly channelId: number = 0;
   private _userId: number | undefined; // undefined userId means the user is not registered
-  mute = false;
-  deaf = false;
-  suppress = false;
-  selfMute = false;
-  selfDeaf = false;
+  readonly mute: boolean = false;
+  readonly deaf: boolean = false;
+  readonly suppress: boolean = false;
+  readonly selfMute: boolean = false;
+  readonly selfDeaf: boolean = false;
   /**
    * SHA1 hash of the user's certificate; undefined if they connected without one.
    */
-  hash?: string;
+  readonly hash?: string;
 
   constructor(
     private readonly client: Client,
@@ -71,11 +72,6 @@ export class User {
     return this._userId;
   }
 
-  set userId(userId: number | undefined) {
-    // -1 is returned to signal successful user registration deletion
-    this._userId = userId === MinusOneButUnsigned ? undefined : userId;
-  }
-
   get isRegistered(): boolean {
     return this.userId !== undefined;
   }
@@ -87,7 +83,6 @@ export class User {
     const changes: UserChanges = {
       ...syncProperty(this, 'name', userState.name),
       ...syncProperty(this, 'channelId', userState.channelId),
-      ...syncProperty(this, 'userId', userState.userId),
       ...syncProperty(this, 'mute', userState.mute),
       ...syncProperty(this, 'deaf', userState.deaf),
       ...syncProperty(this, 'suppress', userState.suppress),
@@ -95,6 +90,15 @@ export class User {
       ...syncProperty(this, 'selfDeaf', userState.selfDeaf),
       ...syncProperty(this, 'hash', userState.hash),
     };
+
+    if (userState.userId !== undefined) {
+      // -1 is returned to signal successful user registration deletion
+      const userId =
+        userState.userId === MinusOneButUnsigned ? undefined : userState.userId;
+      changes.userId = { previousValue: this._userId, currentValue: userId };
+      this._userId = userId;
+    }
+
     return changes;
   }
 
