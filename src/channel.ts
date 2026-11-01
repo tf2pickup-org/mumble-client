@@ -4,6 +4,7 @@ import {
   ChannelState,
   PermissionQuery,
 } from '@tf2pickup-org/mumble-protocol';
+import { Acl, fromProtocolAcl, toProtocolAcl } from './acl';
 import { Change } from './change';
 import { Client } from './client';
 import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
@@ -234,7 +235,10 @@ export class Channel {
     return this;
   }
 
-  async fetchAcl(): Promise<ACL> {
+  /**
+   * Fetch the access control list of this channel.
+   */
+  async fetchAcl(): Promise<Acl> {
     const acl = await this.client.command('fetchAcl', {
       sendPacket: [
         ACL,
@@ -245,13 +249,16 @@ export class Channel {
       ],
       expectPacket: [ACL, ({ channelId }) => channelId === this.id],
     });
-    return acl;
+    return fromProtocolAcl(acl);
   }
 
-  async saveAcl(acl: ACL) {
+  /**
+   * Replace the access control list of this channel.
+   */
+  async saveAcl(acl: Acl) {
     await this.client.command('saveAcl', {
       sendPackets: [
-        [ACL, ACL.create({ ...acl, channelId: this.id })],
+        [ACL, toProtocolAcl(this.id, acl)],
         [
           ACL,
           ACL.create({

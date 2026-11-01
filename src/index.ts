@@ -2,6 +2,8 @@ export { type ClientOptions } from './client-options';
 export { Client, type ConnectedClient } from './client';
 export { ChannelManager } from './channel-manager';
 export { Channel } from './channel';
+export { type Acl, type AclGroup, type AclEntry } from './acl';
+export { type RegisteredUser } from './registered-user';
 export { type PacketType, payloadOf } from './packet-type';
 export { Permissions } from './permissions';
 export { UserManager } from './user-manager';

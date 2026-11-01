@@ -5,13 +5,13 @@ import {
   ServerConfig,
   TextMessage,
   UserList,
-  UserList_User,
   Version,
 } from '@tf2pickup-org/mumble-protocol';
 import { User } from './user';
 import { ChannelManager } from './channel-manager';
 import { UserManager } from './user-manager';
 import { ClientOptions } from './client-options';
+import { RegisteredUser } from './registered-user';
 import { ClientDisconnectedError } from './errors';
 import { Permissions } from './permissions';
 import { TypedEventEmitter } from './typed-event-emitter';
@@ -148,7 +148,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
   /**
    * Fetch the list of users registered with the server.
    */
-  async fetchRegisteredUsers(): Promise<UserList_User[]> {
+  async fetchRegisteredUsers(): Promise<RegisteredUser[]> {
     const ret = await this.command('fetchRegisteredUsers', {
       sendPacket: [UserList, UserList.create()],
       expectPacket: [UserList, () => true],
