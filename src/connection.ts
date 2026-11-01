@@ -118,6 +118,11 @@ export class Connection {
         filter(permissionQuery => permissionQuery.channelId !== undefined),
       )
       .subscribe(permissionQuery => {
+        // the server sends a flush when ACLs change, for one channel only; every other
+        // cached entry may be stale too
+        if (permissionQuery.flush) {
+          this.permissions.clear();
+        }
         this.permissions.set(
           permissionQuery.channelId!,
           new Permissions(permissionQuery.permissions ?? 0),
