@@ -100,16 +100,17 @@ export class User {
 
   /**
    * Move the user to the given channel.
-   * @param channelId The ID of the target channel.
+   * @param channel The target channel or its ID.
    * @returns This user.
    */
-  async moveToChannel(channelId: number): Promise<this> {
+  async moveToChannel(channel: Channel | number): Promise<this> {
+    const channelId = typeof channel === 'number' ? channel : channel.id;
     if (this.channelId === channelId) {
       return this;
     }
 
-    const channel = this.client.channels.byId(channelId);
-    if (!channel) {
+    const target = this.client.channels.byId(channelId);
+    if (!target) {
       throw new NoSuchChannelError(channelId);
     }
 
@@ -117,7 +118,7 @@ export class User {
     // moving someone else needs Move on their current channel, plus Move on
     // the target or the user's own Enter there, which only the server knows
     if (this.session === this.client.session) {
-      const permissions = await channel.getPermissions();
+      const permissions = await target.getPermissions();
       if (!permissions.canJoinChannel && !permissions.canMove) {
         throw new InsufficientPermissionsError();
       }

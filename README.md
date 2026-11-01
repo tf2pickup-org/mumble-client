@@ -129,7 +129,7 @@ const user = client.users.byName('PlayerOne');
 const targetChannel = client.channels.byName('RED');
 
 if (user && targetChannel) {
-  await user.moveToChannel(targetChannel.id);
+  await user.moveToChannel(targetChannel);
 }
 ```
 
@@ -348,7 +348,7 @@ The main entry point. Connects to the server and provides access to channels, us
 | `isRegistered` | Whether the user is registered |
 | `mute` / `deaf` / `suppress` | Server mute/deaf/suppress state |
 | `selfMute` / `selfDeaf` | Self-mute/deaf state |
-| `moveToChannel(channelId)` | Move user to a channel |
+| `moveToChannel(channel)` | Move user to a channel (a `Channel` or its ID) |
 | `setSelfMute(mute)` | Set self-mute state |
 | `setSelfDeaf(deaf)` | Set self-deaf state |
 | `register()` | Register the user |
