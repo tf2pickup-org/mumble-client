@@ -151,6 +151,23 @@ describe(Connection.name, () => {
       expect(connection.permissions.get(5)?.permissions).toBe(0x1);
     });
 
+    it('should drop all cached permissions on a flush', () => {
+      socket.receive(
+        PermissionQuery,
+        PermissionQuery.create({ channelId: 0, permissions: 0x1 }),
+      );
+      socket.receive(
+        PermissionQuery,
+        PermissionQuery.create({ channelId: 5, permissions: 0x1 }),
+      );
+      socket.receive(
+        PermissionQuery,
+        PermissionQuery.create({ channelId: 5, permissions: 0x2, flush: true }),
+      );
+      expect(connection.permissions.get(0)).toBeUndefined();
+      expect(connection.permissions.get(5)?.permissions).toBe(0x2);
+    });
+
     it('should emit text messages', () => {
       socket.receive(UserState, UserState.create({ session: 3, name: 'bob' }));
       socket.receive(
