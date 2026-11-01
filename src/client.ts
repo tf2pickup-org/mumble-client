@@ -24,7 +24,7 @@ const defaultOptions: Partial<ClientOptions> = {
   pingInterval: 10000,
 };
 
-interface ConnectedClient extends Client {
+export interface ConnectedClient extends Client {
   socket: MumbleSocket;
   session: number;
   user: User;
