@@ -278,7 +278,15 @@ export class Connection {
         clearTimeout(timer);
       };
       const onPacket = (packet: PacketType) => {
-        const result = match(packet);
+        let result: ReturnType<typeof match>;
+        try {
+          result = match(packet);
+        } catch (error) {
+          done();
+          reject(error);
+          return;
+        }
+
         if (result === undefined) {
           return;
         }

@@ -269,6 +269,21 @@ describe(Connection.name, () => {
       expect(socket.send).toHaveBeenCalledWith(UserList, { users: [] });
     });
 
+    it('should reject when the response predicate throws', async () => {
+      const error = new Error('predicate failed');
+      const response = connection.command('fetchRegisteredUsers', {
+        sendPacket: [UserList, UserList.create()],
+        expectPacket: [
+          UserList,
+          () => {
+            throw error;
+          },
+        ],
+      });
+      expect(() => socket.receive(UserList, UserList.create())).not.toThrow();
+      await expect(response).rejects.toBe(error);
+    });
+
     it('should reject commands after teardown', async () => {
       connection.teardown();
       await expect(

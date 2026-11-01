@@ -199,25 +199,28 @@ export class MumbleSocket extends TypedEventEmitter<
 
   private readPacket(type: number, length: number) {
     this.read(length, data => {
-      const message = packetForType(type);
-      if (message) {
-        switch (message.typeName) {
-          case UDPTunnel.typeName:
-            this.decodeAudio(data);
-            break;
+      // a throwing listener must not stop the socket from reading
+      try {
+        const message = packetForType(type);
+        if (message) {
+          switch (message.typeName) {
+            case UDPTunnel.typeName:
+              this.decodeAudio(data);
+              break;
 
-          default:
-            this.emit('packet', {
-              type,
-              typeName: message.typeName,
-              payload: message.fromBinary(data),
-            });
+            default:
+              this.emit('packet', {
+                type,
+                typeName: message.typeName,
+                payload: message.fromBinary(data),
+              });
+          }
+        } else {
+          console.error(`Unrecognized packet type (${type})`);
         }
-      } else {
-        console.error(`Unrecognized packet type (${type})`);
+      } finally {
+        this.readPrefix();
       }
-
-      this.readPrefix();
     });
   }
 
