@@ -1,5 +1,15 @@
 # Changelog
 
+# [0.15.0](https://github.com/tf2pickup-org/mumble-client/compare/0.14.0...0.15.0) (2026-11-01)
+
+### Bug Fixes
+
+* **deps:** update dependency @tf2pickup-org/mumble-protocol to v1.0.13 ([7f67061](https://github.com/tf2pickup-org/mumble-client/commit/7f67061439ab8c9b9d7913f769cf95dc32408cd6))
+
+### Features
+
+* text messages, certificate hashes, client addresses and move permissions ([#1110](https://github.com/tf2pickup-org/mumble-client/issues/1110)) ([3e6706d](https://github.com/tf2pickup-org/mumble-client/commit/3e6706db6eae87b962545b3586909a87e37e4f2a))
+
 # [0.14.0](https://github.com/tf2pickup-org/mumble-client/compare/0.13.1...0.14.0) (2026-10-30)
 
 ### Features
