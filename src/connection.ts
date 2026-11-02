@@ -13,7 +13,7 @@ import {
   UserState,
   Version,
 } from '@tf2pickup-org/mumble-protocol';
-import { MessageType } from '@protobuf-ts/runtime';
+import type { MessageType } from '@tf2pickup-org/mumble-protocol';
 import { platform, release } from 'node:os';
 import { Client } from './client';
 import { FullAudioPacket, MumbleSocket } from './mumble-socket';

@@ -1,4 +1,4 @@
-import { MessageType } from '@protobuf-ts/runtime';
+import type { MessageType } from '@tf2pickup-org/mumble-protocol';
 
 export interface PacketType {
   /**
