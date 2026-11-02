@@ -205,6 +205,15 @@ describe('User', () => {
         await expect(user.moveToChannel(7)).resolves.toBe(user);
       });
 
+      it('should accept a channel instead of its ID', async () => {
+        vi.spyOn(client, 'session', 'get').mockReturnValue(42);
+        vi.mocked(client.channels).byId.mockReturnValue(withPermissions(enter));
+        await expect(user.moveToChannel({ id: 7 } as Channel)).resolves.toBe(
+          user,
+        );
+        expect(client.channels.byId).toHaveBeenCalledWith(7);
+      });
+
       it('should reject moving itself without Enter or Move', async () => {
         vi.spyOn(client, 'session', 'get').mockReturnValue(42);
         vi.mocked(client.channels).byId.mockReturnValue(withPermissions(0));
