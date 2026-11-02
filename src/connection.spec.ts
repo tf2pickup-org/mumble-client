@@ -269,6 +269,21 @@ describe(Connection.name, () => {
       expect(socket.send).toHaveBeenCalledWith(UserList, { users: [] });
     });
 
+    it('should reject when the response predicate throws', async () => {
+      const error = new Error('predicate failed');
+      const response = connection.command('fetchRegisteredUsers', {
+        sendPacket: [UserList, UserList.create()],
+        expectPacket: [
+          UserList,
+          () => {
+            throw error;
+          },
+        ],
+      });
+      expect(() => socket.receive(UserList, UserList.create())).not.toThrow();
+      await expect(response).rejects.toBe(error);
+    });
+
     it('should reject commands after teardown', async () => {
       connection.teardown();
       await expect(
@@ -277,6 +292,46 @@ describe(Connection.name, () => {
           expectPacket: [UserList, () => true],
         }),
       ).rejects.toThrow(ClientDisconnectedError);
+    });
+  });
+
+  describe('speaking state', () => {
+    const speakingEmits = () =>
+      host.emit.mock.calls.filter(([event]) => event === 'speakingStateChange');
+
+    beforeEach(async () => {
+      vi.useFakeTimers();
+      await connection.handshake();
+      socket.receive(UserState, UserState.create({ session: 3, name: 'bob' }));
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should emit once when the user starts and stops speaking', () => {
+      const bob = host.users.bySession(3);
+      socket.emit('audioPacket', { source: 3 });
+      vi.advanceTimersByTime(30);
+      socket.emit('audioPacket', { source: 3 });
+      vi.advanceTimersByTime(30);
+      expect(speakingEmits()).toEqual([
+        ['speakingStateChange', { user: bob, speaking: true }],
+      ]);
+      vi.advanceTimersByTime(10);
+      expect(speakingEmits()).toEqual([
+        ['speakingStateChange', { user: bob, speaking: true }],
+        ['speakingStateChange', { user: bob, speaking: false }],
+      ]);
+    });
+
+    it('should stop speaking on teardown', () => {
+      socket.emit('audioPacket', { source: 3 });
+      connection.teardown();
+      expect(speakingEmits().at(-1)).toEqual([
+        'speakingStateChange',
+        { user: host.users.bySession(3), speaking: false },
+      ]);
     });
   });
 
