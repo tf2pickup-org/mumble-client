@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@protobuf-ts/runtime':
-        specifier: 2.11.1
-        version: 2.11.1
       '@tf2pickup-org/mumble-protocol':
         specifier: 1.0.13
         version: 1.0.13

@@ -34,7 +34,6 @@
     "bot"
   ],
   "dependencies": {
-    "@protobuf-ts/runtime": "2.11.1",
     "@tf2pickup-org/mumble-protocol": "1.0.13"
   },
   "pnpm": {

@@ -26,7 +26,7 @@ import {
   Version,
   VoiceTarget,
 } from '@tf2pickup-org/mumble-protocol';
-import { MessageType } from '@protobuf-ts/runtime';
+import type { MessageType } from '@tf2pickup-org/mumble-protocol';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyMessage = MessageType<any>;
