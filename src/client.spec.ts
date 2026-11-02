@@ -142,7 +142,9 @@ describe(Client.name, () => {
     });
 
     const first = client.connect();
-    await vi.waitFor(() => expect(sockets).toHaveLength(1));
+    await vi.waitFor(() => {
+      expect(sockets).toHaveLength(1);
+    });
     await client.connect();
 
     await expect(first).rejects.toThrow(ClientDisconnectedError);

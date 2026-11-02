@@ -243,7 +243,7 @@ export class Connection {
   }
 
   private async ping() {
-    return await this.socket.send(Ping, Ping.create());
+    await this.socket.send(Ping, Ping.create());
   }
 
   private startPinger() {
@@ -256,7 +256,7 @@ export class Connection {
 
       pinging = true;
       this.ping()
-        .catch(error => {
+        .catch((error: unknown) => {
           this.host.emit('error', error);
         })
         .finally(() => {
@@ -285,7 +285,7 @@ export class Connection {
           result = match(packet);
         } catch (error) {
           done();
-          reject(error);
+          reject(error instanceof Error ? error : new Error(String(error)));
           return;
         }
 
@@ -390,7 +390,9 @@ export class Connection {
 
     this.host.emit('speakingStateChange', { user, speaking: true });
     // if no packet comes for 40 milliseconds, the user stopped talking
-    const timer = setTimeout(() => this.stopSpeaking(source), 40);
+    const timer = setTimeout(() => {
+      this.stopSpeaking(source);
+    }, 40);
     this.speaking.set(source, { user, timer });
   };
 
@@ -411,5 +413,7 @@ export class Connection {
     });
   }
 
-  private readonly onClose = () => this.teardown('connection closed');
+  private readonly onClose = () => {
+    this.teardown('connection closed');
+  };
 }

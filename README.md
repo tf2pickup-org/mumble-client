@@ -18,7 +18,7 @@
 
 - Connect to any Mumble server over TLS
 - Manage channels: create, remove, link/unlink, fetch ACLs
-- Manage users: move, mute/deafen, register/deregister, rename
+- Manage users: move, register/deregister, rename; self-mute/self-deafen the client
 - Send and receive private text messages; read certificate hashes and client IP addresses
 - Query channel permissions
 - Event-driven architecture with full TypeScript support
@@ -383,6 +383,7 @@ The main entry point. Connects to the server and provides access to channels, us
 | `userUpdate` | `User, UserChanges` | A user's state changed |
 | `userRemove` | `User` | A user disconnected |
 | `speakingStateChange` | `{ user: User, speaking: boolean }` | A user started/stopped speaking |
+| `textMessage` | `{ sender: User \| undefined, message: string, isPrivate: boolean }` | A text message to the client or a channel it can hear; `isPrivate` when sent directly to the client |
 | `audio` | `FullAudioPacket` | One audio frame from another user; see [audio](AUDIO_EXAMPLE.md) |
 
 ### `ClientOptions`
