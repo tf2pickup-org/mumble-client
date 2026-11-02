@@ -23,7 +23,7 @@ describe('Joins a channel (e2e)', () => {
   it('should join a channel', async () => {
     const one = client.channels.byName('one')!;
     expect(one).toBeTruthy();
-    await client.user?.moveToChannel(one.id);
-    expect(client.user?.channel.id).toEqual(one.id);
+    await client.self?.moveToChannel(one.id);
+    expect(client.self?.channel.id).toEqual(one.id);
   });
 });

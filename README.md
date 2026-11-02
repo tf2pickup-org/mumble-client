@@ -30,6 +30,8 @@
 npm i @tf2pickup-org/mumble-client
 ```
 
+Requires Node.js 22 or later. Browsers are not supported, because Mumble needs a raw TLS connection.
+
 ## Quick start
 
 ```typescript

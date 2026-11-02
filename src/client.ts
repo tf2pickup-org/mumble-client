@@ -27,7 +27,6 @@ const defaultOptions: Partial<ClientOptions> = {
 export interface ConnectedClient extends Client {
   socket: MumbleSocket;
   session: number;
-  user: User;
   self: User;
 }
 
@@ -62,14 +61,6 @@ export class Client extends TypedEventEmitter<Events, Events> {
 
   get welcomeText(): string | undefined {
     return this.connection?.welcomeText;
-  }
-
-  /**
-   * The currently logged-in user.
-   * @deprecated Use Client.self
-   */
-  get user() {
-    return this.self;
   }
 
   /**
@@ -135,6 +126,7 @@ export class Client extends TypedEventEmitter<Events, Events> {
   /**
    * Wraps sending and receiving a packet in a convenient method.
    * Handles denied permissions response as well as command timeout.
+   * @internal
    */
   async command<
     Send extends object,

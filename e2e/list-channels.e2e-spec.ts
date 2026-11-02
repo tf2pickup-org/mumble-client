@@ -28,7 +28,7 @@ describe('List channels (e2e)', () => {
   });
 
   it('should list subchannels', () => {
-    const subChannels = client.user?.channel.subChannels.map(
+    const subChannels = client.self?.channel.subChannels.map(
       channel => channel.name,
     );
     expect(subChannels?.includes('one')).toBe(true);
