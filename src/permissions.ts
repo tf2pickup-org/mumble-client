@@ -86,6 +86,14 @@ export class Permissions {
     return !!(this.permissions & (move | write));
   }
 
+  get canMuteDeafen(): boolean {
+    return !!(this.permissions & (muteDeafen | write));
+  }
+
+  get canKick(): boolean {
+    return !!(this.permissions & (kick | write));
+  }
+
   get canBan(): boolean {
     return !!(this.permissions & (ban | write));
   }

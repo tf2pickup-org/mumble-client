@@ -1,4 +1,8 @@
-import { UserState, UserStats } from '@tf2pickup-org/mumble-protocol';
+import {
+  UserRemove,
+  UserState,
+  UserStats,
+} from '@tf2pickup-org/mumble-protocol';
 import { Client } from './client';
 import { Channel } from './channel';
 import {
@@ -181,6 +185,48 @@ export class User {
   }
 
   /**
+   * Server-mute or unmute the user. Unmuting also undeafens them.
+   * Requires the MuteDeafen permission on the user's channel.
+   * @returns This user.
+   */
+  async setMute(mute: boolean): Promise<this> {
+    return await this.setState(
+      'setMute',
+      { mute },
+      state => state.mute === mute,
+    );
+  }
+
+  /**
+   * Server-deafen or undeafen the user. Deafening also mutes them.
+   * Requires the MuteDeafen permission on the user's channel.
+   * @returns This user.
+   */
+  async setDeaf(deaf: boolean): Promise<this> {
+    return await this.setState(
+      'setDeaf',
+      { deaf },
+      state => state.deaf === deaf,
+    );
+  }
+
+  /**
+   * Kick the user from the server.
+   * Requires the Kick permission on the root channel.
+   */
+  async kick(reason?: string): Promise<void> {
+    await this.remove('kickUser', reason, false);
+  }
+
+  /**
+   * Ban the user's IP address and certificate, and kick them.
+   * Requires the Ban permission on the root channel.
+   */
+  async ban(reason?: string): Promise<void> {
+    await this.remove('banUser', reason, true);
+  }
+
+  /**
    * Registers the user.
    * @returns This user.
    */
@@ -243,6 +289,42 @@ export class User {
   async sendMessage(message: string): Promise<this> {
     await this.client.sendTextMessage({ session: [this.session] }, message);
     return this;
+  }
+
+  private async setState(
+    name: string,
+    state: Pick<UserState, 'mute' | 'deaf'>,
+    isApplied: (userState: UserState) => boolean,
+  ): Promise<this> {
+    await this.client.command(name, {
+      sendPacket: [
+        UserState,
+        UserState.create({ session: this.session, ...state }),
+      ],
+      expectPacket: [
+        UserState,
+        userState => userState.session === this.session && isApplied(userState),
+      ],
+    });
+    return this;
+  }
+
+  private async remove(
+    name: string,
+    reason: string | undefined,
+    ban: boolean,
+  ): Promise<void> {
+    await this.client.command(name, {
+      sendPacket: [
+        UserRemove,
+        UserRemove.create({
+          session: this.session,
+          ban,
+          ...(reason === undefined ? {} : { reason }),
+        }),
+      ],
+      expectPacket: [UserRemove, ({ session }) => session === this.session],
+    });
   }
 }
 
