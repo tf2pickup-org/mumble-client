@@ -15,30 +15,18 @@ const client = new Client({
 
 await client.connect();
 
-if (client.isConnected()) {
-  const socket = client.socket;
+client.on('audio', (packet: FullAudioPacket) => {
+  console.log(`Audio from user ${packet.source}`);
+  console.log(`Codec: ${AudioCodec[packet.codec]}`);
+  console.log(`Sequence: ${packet.sequence}`);
+  console.log(`Audio data length: ${packet.audioData.length} bytes`);
+  console.log(`Is final packet: ${packet.hasTerminator}`);
 
-  socket.fullAudioPacket.subscribe((packet: FullAudioPacket) => {
-    console.log(`Audio from user ${packet.source}`);
-    console.log(`Codec: ${AudioCodec[packet.codec]}`);
-    console.log(`Sequence: ${packet.sequence}`);
-    console.log(`Audio data length: ${packet.audioData.length} bytes`);
-    console.log(`Is final packet: ${packet.hasTerminator}`);
-
-    processAudio(packet.audioData, packet.codec);
-  });
-}
-```
-
-Each `connect()` opens a new socket, so subscribe again after reconnecting:
-
-```typescript
-client.on('connect', () => {
-  client.socket?.fullAudioPacket.subscribe(packet => {
-    processAudio(packet);
-  });
+  processAudio(packet);
 });
 ```
+
+The listener stays attached across reconnects.
 
 Each packet carries a single frame, usually 20ms of audio, not a whole utterance. To process what a user said, collect their frames until the packet with `hasTerminator`:
 
@@ -72,7 +60,7 @@ import { AudioCodec } from '@tf2pickup-org/mumble-client';
 const opusFrames: Buffer[] = await generateOpusAudio();
 
 for (let i = 0; i < opusFrames.length; i++) {
-  await socket.sendAudio({
+  await client.sendAudio({
     data: opusFrames[i],
     codec: AudioCodec.Opus,
     target: 0,
@@ -100,17 +88,9 @@ async function createVoiceChatBot() {
     username: 'voice-assistant',
   });
 
-  await client.connect();
-
-  if (!client.isConnected()) {
-    throw new Error('Failed to connect');
-  }
-
-  const socket = client.socket;
-
   const utterances = new Map<number, Buffer[]>(); // session -> Opus frames
 
-  socket.fullAudioPacket.subscribe(async (packet: FullAudioPacket) => {
+  client.on('audio', async (packet: FullAudioPacket) => {
     if (packet.codec !== AudioCodec.Opus) {
       console.warn('Only Opus codec supported');
       return;
@@ -131,7 +111,7 @@ async function createVoiceChatBot() {
       const audioFrames = await textToSpeech(responseText);
 
       for (let i = 0; i < audioFrames.length; i++) {
-        await socket.sendAudio({
+        await client.sendAudio({
           data: audioFrames[i],
           codec: AudioCodec.Opus,
           target: 0,
@@ -142,6 +122,7 @@ async function createVoiceChatBot() {
     }
   });
 
+  await client.connect();
   console.log('Voice chat bot ready!');
 }
 

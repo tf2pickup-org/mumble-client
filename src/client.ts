@@ -1,5 +1,5 @@
 import { tlsConnect } from './tls-connect';
-import { MumbleSocket } from './mumble-socket';
+import { MumbleSocket, SendAudioOptions } from './mumble-socket';
 import {
   Ping,
   ServerConfig,
@@ -143,6 +143,15 @@ export class Client extends TypedEventEmitter<Events, Events> {
   >(name: string, props: CommandProps<Send, Return, SendMore>) {
     this.assertConnected();
     return await this.connection!.command(name, props);
+  }
+
+  /**
+   * Send one audio frame; pace frames at their duration, usually 20ms.
+   * @throws ClientDisconnectedError if the client is not connected.
+   */
+  async sendAudio(options: SendAudioOptions): Promise<void> {
+    this.assertConnected();
+    await this.socket.sendAudio(options);
   }
 
   /**

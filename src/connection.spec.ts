@@ -123,6 +123,16 @@ describe(Connection.name, () => {
       expect(disconnectEmits()).toEqual([['disconnect', { reason: 'kicked' }]]);
     });
 
+    it('should forward audio until torn down', () => {
+      const packet = { source: 3, target: 0, sequence: 1 };
+      socket.emit('fullAudioPacket', packet);
+      connection.teardown();
+      socket.emit('fullAudioPacket', packet);
+      expect(
+        host.emit.mock.calls.filter(([event]) => event === 'audio'),
+      ).toEqual([['audio', packet]]);
+    });
+
     it('should not tear down when another user is removed', () => {
       socket.receive(UserRemove, UserRemove.create({ session: 3 }));
       expect(connection.isOpen).toBe(true);
