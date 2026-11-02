@@ -61,6 +61,22 @@ describe('registers a user', () => {
     }
   });
 
+  // registers client2 and takes it offline; returns its registration as client1 sees it
+  async function registerAndDisconnectClient2() {
+    client2.assertConnected();
+    expect(client2.self.userId).toBeUndefined();
+    expect(client2.self.isRegistered).toBe(false);
+    await client2.self.register();
+    client2.disconnect();
+    await waitABit(100);
+
+    client1.assertConnected();
+    const registeredUsers = await client1.fetchRegisteredUsers();
+    const user = registeredUsers.find(user => user.name === 'client2');
+    expect(user).toBeTruthy();
+    return user!;
+  }
+
   it('should register self and deregister', async () => {
     client2.assertConnected();
     expect(client2.self.userId).toBeUndefined();
@@ -88,19 +104,8 @@ describe('registers a user', () => {
   });
 
   it('should rename an offline user', async () => {
-    client2.assertConnected();
-    expect(client2.self.userId).toBeUndefined();
-    expect(client2.self.isRegistered).toBe(false);
-    await client2.self.register();
-    client2.disconnect();
-    await waitABit(100);
-
-    // rename client2 while they are offline
-    client1.assertConnected();
-    const registeredUsers = await client1.fetchRegisteredUsers();
-    const user = registeredUsers.find(user => user.name === 'client2');
-    expect(user).toBeTruthy();
-    await client1.renameRegisteredUser(user!.userId, 'client2_new_name');
+    const user = await registerAndDisconnectClient2();
+    await client1.renameRegisteredUser(user.userId, 'client2_new_name');
 
     await client2.connect();
     client2.assertConnected();
@@ -111,19 +116,8 @@ describe('registers a user', () => {
   });
 
   it('should unregister an offline user', async () => {
-    client2.assertConnected();
-    expect(client2.self.userId).toBeUndefined();
-    expect(client2.self.isRegistered).toBe(false);
-    await client2.self.register();
-    client2.disconnect();
-    await waitABit(100);
-
-    // deregister client2 while they are offline
-    client1.assertConnected();
-    const registeredUsers = await client1.fetchRegisteredUsers();
-    const user = registeredUsers.find(user => user.name === 'client2');
-    expect(user).toBeTruthy();
-    await client1.deregisterUser(user!.userId);
+    const user = await registerAndDisconnectClient2();
+    await client1.deregisterUser(user.userId);
 
     await client2.connect();
     client2.assertConnected();
