@@ -1,4 +1,3 @@
-import { ACL } from '@tf2pickup-org/mumble-protocol';
 import { Channel, Client } from '../src';
 import { createCertificate } from './utils/create-certificate';
 import { waitABit } from './utils/wait-a-bit';
@@ -47,39 +46,37 @@ describe('moves another user with Move but no Enter (e2e)', () => {
     locked = await parent.createSubChannel('locked');
 
     // the mover is not registered, so it is matched by its certificate hash
-    await parent.saveAcl(
-      ACL.create({
-        inheritAcls: true,
-        acls: [
-          {
-            applyHere: true,
-            applySubs: true,
-            inherited: false,
-            group: `$${mover.self.hash}`,
-            grant: move,
-            deny: 0,
-          },
-        ],
-      }),
-    );
+    await parent.saveAcl({
+      inheritAcls: true,
+      groups: [],
+      entries: [
+        {
+          applyHere: true,
+          applySubs: true,
+          inherited: false,
+          group: `$${mover.self.hash}`,
+          grant: move,
+          deny: 0,
+        },
+      ],
+    });
     // the server silently drops messages over its rate limit (a burst of 5,
     // then 1 per second by default)
     await waitABit(3000);
-    await locked.saveAcl(
-      ACL.create({
-        inheritAcls: true,
-        acls: [
-          {
-            applyHere: true,
-            applySubs: true,
-            inherited: false,
-            group: 'all',
-            grant: 0,
-            deny: enter,
-          },
-        ],
-      }),
-    );
+    await locked.saveAcl({
+      inheritAcls: true,
+      groups: [],
+      entries: [
+        {
+          applyHere: true,
+          applySubs: true,
+          inherited: false,
+          group: 'all',
+          grant: 0,
+          deny: enter,
+        },
+      ],
+    });
 
     await superuser.users.bySession(target.session)!.moveToChannel(parent.id);
     await waitABit(100);
