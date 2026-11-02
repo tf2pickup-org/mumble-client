@@ -1,5 +1,5 @@
 export { type ClientOptions } from './client-options';
-export { Client } from './client';
+export { Client, type ConnectedClient } from './client';
 export { ChannelManager } from './channel-manager';
 export { Channel } from './channel';
 export { type PacketType, payloadOf } from './packet-type';
@@ -8,3 +8,9 @@ export { UserManager } from './user-manager';
 export { User } from './user';
 export { AudioCodec, type FullAudioPacket, type SendAudioOptions } from './mumble-socket';
 export * from './errors';
+export { type MumbleSocket } from './mumble-socket';
+export { type Events } from './events';
+export { type ChannelChanges } from './channel';
+export { type UserChanges } from './user';
+export { type Change } from './change';
+export { type SpeakingStateChange } from './speaking-state-change';
