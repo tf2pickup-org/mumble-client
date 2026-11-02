@@ -53,9 +53,9 @@ export class MumbleSocket extends TypedEventEmitter<
   MumbleSocketEvents,
   MumbleSocketEvents
 > {
-  private buffers: Buffer[] = [];
+  private readonly buffers: Buffer[] = [];
   private length = 0;
-  private readers: MumbleSocketReader[] = [];
+  private readonly readers: MumbleSocketReader[] = [];
   private audioSequence = 0;
 
   constructor(private readonly socket: TLSSocket) {
