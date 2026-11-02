@@ -23,7 +23,7 @@ describe('Sends and receives audio (e2e)', () => {
     await waitABit(100);
   });
 
-  afterAll(async () => {
+  afterAll(() => {
     speaker.disconnect();
     listener.disconnect();
   });
