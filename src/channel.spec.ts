@@ -14,12 +14,14 @@ describe('Channel', () => {
       port: 64738,
       username: 'FAKE_USERNAME',
     });
-    client.channels = {
-      byId: vi.fn().mockResolvedValue({}),
-      byName: vi.fn().mockResolvedValue({}),
-      byPath: vi.fn().mockResolvedValue({}),
-      findAll: vi.fn().mockReturnValue([]),
-    } as unknown as ChannelManager;
+    Object.assign(client, {
+      channels: {
+        byId: vi.fn().mockResolvedValue({}),
+        byName: vi.fn().mockResolvedValue({}),
+        byPath: vi.fn().mockResolvedValue({}),
+        findAll: vi.fn().mockReturnValue([]),
+      } as unknown as ChannelManager,
+    });
   });
 
   it('should assign properties', () => {

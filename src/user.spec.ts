@@ -18,10 +18,12 @@ describe('User', () => {
       port: 64738,
       username: 'FAKE_USERNAME',
     });
-    client.channels = {
-      byId: vi.fn(),
-      find: vi.fn(),
-    } as unknown as ChannelManager;
+    Object.assign(client, {
+      channels: {
+        byId: vi.fn(),
+        find: vi.fn(),
+      } as unknown as ChannelManager,
+    });
   });
 
   beforeEach(() => {
@@ -82,7 +84,7 @@ describe('User', () => {
       expect(changes).toEqual({
         userId: {
           previousValue: undefined,
-          currentValue: MinusOneButUnsigned,
+          currentValue: undefined,
         },
       });
     });

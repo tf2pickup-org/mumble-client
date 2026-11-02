@@ -30,8 +30,10 @@ function makeHost() {
       pingInterval: 10000,
     },
   } as unknown as ConnectionHost & { emit: ReturnType<typeof vi.fn> };
-  host.channels = new ChannelManager(host as unknown as Client);
-  host.users = new UserManager(host as unknown as Client);
+  Object.assign(host, {
+    channels: new ChannelManager(host as unknown as Client),
+    users: new UserManager(host as unknown as Client),
+  });
   return host;
 }
 

@@ -32,8 +32,8 @@ export interface ConnectedClient extends Client {
 }
 
 export class Client extends TypedEventEmitter<Events, Events> {
-  channels: ChannelManager = new ChannelManager(this);
-  users: UserManager = new UserManager(this);
+  readonly channels: ChannelManager = new ChannelManager(this);
+  readonly users: UserManager = new UserManager(this);
   readonly options: ClientOptions;
 
   private connection?: Connection;
