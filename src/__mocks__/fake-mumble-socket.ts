@@ -5,7 +5,7 @@ import {
   ServerSync,
   Version,
 } from '@tf2pickup-org/mumble-protocol';
-import { MessageType } from '@protobuf-ts/runtime';
+import type { MessageType } from '@tf2pickup-org/mumble-protocol';
 import { EventEmitter } from 'node:events';
 import { MumbleSocket } from '../mumble-socket';
 import { PacketType } from '../packet-type';

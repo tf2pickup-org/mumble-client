@@ -1,6 +1,6 @@
 import { TLSSocket } from 'tls';
 import { packetForType, packetType } from './packet-type-registry';
-import { MessageType } from '@protobuf-ts/runtime';
+import type { MessageType } from '@tf2pickup-org/mumble-protocol';
 import { UDPTunnel } from '@tf2pickup-org/mumble-protocol';
 import { PacketType } from './packet-type';
 import { readVarint } from './read-varint';
