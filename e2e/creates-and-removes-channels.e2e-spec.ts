@@ -16,7 +16,7 @@ describe('Creates and removes channels (e2e)', () => {
     await client.connect();
     await waitABit(100);
 
-    await client.user?.moveToChannel(client.channels.byName('one')!.id);
+    await client.self?.moveToChannel(client.channels.byName('one')!.id);
   });
 
   afterAll(async () => {
@@ -32,8 +32,8 @@ describe('Creates and removes channels (e2e)', () => {
     });
 
     client.assertConnected();
-    expect(client.user.channel).toBeTruthy();
-    const channel = client.user.channel;
+    expect(client.self.channel).toBeTruthy();
+    const channel = client.self.channel;
     expect(channel).toBeTruthy();
     const sub1 = await channel.createSubChannel('sub1');
     expect(sub1.parent).toEqual(channel.id);

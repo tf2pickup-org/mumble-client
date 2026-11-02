@@ -29,8 +29,8 @@ describe('Manages server as the super-user (e2e)', () => {
     });
 
     client.assertConnected();
-    expect(client.user.channel).toBeTruthy();
-    const channel = client.user.channel;
+    expect(client.self.channel).toBeTruthy();
+    const channel = client.self.channel;
     expect(channel).toBeTruthy();
     const sub1 = await channel.createSubChannel('sub10');
     expect(sub1.parent).toEqual(channel.id);

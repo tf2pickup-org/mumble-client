@@ -25,3 +25,4 @@ e2e
 src
 eslint.config.js
 renovate.json
+*.tsbuildinfo

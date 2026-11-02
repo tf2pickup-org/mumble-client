@@ -23,7 +23,7 @@ describe('Edits ACL (e2e)', () => {
 
   it('should edit', async () => {
     client.assertConnected();
-    const channel = await client.user.channel.createSubChannel('test');
+    const channel = await client.self.channel.createSubChannel('test');
     const acl = await channel.fetchAcl();
     acl.inheritAcls = false;
     acl.entries = [

@@ -23,7 +23,7 @@ describe('Sets self-deaf (e2e)', () => {
 
   it('should set self deaf', async () => {
     client.assertConnected();
-    await client.user.setSelfDeaf(true);
-    expect(client.user.selfDeaf).toBe(true);
+    await client.self.setSelfDeaf(true);
+    expect(client.self.selfDeaf).toBe(true);
   });
 });

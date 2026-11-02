@@ -22,12 +22,12 @@ describe('Rejects creating channel when there are insufficient permissions (e2e)
 
   it('should throw an error when attempting to create a new channel', async () => {
     client.assertConnected();
-    const channel = client.user.channel;
+    const channel = client.self.channel;
     await expect(channel?.createSubChannel('test')).rejects.toThrow();
 
     const one = client.channels.byName('one');
     expect(one).toBeTruthy();
-    await client.user.moveToChannel(one!.id);
+    await client.self.moveToChannel(one!.id);
     await expect(channel?.createSubChannel('test')).rejects.toThrow();
   });
 });
