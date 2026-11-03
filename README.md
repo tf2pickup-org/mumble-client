@@ -26,6 +26,8 @@
 
 ## Installation
 
+Upgrading from 0.x? See [MIGRATING.md](MIGRATING.md).
+
 ```bash
 npm i @tf2pickup-org/mumble-client
 ```
@@ -301,130 +303,130 @@ try {
 
 The main entry point. Connects to the server and provides access to channels, users, and events.
 
-| Property / Method | Description |
-|---|---|
-| `channels` | `ChannelManager` instance for finding channels |
-| `users` | `UserManager` instance for finding users |
-| `self` | The currently logged-in `User` |
-| `session` | Session ID of the currently logged-in user |
-| `welcomeText` | Server welcome message |
-| `serverVersion` | Server version info |
-| `serverConfig` | Server configuration (max users, message length, …) |
-| `socket` | The underlying socket; `undefined` when disconnected |
-| `sendAudio(options)` | Send one audio frame; see [audio](AUDIO_EXAMPLE.md) |
-| `connect()` | Connect to the Mumble server; if already connected, disconnects first |
-| `disconnect()` | Disconnect from the server; does nothing when not connected |
-| `isConnected()` | Returns `true` if connected |
-| `fetchRegisteredUsers()` | Fetch all registered users |
-| `deregisterUser(userId)` | Deregister a user by ID |
-| `renameRegisteredUser(userId, name)` | Rename a registered user |
+| Property / Method                    | Description                                                           |
+| ------------------------------------ | --------------------------------------------------------------------- |
+| `channels`                           | `ChannelManager` instance for finding channels                        |
+| `users`                              | `UserManager` instance for finding users                              |
+| `self`                               | The currently logged-in `User`                                        |
+| `session`                            | Session ID of the currently logged-in user                            |
+| `welcomeText`                        | Server welcome message                                                |
+| `serverVersion`                      | Server version info                                                   |
+| `serverConfig`                       | Server configuration (max users, message length, …)                   |
+| `socket`                             | The underlying socket; `undefined` when disconnected                  |
+| `sendAudio(options)`                 | Send one audio frame; see [audio](AUDIO_EXAMPLE.md)                   |
+| `connect()`                          | Connect to the Mumble server; if already connected, disconnects first |
+| `disconnect()`                       | Disconnect from the server; does nothing when not connected           |
+| `isConnected()`                      | Returns `true` if connected                                           |
+| `fetchRegisteredUsers()`             | Fetch all registered users                                            |
+| `deregisterUser(userId)`             | Deregister a user by ID                                               |
+| `renameRegisteredUser(userId, name)` | Rename a registered user                                              |
 
 ### `ChannelManager`
 
-| Method | Description |
-|---|---|
-| `root` | The root channel |
-| `byId(channelId)` | Find channel by ID |
-| `byName(name)` | Find channel by name |
-| `byPath(...path)` | Find channel by path segments |
-| `find(predicate)` | Find first matching channel |
-| `findAll(predicate)` | Find all matching channels |
+| Method               | Description                   |
+| -------------------- | ----------------------------- |
+| `root`               | The root channel              |
+| `byId(channelId)`    | Find channel by ID            |
+| `byName(name)`       | Find channel by name          |
+| `byPath(...path)`    | Find channel by path segments |
+| `find(predicate)`    | Find first matching channel   |
+| `findAll(predicate)` | Find all matching channels    |
 
 ### `Channel`
 
-| Property / Method | Description |
-|---|---|
-| `id` | Channel ID |
-| `name` | Channel name |
-| `temporary` | Whether the channel is temporary |
-| `users` | Users currently in this channel |
-| `subChannels` | Direct sub-channels |
-| `linkedChannels` | Linked channels |
-| `createSubChannel(name)` | Create a sub-channel |
-| `remove()` | Remove this channel |
-| `link(channel)` | Link with another channel |
-| `unlink(channel)` | Unlink from another channel |
-| `getPermissions()` | Fetch permissions for this channel |
-| `fetchAcl()` | Fetch the channel ACL |
-| `saveAcl(acl)` | Save the channel ACL |
+| Property / Method        | Description                        |
+| ------------------------ | ---------------------------------- |
+| `id`                     | Channel ID                         |
+| `name`                   | Channel name                       |
+| `temporary`              | Whether the channel is temporary   |
+| `users`                  | Users currently in this channel    |
+| `subChannels`            | Direct sub-channels                |
+| `linkedChannels`         | Linked channels                    |
+| `createSubChannel(name)` | Create a sub-channel               |
+| `remove()`               | Remove this channel                |
+| `link(channel)`          | Link with another channel          |
+| `unlink(channel)`        | Unlink from another channel        |
+| `getPermissions()`       | Fetch permissions for this channel |
+| `fetchAcl()`             | Fetch the channel ACL              |
+| `saveAcl(acl)`           | Save the channel ACL               |
 
 ### `UserManager`
 
-| Method | Description |
-|---|---|
+| Method               | Description             |
+| -------------------- | ----------------------- |
 | `bySession(session)` | Find user by session ID |
-| `byName(name)` | Find user by name |
+| `byName(name)`       | Find user by name       |
 | `findAll(predicate)` | Find all matching users |
 
 ### `User`
 
-| Property / Method | Description |
-|---|---|
-| `session` | Session ID |
-| `name` | Username |
-| `channel` | Current channel |
-| `channelId` | Current channel ID |
-| `isRegistered` | Whether the user is registered |
-| `mute` / `deaf` / `suppress` | Server mute/deaf/suppress state |
-| `selfMute` / `selfDeaf` | Self-mute/deaf state |
-| `moveToChannel(channel)` | Move user to a channel (a `Channel` or its ID) |
-| `setSelfMute(mute)` | Set self-mute state |
-| `setSelfDeaf(deaf)` | Set self-deaf state |
-| `setMute(mute)` | Server-mute or unmute the user; unmuting also undeafens |
-| `setDeaf(deaf)` | Server-deafen or undeafen the user; deafening also mutes |
-| `kick(reason?)` | Kick the user from the server |
-| `ban(reason?)` | Ban the user's IP address and certificate, and kick them |
-| `register()` | Register the user |
-| `deregister()` | Deregister the user |
-| `rename(name)` | Rename a registered user |
+| Property / Method            | Description                                              |
+| ---------------------------- | -------------------------------------------------------- |
+| `session`                    | Session ID                                               |
+| `name`                       | Username                                                 |
+| `channel`                    | Current channel                                          |
+| `channelId`                  | Current channel ID                                       |
+| `isRegistered`               | Whether the user is registered                           |
+| `mute` / `deaf` / `suppress` | Server mute/deaf/suppress state                          |
+| `selfMute` / `selfDeaf`      | Self-mute/deaf state                                     |
+| `moveToChannel(channel)`     | Move user to a channel (a `Channel` or its ID)           |
+| `setSelfMute(mute)`          | Set self-mute state                                      |
+| `setSelfDeaf(deaf)`          | Set self-deaf state                                      |
+| `setMute(mute)`              | Server-mute or unmute the user; unmuting also undeafens  |
+| `setDeaf(deaf)`              | Server-deafen or undeafen the user; deafening also mutes |
+| `kick(reason?)`              | Kick the user from the server                            |
+| `ban(reason?)`               | Ban the user's IP address and certificate, and kick them |
+| `register()`                 | Register the user                                        |
+| `deregister()`               | Deregister the user                                      |
+| `rename(name)`               | Rename a registered user                                 |
 
 ### `Permissions`
 
-| Property / Method | Description |
-|---|---|
-| `canJoinChannel` | Can join/enter the channel |
-| `canCreateChannel` | Can create sub-channels |
-| `canRemoveChannel` | Can remove channels |
-| `canLinkChannel` | Can link channels |
-| `canSelfRegister` | Can self-register |
-| `canRegister` | Can register other users |
-| `canWrite` | Has Write, which grants every permission but Speak and Whisper |
-| `canMove` | Can move users |
-| `canMuteDeafen` | Can mute and deafen users |
-| `canKick` | Can kick users |
-| `canBan` | Can ban users |
-| `canSendTextMessage` | Can send text messages |
+| Property / Method    | Description                                                    |
+| -------------------- | -------------------------------------------------------------- |
+| `canJoinChannel`     | Can join/enter the channel                                     |
+| `canCreateChannel`   | Can create sub-channels                                        |
+| `canRemoveChannel`   | Can remove channels                                            |
+| `canLinkChannel`     | Can link channels                                              |
+| `canSelfRegister`    | Can self-register                                              |
+| `canRegister`        | Can register other users                                       |
+| `canWrite`           | Has Write, which grants every permission but Speak and Whisper |
+| `canMove`            | Can move users                                                 |
+| `canMuteDeafen`      | Can mute and deafen users                                      |
+| `canKick`            | Can kick users                                                 |
+| `canBan`             | Can ban users                                                  |
+| `canSendTextMessage` | Can send text messages                                         |
 
 ### Events
 
-| Event | Payload | Description |
-|---|---|---|
-| `connect` | — | Client connected successfully |
-| `disconnect` | `{ reason: string }?` | Client disconnected; emitted once per connection. `reason` is the server's (e.g. when kicked) or `'connection closed'` when the server dropped the connection; no payload after `disconnect()` or a reconnect |
-| `error` | `unknown` | A background error, e.g. a failed keep-alive ping |
-| `channelCreate` | `Channel` | A channel was created |
-| `channelUpdate` | `Channel, ChannelChanges` | A channel was updated |
-| `channelRemove` | `Channel` | A channel was removed |
-| `userCreate` | `User` | A user connected |
-| `userUpdate` | `User, UserChanges` | A user's state changed |
-| `userRemove` | `User` | A user disconnected |
-| `speakingStateChange` | `{ user: User, speaking: boolean }` | A user started/stopped speaking |
-| `textMessage` | `{ sender: User \| undefined, message: string, isPrivate: boolean }` | A text message to the client or a channel it can hear; `isPrivate` when sent directly to the client |
-| `audio` | `FullAudioPacket` | One audio frame from another user; see [audio](AUDIO_EXAMPLE.md) |
+| Event                 | Payload                                                              | Description                                                                                                                                                                                                   |
+| --------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `connect`             | —                                                                    | Client connected successfully                                                                                                                                                                                 |
+| `disconnect`          | `{ reason: string }?`                                                | Client disconnected; emitted once per connection. `reason` is the server's (e.g. when kicked) or `'connection closed'` when the server dropped the connection; no payload after `disconnect()` or a reconnect |
+| `error`               | `unknown`                                                            | A background error, e.g. a failed keep-alive ping                                                                                                                                                             |
+| `channelCreate`       | `Channel`                                                            | A channel was created                                                                                                                                                                                         |
+| `channelUpdate`       | `Channel, ChannelChanges`                                            | A channel was updated                                                                                                                                                                                         |
+| `channelRemove`       | `Channel`                                                            | A channel was removed                                                                                                                                                                                         |
+| `userCreate`          | `User`                                                               | A user connected                                                                                                                                                                                              |
+| `userUpdate`          | `User, UserChanges`                                                  | A user's state changed                                                                                                                                                                                        |
+| `userRemove`          | `User`                                                               | A user disconnected                                                                                                                                                                                           |
+| `speakingStateChange` | `{ user: User, speaking: boolean }`                                  | A user started/stopped speaking                                                                                                                                                                               |
+| `textMessage`         | `{ sender: User \| undefined, message: string, isPrivate: boolean }` | A text message to the client or a channel it can hear; `isPrivate` when sent directly to the client                                                                                                           |
+| `audio`               | `FullAudioPacket`                                                    | One audio frame from another user; see [audio](AUDIO_EXAMPLE.md)                                                                                                                                              |
 
 ### `ClientOptions`
 
 Extends Node.js `tls.ConnectionOptions`.
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `host` | `string` | — | Server hostname |
-| `port` | `number` | `64738` | Server port |
-| `username` | `string` | — | Username for authentication |
-| `password` | `string?` | — | Server or user password |
-| `tokens` | `string[]?` | `[]` | Access tokens for server ACL groups |
-| `clientName` | `string?` | `'simple mumble bot'` | Client name sent to the server |
-| `pingInterval` | `number?` | `10000` | Keep-alive ping interval in ms |
+| Option         | Type        | Default               | Description                         |
+| -------------- | ----------- | --------------------- | ----------------------------------- |
+| `host`         | `string`    | —                     | Server hostname                     |
+| `port`         | `number`    | `64738`               | Server port                         |
+| `username`     | `string`    | —                     | Username for authentication         |
+| `password`     | `string?`   | —                     | Server or user password             |
+| `tokens`       | `string[]?` | `[]`                  | Access tokens for server ACL groups |
+| `clientName`   | `string?`   | `'simple mumble bot'` | Client name sent to the server      |
+| `pingInterval` | `number?`   | `10000`               | Keep-alive ping interval in ms      |
 
 Since `ClientOptions` extends `tls.ConnectionOptions`, you can pass any TLS option such as `rejectUnauthorized`, `cert`, `key`, `ca`, etc.
 

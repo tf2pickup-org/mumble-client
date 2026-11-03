@@ -1,4 +1,5 @@
 allowBuilds:
   esbuild: true
+# our own package, no reason to wait for it
 minimumReleaseAgeExclude:
-  - '@tf2pickup-org/mumble-protocol@1.1.0'
+  - '@tf2pickup-org/mumble-protocol'
