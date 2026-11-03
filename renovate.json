@@ -13,6 +13,11 @@
       "description": "typescript-eslint does not support TypeScript 6.1+ yet",
       "matchPackageNames": ["typescript"],
       "allowedVersions": "<6.1"
+    },
+    {
+      "description": "our own package, no reason to wait for it",
+      "matchPackageNames": ["@tf2pickup-org/mumble-protocol"],
+      "minimumReleaseAge": null
     }
   ],
   "minimumReleaseAge": "1 day",
