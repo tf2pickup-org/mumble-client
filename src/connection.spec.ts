@@ -292,7 +292,9 @@ describe(Connection.name, () => {
           },
         ],
       });
-      expect(() => socket.receive(UserList, UserList.create())).not.toThrow();
+      expect(() => {
+        socket.receive(UserList, UserList.create());
+      }).not.toThrow();
       await expect(response).rejects.toBe(error);
     });
 

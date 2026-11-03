@@ -128,7 +128,8 @@ export class MumbleSocket extends TypedEventEmitter<
     if (codec === AudioCodec.Opus) {
       // https://github.com/mumble-voip/mumble/blob/master/docs/dev/network-protocol/voice_data.md#opus-audio-data
       // 13-bit length (0x1fff) with terminator flag at bit 13 (0x2000)
-      const frameHeaderValue = (data.length & 0x1fff) | (isTerminator ? 0x2000 : 0);
+      const frameHeaderValue =
+        (data.length & 0x1fff) | (isTerminator ? 0x2000 : 0);
       frameHeader = writeVarint(frameHeaderValue);
     } else {
       // https://github.com/mumble-voip/mumble/blob/master/docs/dev/network-protocol/voice_data.md#celt-and-speex-audio-data
@@ -231,7 +232,9 @@ export class MumbleSocket extends TypedEventEmitter<
 
     // https://github.com/mumble-voip/mumble/blob/master/docs/dev/network-protocol/voice_data.md#packet-format
     const header = packet[0]!;
-    const codec = (header >> 5) & 0b111; // top 3 bits
+    // the top 3 bits of the header are the codec, as numbered in AudioCodec
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
+    const codec: AudioCodec = (header >> 5) & 0b111;
     const target = header & 0b00011111; // bottom 5 bits
 
     if (codec === AudioCodec.Ping) {
@@ -301,6 +304,13 @@ export class MumbleSocket extends TypedEventEmitter<
       audioData = Buffer.concat(frames);
     }
 
-    this.emit('fullAudioPacket', { source, target, codec, sequence, audioData, hasTerminator });
+    this.emit('fullAudioPacket', {
+      source,
+      target,
+      codec,
+      sequence,
+      audioData,
+      hasTerminator,
+    });
   }
 }

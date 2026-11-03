@@ -8,6 +8,11 @@
     {
       "updateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "description": "typescript-eslint does not support TypeScript 6.1+ yet",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<6.1"
     }
   ],
   "minimumReleaseAge": "1 day",

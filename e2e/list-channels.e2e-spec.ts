@@ -35,6 +35,6 @@ describe('List channels (e2e)', () => {
     expect(subChannels?.includes('two')).toBe(true);
 
     const two = client.channels.byName('two');
-    expect(two?.subChannels[0].name).toEqual('three');
+    expect(two?.subChannels[0]?.name).toEqual('three');
   });
 });

@@ -19,7 +19,7 @@ export class FakeMumbleSocket extends EventEmitter {
   respondToHandshake = true;
   respondToPing = true;
 
-  readonly send = vi.fn(async (type: MessageType<object>) => {
+  readonly send = vi.fn((type: MessageType<object>) => {
     if (type.typeName === Authenticate.typeName && this.respondToHandshake) {
       this.receive(Version, Version.create({ release: '1.4.230' }));
       this.receive(ServerSync, ServerSync.create({ session: 2 }));
@@ -27,9 +27,10 @@ export class FakeMumbleSocket extends EventEmitter {
     } else if (type.typeName === Ping.typeName && this.respondToPing) {
       this.receive(Ping, Ping.create());
     }
+    return Promise.resolve();
   });
 
-  readonly end = vi.fn();
+  readonly end: ReturnType<typeof vi.fn> = vi.fn();
 
   receive<T extends object>(type: MessageType<T>, payload: T) {
     const packet: PacketType = {
