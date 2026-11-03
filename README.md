@@ -18,7 +18,7 @@
 
 - Connect to any Mumble server over TLS
 - Manage channels: create, remove, link/unlink, fetch ACLs
-- Manage users: move, register/deregister, rename; self-mute/self-deafen the client
+- Manage users: move, mute/deafen, kick/ban, register/deregister, rename
 - Send and receive private text messages; read certificate hashes and client IP addresses
 - Query channel permissions
 - Event-driven architecture with full TypeScript support
@@ -147,6 +147,22 @@ await client.self.setSelfDeaf(true);
 // unmute
 await client.self.setSelfMute(false);
 ```
+
+### Moderate other users
+
+```typescript
+const user = client.users.byName('PlayerOne');
+
+// server-mute or deafen (needs MuteDeafen on the user's channel)
+await user?.setMute(true);
+await user?.setDeaf(true); // also mutes
+
+// kick or ban (needs Kick or Ban on the root channel)
+await user?.kick('please behave');
+await user?.ban('cheating'); // bans the IP address and certificate
+```
+
+The server rejects these with `PermissionDeniedError` when the client lacks the permission.
 
 ### Register and manage users
 
@@ -354,6 +370,10 @@ The main entry point. Connects to the server and provides access to channels, us
 | `moveToChannel(channel)` | Move user to a channel (a `Channel` or its ID) |
 | `setSelfMute(mute)` | Set self-mute state |
 | `setSelfDeaf(deaf)` | Set self-deaf state |
+| `setMute(mute)` | Server-mute or unmute the user; unmuting also undeafens |
+| `setDeaf(deaf)` | Server-deafen or undeafen the user; deafening also mutes |
+| `kick(reason?)` | Kick the user from the server |
+| `ban(reason?)` | Ban the user's IP address and certificate, and kick them |
 | `register()` | Register the user |
 | `deregister()` | Deregister the user |
 | `rename(name)` | Rename a registered user |
@@ -368,6 +388,12 @@ The main entry point. Connects to the server and provides access to channels, us
 | `canLinkChannel` | Can link channels |
 | `canSelfRegister` | Can self-register |
 | `canRegister` | Can register other users |
+| `canWrite` | Has Write, which grants every permission but Speak and Whisper |
+| `canMove` | Can move users |
+| `canMuteDeafen` | Can mute and deafen users |
+| `canKick` | Can kick users |
+| `canBan` | Can ban users |
+| `canSendTextMessage` | Can send text messages |
 
 ### Events
 

@@ -1,4 +1,8 @@
-import { UserState, UserStats } from '@tf2pickup-org/mumble-protocol';
+import {
+  UserRemove,
+  UserState,
+  UserStats,
+} from '@tf2pickup-org/mumble-protocol';
 import { ChannelManager } from './channel-manager';
 import { Client } from './client';
 import { InsufficientPermissionsError, NoSuchChannelError } from './errors';
@@ -171,6 +175,53 @@ describe('User', () => {
         }),
       );
       await expect(user.fetchAddress()).resolves.toEqual('1.2.3.4');
+    });
+  });
+
+  describe('moderation', () => {
+    const sent = () => vi.mocked(client.command).mock.calls[0]![1];
+
+    beforeEach(() => {
+      vi.mocked(client.command).mockResolvedValue({});
+    });
+
+    it('should mute and wait for the server to apply it', async () => {
+      await expect(user.setMute(true)).resolves.toBe(user);
+      const { sendPacket, expectPacket } = sent() as {
+        sendPacket: [unknown, UserState];
+        expectPacket: [unknown, (userState: UserState) => boolean];
+      };
+      expect(sendPacket[1]).toEqual(
+        UserState.create({ session: 42, mute: true }),
+      );
+      expect(expectPacket[1](UserState.create({ session: 42 }))).toBe(false);
+      expect(
+        expectPacket[1](UserState.create({ session: 42, mute: true })),
+      ).toBe(true);
+    });
+
+    it('should deafen', async () => {
+      await expect(user.setDeaf(true)).resolves.toBe(user);
+      expect(sent()).toMatchObject({
+        sendPacket: [UserState, UserState.create({ session: 42, deaf: true })],
+      });
+    });
+
+    it('should kick with a reason', async () => {
+      await user.kick('bye');
+      expect(sent()).toMatchObject({
+        sendPacket: [
+          UserRemove,
+          UserRemove.create({ session: 42, reason: 'bye', ban: false }),
+        ],
+      });
+    });
+
+    it('should ban', async () => {
+      await user.ban();
+      expect(sent()).toMatchObject({
+        sendPacket: [UserRemove, UserRemove.create({ session: 42, ban: true })],
+      });
     });
   });
 
