@@ -1,5 +1,36 @@
 # Changelog
 
+# [1.0.0](https://github.com/tf2pickup-org/mumble-client/compare/0.15.2...1.0.0) (2026-11-03)
+
+* feat!: drop Client.user, hide command(), declare Node engine (#1120) ([c3cd681](https://github.com/tf2pickup-org/mumble-client/commit/c3cd68174ed827d4da7ec1fce32ab6901067cead)), closes [#1120](https://github.com/tf2pickup-org/mumble-client/issues/1120)
+* feat!: own types for ACLs and registered users (#1112), closes [#1112](https://github.com/tf2pickup-org/mumble-client/issues/1112)
+* feat!: make synced user and channel state readonly (#1114), closes [#1114](https://github.com/tf2pickup-org/mumble-client/issues/1114)
+* refactor!: drop rxjs dependency (#1111) ([cdd4bb8](https://github.com/tf2pickup-org/mumble-client/commit/cdd4bb8fe05a1561a22bc5226d00a68e4487bcfe)), closes [#1111](https://github.com/tf2pickup-org/mumble-client/issues/1111)
+
+### Features
+
+* accept a channel in User.moveToChannel() ([#1115](https://github.com/tf2pickup-org/mumble-client/issues/1115)) ([31d23b2](https://github.com/tf2pickup-org/mumble-client/commit/31d23b26d678dd129de629786181c6a22c6ba0fa))
+* audio event and sendAudio() on the client ([#1116](https://github.com/tf2pickup-org/mumble-client/issues/1116)) ([8b65b77](https://github.com/tf2pickup-org/mumble-client/commit/8b65b7792de85a3f7bed31d29ca24308db708dda))
+* export event, change and connection types ([#1113](https://github.com/tf2pickup-org/mumble-client/issues/1113)) ([80c5645](https://github.com/tf2pickup-org/mumble-client/commit/80c5645323c15e8ef149d284c34a43c49d39ba5c))
+* mute, deafen, kick and ban other users ([#1123](https://github.com/tf2pickup-org/mumble-client/issues/1123)) ([3f48f48](https://github.com/tf2pickup-org/mumble-client/commit/3f48f4813d21b1558caa9b25c61f60386ddce794))
+
+### BREAKING CHANGES
+
+* `client.socket.packet`, `audioPacket` and
+  `fullAudioPacket` are no longer Observables. Subscribe with
+  `client.socket.on('packet' | 'audioPacket' | 'fullAudioPacket', ...)`
+  instead; `payloadOf(packet, MessageType)` replaces filtering by type.
+* Client.user and ConnectedClient.user are removed, and
+  Client.command() is no longer part of the public API.
+* fetchAcl() returns Acl; its entries are in `entries`
+  (was `acls`) and the protocol-only `channelId` and `query` fields are
+  gone. saveAcl() takes an Acl, which needs `groups` and `entries`.
+* User.name, channelId, mute, deaf, suppress, selfMute,
+  selfDeaf and hash, Channel.name, parent and temporary, and
+  Client.channels and users are readonly. The User.userId setter is gone.
+  A userUpdate event for a deregistration now reports userId's
+  currentValue as undefined instead of 0xffffffff.
+
 ## [0.15.2](https://github.com/tf2pickup-org/mumble-client/compare/0.15.1...0.15.2) (2026-11-02)
 
 ## [0.15.1](https://github.com/tf2pickup-org/mumble-client/compare/0.15.0...0.15.1) (2026-11-01)
