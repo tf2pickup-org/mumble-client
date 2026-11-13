@@ -20,7 +20,7 @@ importers:
         version: 12.0.2(conventional-commits-filter@6.0.1)(conventional-commits-parser@7.1.1)(release-it@21.1.2(@types/node@26.6.6))
       '@tsconfig/strictest':
         specifier: ^2.0.5
-        version: 2.0.8
+        version: 2.0.9
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
@@ -501,8 +501,8 @@ packages:
   '@tf2pickup-org/mumble-protocol@1.1.0':
     resolution: {integrity: sha512-6MBcSHRHFNLRfHDA4CQq2oJIkAP+IitAhMOxyEi/cKA9c+rCIoZx8eDtbMOcUMIsrPkeJwCGQlYVtoEmq35k+A==}
 
-  '@tsconfig/strictest@2.0.8':
-    resolution: {integrity: sha512-XnQ7vNz5HRN0r88GYf1J9JJjqtZPiHt2woGJOo2dYqyHGGcd6OLGqSlBB6p1j9mpzja6Oe5BoPqWmeDx6X9rLw==}
+  '@tsconfig/strictest@2.0.9':
+    resolution: {integrity: sha512-CbwIySRXoGapLZYXqQHF15cg0wQImJa25Ynmubb7816vnHqTdQrmQlSbZxkJrrBusHLbF1kFbNVn8XtxmQ3EpQ==}
 
   '@types/chai@5.2.2':
     resolution: {integrity: sha512-8kB30R7Hwqf40JPiKhVzodJs2Qc1ZJ5zuT3uzw5Hq/dhNCl3G3l83jfpdI1e20BP348+fV7VIL/+FxaXkqBmWg==}
@@ -2159,7 +2159,7 @@ snapshots:
     dependencies:
       '@protobuf-ts/runtime': 2.11.1
 
-  '@tsconfig/strictest@2.0.8': {}
+  '@tsconfig/strictest@2.0.9': {}
 
   '@types/chai@5.2.2':
     dependencies:
